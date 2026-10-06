@@ -3,12 +3,12 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 import { formatCurrency } from '@/utils/formatCurrency'
 
-const priceVariants = cva('font-display font-semibold text-ink', {
+const priceVariants = cva('font-bold text-ink tabular-nums', {
     variants: {
         size: {
-            sm: 'text-base',
+            sm: 'text-[15px] sm:text-base',
             md: 'text-xl',
-            lg: 'text-3xl',
+            lg: 'text-[1.75rem] leading-none sm:text-3xl',
         },
     },
     defaultVariants: {
@@ -16,7 +16,7 @@ const priceVariants = cva('font-display font-semibold text-ink', {
     },
 })
 
-const compareVariants = cva('text-ink-soft line-through', {
+const compareVariants = cva('text-ink-soft line-through decoration-rose-400/70', {
     variants: {
         size: {
             sm: 'text-xs',

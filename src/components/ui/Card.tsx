@@ -3,13 +3,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/utils/cn'
 
-const cardVariants = cva('rounded-3xl border transition duration-300', {
+const cardVariants = cva('rounded-card border transition duration-300', {
     variants: {
         tone: {
             white: 'border-line bg-white',
-            cream: 'border-line bg-cream',
-            blush: 'border-blush-100 bg-blush-50',
-            sky: 'border-sky-100 bg-sky-50',
+            ivory: 'border-line bg-ivory',
+            blush: 'border-rose-100 bg-rose-50',
+            gold: 'border-gold-200/70 bg-gold-50',
         },
         elevation: {
             none: '',

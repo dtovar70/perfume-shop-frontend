@@ -22,7 +22,7 @@ import { RECEIPT_STATUSES } from '@/views/admin/catalogs/utils/whatsappTemplate'
 import { useUpdateOrderStatus } from '@/views/admin/hooks/useAdminCatalogs'
 
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2'
+    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2'
 
 /** Where the customer message of a status is not the whole story. */
 const MESSAGE_NOTES: Partial<Record<OrderStatus, string>> = {
@@ -76,7 +76,7 @@ export function OrderStatusRow({ status, whatsappTemplate, groupLabel }: OrderSt
     const [hasOpened, setHasOpened] = useState(false)
 
     return (
-        <li className="rounded-3xl border-2 border-line bg-white shadow-soft">
+        <li className="rounded-card border border-line bg-white shadow-soft">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:p-4">
                 <div className="flex min-w-0 flex-1 basis-60 flex-wrap items-center gap-x-3 gap-y-1">
                     <Badge tone={status.tone}>{status.label}</Badge>
@@ -102,7 +102,7 @@ export function OrderStatusRow({ status, whatsappTemplate, groupLabel }: OrderSt
                         aria-expanded={isExpanded}
                         aria-controls={panelId}
                         aria-label={`Editar ${status.label}`}
-                        className={cn(actionClass, isExpanded && 'bg-blush-100 text-blush-700')}
+                        className={cn(actionClass, isExpanded && 'bg-rose-100 text-rose-700')}
                     >
                         <Pencil aria-hidden="true" className="size-4" />
                     </button>
@@ -218,7 +218,7 @@ function OrderStatusForm({ status, whatsappTemplate, groupLabel }: OrderStatusRo
 
                 <div className="space-y-4">
                     <p className="text-sm font-semibold text-ink">Vista previa</p>
-                    <div className="space-y-3 rounded-3xl border-2 border-line bg-cream/60 p-4">
+                    <div className="space-y-3 rounded-card border border-line bg-ivory/60 p-4">
                         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-soft">
                             <span>En el panel:</span>
                             <Badge tone={values.tone ?? status.tone}>{previewLabel}</Badge>
@@ -226,7 +226,7 @@ function OrderStatusForm({ status, whatsappTemplate, groupLabel }: OrderStatusRo
                                 {previewLabel}
                             </Badge>
                         </div>
-                        <div className="rounded-2xl border-2 border-line bg-white p-4">
+                        <div className="rounded-2xl border border-line bg-white p-4">
                             <p className="text-xs text-ink-soft">En la página del pedido:</p>
                             <p className="mt-1 font-display text-lg break-words text-ink">
                                 {previewTitle || '—'}

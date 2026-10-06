@@ -49,7 +49,7 @@ export function OrderNotes({ order }: { order: AdminOrder }) {
             {order.notes.length ? (
                 <ul className="space-y-2">
                     {order.notes.map((note) => (
-                        <li key={note.id} className="rounded-2xl bg-cream px-4 py-3 text-sm">
+                        <li key={note.id} className="rounded-2xl bg-ivory px-4 py-3 text-sm">
                             <p className="break-words whitespace-pre-line text-ink">{note.body}</p>
                             <p className="mt-1 text-xs text-ink-soft">
                                 {note.author?.name ?? 'Usuario eliminado'} ·{' '}

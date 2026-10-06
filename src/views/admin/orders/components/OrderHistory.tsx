@@ -13,7 +13,7 @@ export function OrderHistory({ order }: { order: AdminOrder }) {
                     <li key={`${entry.to}-${index}`} className="relative space-y-1">
                         <span
                             aria-hidden="true"
-                            className="absolute top-1.5 -left-[1.3rem] size-2.5 rounded-full bg-blush-400"
+                            className="absolute top-1.5 -left-[1.3rem] size-2.5 rounded-full bg-rose-400"
                         />
                         <div className="flex flex-wrap items-center gap-2">
                             <OrderStatusBadge status={entry.to} size="sm" />

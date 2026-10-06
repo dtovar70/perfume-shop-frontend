@@ -21,7 +21,7 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024
 const MAX_FILES_PER_UPLOAD = 8
 
 const iconButtonClass =
-    'flex size-9 items-center justify-center rounded-full bg-white/95 text-ink shadow-soft transition hover:bg-blush-100 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
+    'flex size-9 items-center justify-center rounded-full bg-white/95 text-ink shadow-soft transition hover:bg-rose-100 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
 
 /** Client-side check so a bad batch fails fast, with a message that names the file. */
 function validateFiles(files: File[]): string | null {
@@ -136,13 +136,13 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                 onDragLeave={() => setIsDragOver(false)}
                 onDrop={handleDropZoneDrop}
                 className={cn(
-                    'flex flex-col items-center gap-3 rounded-3xl border-2 border-dashed px-6 py-8 text-center transition',
-                    isDragOver ? 'border-blush-400 bg-blush-50' : 'border-blush-200 bg-cream',
+                    'flex flex-col items-center gap-3 rounded-card border border-dashed px-6 py-8 text-center transition',
+                    isDragOver ? 'border-rose-400 bg-rose-50' : 'border-rose-200 bg-ivory',
                 )}
             >
                 {upload.isPending ? (
                     <>
-                        <Spinner size="lg" className="text-blush-500" label="Subiendo imágenes" />
+                        <Spinner size="lg" className="text-rose-500" label="Subiendo imágenes" />
                         <p className="font-semibold text-ink">
                             Subiendo {uploadCount} {uploadCount === 1 ? 'imagen' : 'imágenes'}…
                         </p>
@@ -151,7 +151,7 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                     <>
                         <span
                             aria-hidden="true"
-                            className="flex size-12 items-center justify-center rounded-full bg-white text-blush-500 shadow-soft"
+                            className="flex size-12 items-center justify-center rounded-full bg-white text-rose-500 shadow-soft"
                         >
                             <UploadCloud className="size-6" />
                         </span>
@@ -211,9 +211,9 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                                 handleThumbDrop(image.id)
                             }}
                             className={cn(
-                                'group relative overflow-hidden rounded-2xl border-2 bg-white transition',
+                                'group relative overflow-hidden rounded-2xl border bg-white transition',
                                 draggedId === image.id
-                                    ? 'border-blush-400 opacity-50'
+                                    ? 'border-rose-400 opacity-50'
                                     : 'border-line',
                                 !isBusy && 'cursor-grab active:cursor-grabbing',
                             )}
@@ -266,7 +266,7 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                                     }}
                                     disabled={isBusy}
                                     aria-label={`Eliminar la foto ${index + 1}`}
-                                    className={cn(iconButtonClass, 'text-blush-700')}
+                                    className={cn(iconButtonClass, 'text-rose-700')}
                                 >
                                     <Trash2 aria-hidden="true" className="size-4" />
                                 </button>

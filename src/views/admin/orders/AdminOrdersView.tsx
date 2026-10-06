@@ -40,7 +40,7 @@ const headerCellClass =
     'px-3 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase first:pl-4'
 const cellClass = 'px-3 py-3 align-middle first:pl-4'
 /** Pinned to the right edge, like the products list, with its own background. */
-const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-cream'
+const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-ivory'
 
 function isStatus(value: string | null): value is OrderStatus {
     return value !== null && (ORDER_STATUSES as readonly string[]).includes(value)
@@ -51,7 +51,7 @@ function OpenLink({ order }: { order: AdminOrderListItem }) {
         <Link
             to={adminOrderPath(order.code)}
             aria-label={`Ver pedido ${order.code}`}
-            className="flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2"
+            className="flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
         >
             <ChevronRight aria-hidden="true" className="size-5" />
         </Link>
@@ -69,13 +69,13 @@ function FilterChip({
     label: string
 }) {
     return (
-        <span className="inline-flex max-w-full items-center gap-1 rounded-full border-2 border-line bg-white py-0.5 pr-1 pl-3 text-sm text-ink">
+        <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-line bg-white py-0.5 pr-1 pl-3 text-sm text-ink">
             <span className="truncate">{children}</span>
             <button
                 type="button"
                 onClick={onRemove}
                 aria-label={label}
-                className="flex size-6 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700"
             >
                 <X aria-hidden="true" className="size-3.5" />
             </button>
@@ -281,7 +281,7 @@ export function AdminOrdersView() {
                 {orders.isFetching && !orders.isPending ? (
                     <Spinner
                         size="sm"
-                        className="shrink-0 text-blush-500"
+                        className="shrink-0 text-rose-500"
                         label="Actualizando la lista"
                     />
                 ) : null}
@@ -310,7 +310,7 @@ export function AdminOrdersView() {
                                     type="button"
                                     onClick={clearSearch}
                                     aria-label="Limpiar búsqueda"
-                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-blush-100"
+                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-rose-100"
                                 >
                                     <X aria-hidden="true" className="size-4" />
                                 </button>
@@ -342,10 +342,10 @@ export function AdminOrdersView() {
                             aria-pressed={pendingRefundsOnly}
                             onClick={toggleRefunds}
                             className={cn(
-                                'inline-flex items-center gap-2 rounded-full border-2 py-1 pr-1.5 pl-3 text-sm font-semibold text-ink transition',
+                                'inline-flex items-center gap-2 rounded-full border py-1 pr-1.5 pl-3 text-sm font-semibold text-ink transition',
                                 pendingRefundsOnly
-                                    ? 'border-butter-400 bg-butter-200'
-                                    : 'border-butter-400/80 bg-butter-200/40 hover:bg-butter-200/80',
+                                    ? 'border-gold-400 bg-gold-100'
+                                    : 'border-gold-400/80 bg-gold-100/40 hover:bg-gold-100/80',
                             )}
                         >
                             {pendingRefundsOnly ? (
@@ -468,7 +468,7 @@ export function AdminOrdersView() {
                                         <col className="w-48" />
                                         <col className="w-15" />
                                     </colgroup>
-                                    <thead className="border-b border-line bg-blush-50/60">
+                                    <thead className="border-b border-line bg-rose-50/60">
                                         <tr>
                                             <th scope="col" className={headerCellClass}>
                                                 Pedido
@@ -493,7 +493,7 @@ export function AdminOrdersView() {
                                                 className={cn(
                                                     headerCellClass,
                                                     actionsCellClass,
-                                                    'bg-linear-to-r from-blush-50/60 to-blush-50/60',
+                                                    'bg-linear-to-r from-rose-50/60 to-rose-50/60',
                                                 )}
                                             >
                                                 <span className="sr-only">Acciones</span>
@@ -504,12 +504,12 @@ export function AdminOrdersView() {
                                         {items.map((order) => (
                                             <tr
                                                 key={order.code}
-                                                className="group transition hover:bg-cream"
+                                                className="group transition hover:bg-ivory"
                                             >
                                                 <td className={cellClass}>
                                                     <Link
                                                         to={adminOrderPath(order.code)}
-                                                        className="font-display text-base text-ink hover:text-blush-700"
+                                                        className="font-display text-base text-ink hover:text-rose-700"
                                                     >
                                                         {order.code}
                                                     </Link>

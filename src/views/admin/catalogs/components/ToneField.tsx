@@ -33,10 +33,10 @@ export function ToneField({ value, onChange, sample }: ToneFieldProps) {
                     <label
                         key={tone}
                         className={cn(
-                            'flex cursor-pointer flex-col items-center gap-1 rounded-2xl border-2 p-2 transition has-focus-visible:ring-2 has-focus-visible:ring-blush-400',
+                            'flex cursor-pointer flex-col items-center gap-1 rounded-2xl border p-2 transition has-focus-visible:ring-2 has-focus-visible:ring-gold-500',
                             tone === value
-                                ? 'border-blush-400 bg-blush-50'
-                                : 'border-line hover:border-blush-200',
+                                ? 'border-rose-400 bg-rose-50'
+                                : 'border-line hover:border-rose-200',
                         )}
                     >
                         <input

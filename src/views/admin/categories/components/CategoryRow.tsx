@@ -9,7 +9,7 @@ import { CategoryForm } from '@/views/admin/categories/components/CategoryForm'
 
 /** `aria-disabled` instead of `disabled` keeps keyboard focus on the button while saving. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
 
 function plural(count: number, singular: string, pluralForm: string): string {
     return `${count} ${count === 1 ? singular : pluralForm}`
@@ -109,8 +109,8 @@ export function CategoryRow({
                 onDropOnRow(category.slug)
             }}
             className={cn(
-                'rounded-3xl border-2 bg-white shadow-soft transition',
-                isDropTarget ? 'border-blush-400 bg-blush-50' : 'border-line',
+                'rounded-card border bg-white shadow-soft transition',
+                isDropTarget ? 'border-rose-400 bg-rose-50' : 'border-line',
                 isDragged && 'opacity-50',
             )}
         >
@@ -131,7 +131,7 @@ export function CategoryRow({
                     >
                         <GripVertical className="size-5" />
                     </span>
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-cream text-sm font-bold text-ink">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-bold text-ink">
                         <span className="sr-only">Posición </span>
                         {position}
                     </span>
@@ -147,7 +147,7 @@ export function CategoryRow({
                             </h2>
                             {isInMenu ? (
                                 <Badge tone="mint" size="sm">
-                                    En el menú
+                                    En portada
                                 </Badge>
                             ) : null}
                         </div>
@@ -196,7 +196,7 @@ export function CategoryRow({
                             aria-expanded={isExpanded}
                             aria-controls={panelId}
                             aria-label={`Editar ${category.name}`}
-                            className={cn(actionClass, isExpanded && 'bg-blush-100 text-blush-700')}
+                            className={cn(actionClass, isExpanded && 'bg-rose-100 text-rose-700')}
                         >
                             <Pencil aria-hidden="true" className="size-4" />
                         </button>

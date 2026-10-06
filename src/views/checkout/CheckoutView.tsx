@@ -35,7 +35,7 @@ const RATE_UNAVAILABLE_TEXT =
 export function CheckoutView() {
     const items = useCartItems()
     const subtotal = useCartSubtotal()
-    const { clear, updateQuantity, removeItem, removeDesign } = useCartActions()
+    const { clear, updateQuantity, removeItem } = useCartActions()
     const navigate = useNavigate()
     const content = useSiteContent()
     const rate = useExchangeRate()
@@ -67,8 +67,6 @@ export function CheckoutView() {
                 productId: item.productId,
                 variantId: item.variantId || undefined,
                 quantity: item.quantity,
-                personalization: item.personalization || undefined,
-                designId: item.design?.id,
             })),
         }
         // Same order body => same key, so a retry after a timeout never creates a second order;
@@ -117,9 +115,7 @@ export function CheckoutView() {
         for (const problem of problems) {
             const item = items[problem.index]
             if (!item) continue
-            // A refused design leaves the line without it; the customer can make a new one.
-            if (problem.kind === 'design') removeDesign(item.lineId)
-            else if (problem.available > 0) updateQuantity(item.lineId, problem.available)
+            if (problem.available > 0) updateQuantity(item.lineId, problem.available)
             else removeItem(item.lineId)
         }
         setProblems([])
@@ -127,17 +123,22 @@ export function CheckoutView() {
     }
 
     return (
-        <div className={cn(CONTAINER, 'space-y-8 py-12 lg:py-16')}>
-            <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                Finalizar <span className="text-blush-500">compra</span>
-            </h1>
+        <div className={cn(CONTAINER, 'space-y-8 py-10 lg:py-14')}>
+            <header className="space-y-2">
+                <p className="text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
+                    Checkout
+                </p>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl">
+                    Finalizar <span className="text-rose-700 italic">compra</span>
+                </h1>
+            </header>
 
             {items.length === 0 ? (
                 <EmptyState
                     title="Tu carrito está vacío"
-                    description="Agrega al menos un producto para poder completar el pedido."
+                    description="Agrega algunos perfumes para comenzar."
                     icon={<ShoppingBag className="size-6" />}
-                    action={<ButtonLink to={ROUTES.catalog}>Explorar catálogo</ButtonLink>}
+                    action={<ButtonLink to={ROUTES.catalog}>Explorar perfumes</ButtonLink>}
                 />
             ) : (
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">

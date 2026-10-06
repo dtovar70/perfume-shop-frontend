@@ -2,27 +2,26 @@ import { Check } from 'lucide-react'
 
 import type { Product } from '@/@types/product'
 import { Accordion, type AccordionItem } from '@/components/shared/Accordion'
-import { useShippingContent, useSiteContent } from '@/utils/hooks/useSiteContent'
+import { useShippingContent } from '@/utils/hooks/useSiteContent'
 
-/** Shipping, returns and artwork answers, filled with the editable shipping and contact data. */
+/** Shipping, payment and authenticity answers, filled with the editable shipping data. */
 function useProductFaq(): AccordionItem[] {
-    const { contact } = useSiteContent()
     const { productionCopy, freeShippingText } = useShippingContent()
     return [
         {
             id: 'shipping',
             question: 'Envíos y tiempos de entrega',
-            answer: `${productionCopy}. Enviamos a todo el país con entrega en 24 a 72 horas según la ciudad. ${freeShippingText}.`,
+            answer: `${productionCopy}. Enviamos a toda Venezuela con entrega en 24 a 72 horas según la ciudad, o puedes retirar en tienda. ${freeShippingText}.`,
         },
         {
-            id: 'returns',
-            question: 'Cambios y devoluciones',
-            answer: 'Si la pieza llega dañada o con un error nuestro, la reponemos sin costo. Los productos personalizados no admiten devolución por cambio de opinión.',
+            id: 'payment',
+            question: 'Formas de pago',
+            answer: 'Pago Móvil en bolívares a la tasa BCV del día, o en divisas. Te confirmamos el pago apenas lo verificamos.',
         },
         {
-            id: 'customize',
-            question: '¿Cómo envío mi diseño?',
-            answer: `Escríbenos a ${contact.email} o por WhatsApp con tu imagen o texto. Te mandamos un boceto antes de producir.`,
+            id: 'original',
+            question: '¿Es original?',
+            answer: 'Sí. Todas nuestras fragancias son 100% originales, selladas y de proveedores de confianza.',
         },
     ]
 }
@@ -31,29 +30,56 @@ export interface ProductMetaProps {
     product: Product
 }
 
+/** Description, highlights and the FAQ under the product summary. */
 export function ProductMeta({ product }: ProductMetaProps) {
     const faqItems = useProductFaq()
 
     return (
-        <div className="space-y-8">
-            <div className="space-y-3">
-                <h2 className="font-display text-xl text-ink">Lo que incluye</h2>
-                <ul className="space-y-2">
-                    {product.highlights.map((highlight) => (
-                        <li key={highlight} className="flex items-start gap-2.5 text-sm text-ink">
-                            <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-mint-200">
-                                <Check aria-hidden="true" className="size-3" />
-                            </span>
-                            {highlight}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+        <div className="space-y-10">
+            {product.description ? (
+                <section aria-labelledby="description-heading" className="space-y-3">
+                    <h2
+                        id="description-heading"
+                        className="font-display text-3xl font-semibold text-ink"
+                    >
+                        Descripción
+                    </h2>
+                    <p className="text-[15px] leading-relaxed whitespace-pre-line text-ink-soft">
+                        {product.description}
+                    </p>
+                </section>
+            ) : null}
 
-            <div className="space-y-3">
-                <h2 className="font-display text-xl text-ink">Preguntas frecuentes</h2>
+            {product.highlights.length > 0 ? (
+                <section aria-labelledby="highlights-heading" className="space-y-3">
+                    <h2
+                        id="highlights-heading"
+                        className="font-display text-2xl font-semibold text-ink"
+                    >
+                        Por qué te va a encantar
+                    </h2>
+                    <ul className="space-y-2.5">
+                        {product.highlights.map((highlight) => (
+                            <li
+                                key={highlight}
+                                className="flex items-start gap-3 text-[15px] text-ink"
+                            >
+                                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-800">
+                                    <Check aria-hidden="true" className="size-3" strokeWidth={3} />
+                                </span>
+                                {highlight}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            ) : null}
+
+            <section aria-labelledby="faq-heading" className="space-y-3">
+                <h2 id="faq-heading" className="font-display text-2xl font-semibold text-ink">
+                    Preguntas frecuentes
+                </h2>
                 <Accordion items={faqItems} />
-            </div>
+            </section>
         </div>
     )
 }

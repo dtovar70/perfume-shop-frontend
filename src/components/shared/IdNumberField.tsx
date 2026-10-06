@@ -142,7 +142,7 @@ export function IdNumberField({
                     onBlur={onBlur}
                     className={cn(
                         FIELD_BASE_CLASS,
-                        'h-11 min-w-0 flex-1 rounded-full px-4 tabular-nums',
+                        'h-11 min-w-0 flex-1 rounded-xl px-4 tabular-nums',
                         error && FIELD_ERROR_CLASS,
                     )}
                 />

@@ -15,7 +15,7 @@ export function PaymentDeadline({ dueAt }: { dueAt: string }) {
         <p
             className={cn(
                 'flex items-start gap-2 rounded-2xl px-4 py-3 text-sm',
-                urgent ? 'bg-blush-50 text-blush-800' : 'bg-butter-200/50 text-ink',
+                urgent ? 'bg-rose-50 text-rose-800' : 'bg-gold-100/50 text-ink',
             )}
         >
             <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0" />

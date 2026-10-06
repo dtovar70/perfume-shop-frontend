@@ -2,9 +2,9 @@ import type { ContentSection, SiteContent } from '@/@types/content'
 import type {
     Category,
     CategorySlug,
-    DesignPrintArea,
-    DesignTemplateColor,
+    Concentration,
     Product,
+    ProductGender,
     ProductTag,
 } from '@/@types/product'
 
@@ -53,6 +53,7 @@ export interface AdminProductQueryParams {
     search?: string
     category?: CategorySlug
     isActive?: boolean
+    brand?: string
     page?: number
     pageSize?: number
 }
@@ -62,7 +63,7 @@ export interface ProductVariantInput {
     id?: string
     label: string
     priceDelta: number
-    colorHex?: string
+    volumeMl?: number | null
     stock: number
 }
 
@@ -76,8 +77,17 @@ export interface ProductInput {
     compareAtPrice?: number | null
     /** Only for a product without variants; with variants the API uses their sum. */
     stock?: number
-    printText: string
-    colorHex: string
+    /** `null` leaves the product without a brand. */
+    brandSlug: string | null
+    gender: ProductGender
+    concentration: Concentration | null
+    volumeMl: number | null
+    notesTop: string[]
+    notesHeart: string[]
+    notesBase: string[]
+    olfactoryFamily: string | null
+    isFeatured: boolean
+    sku: string | null
     description: string
     highlights: string[]
     tags: ProductTag[]
@@ -85,49 +95,41 @@ export interface ProductInput {
     isActive: boolean
 }
 
+/** Admin view of a brand (`GET /admin/brands`): inactive ones included. */
+export interface AdminBrand {
+    slug: string
+    name: string
+    logoUrl: string | null
+    description: string
+    sortOrder: number
+    isActive: boolean
+    /** Visible products of the brand. */
+    productCount: number
+    /** Products of any visibility; a brand can only be deleted when this is 0. */
+    totalProductCount: number
+    createdAt: string
+    updatedAt: string
+}
+
+/**
+ * Body of `POST /admin/brands` (and `PATCH /admin/brands/:slug`, any subset). Sent as multipart
+ * when a `logo` file is attached, as JSON otherwise (`logoUrl: null` removes the logo).
+ */
+export interface BrandInput {
+    name: string
+    slug?: string
+    description: string
+    sortOrder?: number
+    isActive: boolean
+    logoUrl?: string | null
+    logo?: File | null
+}
+
 /** Admin view of a category: its menu position and every product, hidden ones included. */
 export interface AdminCategory extends Category {
     sortOrder: number
     /** Products of any visibility; a category can only be deleted when this is 0. */
     totalProductCount: number
-    /** Products tagged "personalizable" (hidden ones included): they use the design template. */
-    personalizableProductCount: number
-    designTemplateSettings: AdminDesignTemplateSettings
-}
-
-/** What is set so far of the category's design template (any field may still be missing). */
-export interface AdminDesignTemplateSettings {
-    /** Every garment color, in order. */
-    colors: DesignTemplateColor[]
-    /** How many colors a category may have. */
-    maxColors: number
-    printWidthCm: number | null
-    printHeightCm: number | null
-    /** The category has a generated illustration, used while there is no photo. */
-    hasIllustration: boolean
-    /** The editor is turned off for this category (keychains): photos are kept but unused. */
-    designDisabled: boolean
-}
-
-/** Body of `PATCH /admin/categories/:slug/design-template`: the print size of every color. */
-export interface DesignTemplateInput {
-    printWidthCm: number
-    printHeightCm: number
-}
-
-/** `POST /admin/categories/:slug/design-template/colors` (multipart, with the photo). */
-export interface TemplateColorCreateInput {
-    colorName: string
-    /** `#RRGGBB`. */
-    colorHex: string
-    file: File
-}
-
-/** Body of `PATCH /admin/categories/:slug/design-template/colors/:colorId`. */
-export interface TemplateColorInput {
-    colorName?: string
-    colorHex?: string
-    printArea?: DesignPrintArea
 }
 
 /** Body of `POST /admin/categories`. Without `slug` the API derives it from the name. */

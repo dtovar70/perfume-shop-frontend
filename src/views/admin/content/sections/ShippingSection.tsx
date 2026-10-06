@@ -53,7 +53,7 @@ export function ShippingSection(props: SectionFormProps<'shipping'>) {
                         {...register('flatRate', { setValueAs: toOptionalNumber })}
                     />
                 </FieldRow>
-                <p className="rounded-2xl bg-sky-50 px-4 py-3 text-sm text-ink">
+                <p className="rounded-2xl bg-gold-50 px-4 py-3 text-sm text-ink">
                     Pedidos desde <strong>{threshold}</strong>: envío gratis. Por debajo se cobran{' '}
                     <strong>{rate}</strong>.
                 </p>

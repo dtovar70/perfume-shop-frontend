@@ -31,7 +31,7 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
                                 className={cn(
                                     'size-2 rounded-full',
                                     bot.connected
-                                        ? 'bg-mint-400 ring-2 ring-white'
+                                        ? 'bg-emerald-500 ring-2 ring-white'
                                         : 'bg-ink-soft/60',
                                 )}
                             />
@@ -76,7 +76,7 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
                                     href={telegramUserUrl(bot.username)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sky-700 hover:underline"
+                                    className="text-gold-700 hover:underline"
                                 >
                                     @{bot.username}
                                 </a>

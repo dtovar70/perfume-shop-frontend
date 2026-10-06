@@ -1,7 +1,19 @@
 import { apiConfig } from '@/configs/api.config'
 import { ApiError, type ApiFieldError } from '@/services/errors'
 
-type QueryValue = string | number | boolean | undefined | null | readonly (string | number)[]
+/** Sent once per value (`?brand=a&brand=b`) instead of comma-joined. */
+export interface RepeatedQueryValue {
+    repeat: readonly string[]
+}
+
+type QueryValue =
+    | string
+    | number
+    | boolean
+    | undefined
+    | null
+    | readonly (string | number)[]
+    | RepeatedQueryValue
 
 export type QueryParams = Record<string, QueryValue>
 
@@ -93,6 +105,12 @@ function buildUrl(path: string, query?: QueryParams): string {
         if (value === undefined || value === null || value === '') continue
         if (Array.isArray(value)) {
             if (value.length) url.searchParams.set(key, value.join(','))
+            continue
+        }
+        if (typeof value === 'object') {
+            for (const item of (value as RepeatedQueryValue).repeat) {
+                url.searchParams.append(key, item)
+            }
             continue
         }
         url.searchParams.set(key, String(value))

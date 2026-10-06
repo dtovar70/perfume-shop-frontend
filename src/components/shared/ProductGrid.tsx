@@ -9,6 +9,8 @@ export interface ProductGridProps {
     products: Product[]
     isPending?: boolean
     skeletonCount?: number
+    /** How many leading cards load their photo eagerly (the first visible row). */
+    priorityCount?: number
     className?: string
 }
 
@@ -16,10 +18,11 @@ export function ProductGrid({
     products,
     isPending = false,
     skeletonCount = DEFAULT_SKELETON_COUNT,
+    priorityCount = 0,
     className,
 }: ProductGridProps) {
     const gridClassName = cn(
-        'grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4',
+        'grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:grid-cols-3 xl:grid-cols-4',
         className,
     )
 
@@ -35,9 +38,9 @@ export function ProductGrid({
 
     return (
         <ul className={gridClassName}>
-            {products.map((product) => (
+            {products.map((product, index) => (
                 <li key={product.id} className="h-full">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} priority={index < priorityCount} />
                 </li>
             ))}
         </ul>

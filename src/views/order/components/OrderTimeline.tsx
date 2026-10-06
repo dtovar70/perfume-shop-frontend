@@ -36,7 +36,7 @@ export function OrderTimeline({ order }: { order: PublicOrder }) {
                                 aria-hidden="true"
                                 className={cn(
                                     'absolute top-7 bottom-0 left-3.5 w-0.5 -translate-x-1/2',
-                                    done && index < currentIndex ? 'bg-blush-300' : 'bg-line',
+                                    done && index < currentIndex ? 'bg-rose-300' : 'bg-line',
                                 )}
                             />
                         ) : null}
@@ -44,9 +44,9 @@ export function OrderTimeline({ order }: { order: PublicOrder }) {
                             className={cn(
                                 'relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-xs',
                                 done
-                                    ? 'border-blush-700 bg-blush-700 text-white'
+                                    ? 'border-rose-700 bg-rose-700 text-white'
                                     : 'border-line bg-white text-ink-soft',
-                                current && 'ring-4 ring-blush-200/70',
+                                current && 'ring-4 ring-rose-200/70',
                             )}
                         >
                             {done ? <Check aria-hidden="true" className="size-4" /> : index + 1}

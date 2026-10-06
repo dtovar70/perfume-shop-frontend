@@ -14,9 +14,18 @@ export interface SearchFieldProps {
     className?: string
     /** Called after a navigation so overlays can close themselves. */
     onNavigate?: () => void
+    /** Called when the search is submitted (Enter), not on the live, debounced updates. */
+    onSubmitted?: () => void
+    /** Focus the field on mount (the header's expandable search row). */
+    autoFocus?: boolean
 }
 
-export function SearchField({ className, onNavigate }: SearchFieldProps) {
+export function SearchField({
+    className,
+    onNavigate,
+    onSubmitted,
+    autoFocus = false,
+}: SearchFieldProps) {
     const { general } = useSiteContent()
     const navigate = useNavigate()
     const [term, setTerm] = useState('')
@@ -41,6 +50,10 @@ export function SearchField({ className, onNavigate }: SearchFieldProps) {
     )
 
     useEffect(() => {
+        if (autoFocus) inputRef.current?.focus()
+    }, [autoFocus])
+
+    useEffect(() => {
         if (!hasTyped.current) return
         goToCatalog(debouncedTerm)
     }, [debouncedTerm, goToCatalog])
@@ -52,11 +65,12 @@ export function SearchField({ className, onNavigate }: SearchFieldProps) {
             onSubmit={(event) => {
                 event.preventDefault()
                 goToCatalog(term)
+                onSubmitted?.()
             }}
         >
             <Input
                 ref={inputRef}
-                label="Buscar productos"
+                label="Buscar perfumes"
                 hideLabel
                 type="search"
                 value={term}
@@ -73,7 +87,7 @@ export function SearchField({ className, onNavigate }: SearchFieldProps) {
                                 inputRef.current?.focus()
                             }}
                             // 32px inside the field; the pseudo-element makes the hit area 44px.
-                            className="relative flex size-8 items-center justify-center rounded-full text-ink-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-blush-100 hover:text-ink"
+                            className="relative flex size-8 items-center justify-center rounded-full text-ink-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-rose-50 hover:text-ink"
                         >
                             <X aria-hidden="true" className="size-4" />
                         </button>

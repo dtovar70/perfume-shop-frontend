@@ -24,7 +24,7 @@ export function WhatsAppNotice({ title, children, className, message }: WhatsApp
         <div
             role="status"
             className={cn(
-                'space-y-3 rounded-3xl border-2 border-butter-400/70 bg-butter-200/50 p-5 text-ink',
+                'space-y-3 rounded-card border border-gold-400/70 bg-gold-100/50 p-5 text-ink',
                 className,
             )}
         >
@@ -35,7 +35,7 @@ export function WhatsAppNotice({ title, children, className, message }: WhatsApp
                     href={whatsappUrl(contact.whatsapp, message)}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition hover:bg-ink/90 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2"
+                    className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition hover:bg-ink/90 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
                 >
                     <MessageCircle aria-hidden="true" className="size-4" />
                     Escríbenos por WhatsApp

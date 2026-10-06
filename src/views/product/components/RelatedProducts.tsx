@@ -9,7 +9,7 @@ export interface RelatedProductsProps {
 export function RelatedProducts({ slug }: RelatedProductsProps) {
     const { data: products, isPending, isError } = useRelatedProducts(slug)
 
-    if (isError) return null
+    if (isError || (!isPending && (products?.length ?? 0) === 0)) return null
 
     return (
         <section aria-labelledby="related-heading" className="space-y-8">
@@ -17,7 +17,7 @@ export function RelatedProducts({ slug }: RelatedProductsProps) {
                 headingId="related-heading"
                 level="h3"
                 eyebrow="También te puede gustar"
-                title="*Combina* con esto"
+                title="Fragancias *relacionadas*"
             />
 
             <ProductGrid

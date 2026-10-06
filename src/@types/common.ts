@@ -1,6 +1,6 @@
-import type { CategorySlug, ProductTag } from '@/@types/product'
+import type { CategorySlug, Concentration, ProductGender, ProductTag } from '@/@types/product'
 
-export type SortOption = 'relevance' | 'price-asc' | 'price-desc' | 'newest'
+export type SortOption = 'relevance' | 'price-asc' | 'price-desc' | 'newest' | 'name-asc'
 
 export interface Paginated<T> {
     items: T[]
@@ -10,16 +10,6 @@ export interface Paginated<T> {
     totalPages: number
 }
 
-export interface FilterState {
-    category?: CategorySlug
-    search?: string
-    sort: SortOption
-    minPrice?: number
-    maxPrice?: number
-    tags: ProductTag[]
-    page: number
-}
-
 export interface ProductQueryParams {
     category?: CategorySlug
     search?: string
@@ -27,6 +17,11 @@ export interface ProductQueryParams {
     minPrice?: number
     maxPrice?: number
     tags?: ProductTag[]
+    /** Brand slugs (repeatable `brand` param). */
+    brands?: string[]
+    gender?: ProductGender
+    concentration?: Concentration
+    family?: string
     page?: number
     pageSize?: number
 }

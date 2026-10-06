@@ -7,7 +7,7 @@ import { cn } from '@/utils/cn'
 
 /** Same look as the category rows' actions. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
 
 export interface SortableListProps {
     /** Accessible name of the list: "Mensajes de la cinta". */
@@ -115,11 +115,11 @@ export function SortableList({
                                 move(from, index)
                             }}
                             className={cn(
-                                'rounded-3xl border-2 bg-white p-3 transition sm:p-4',
+                                'rounded-card border bg-white p-3 transition sm:p-4',
                                 draggedIndex !== null &&
                                     overIndex === index &&
                                     draggedIndex !== index
-                                    ? 'border-blush-400 bg-blush-50'
+                                    ? 'border-rose-400 bg-rose-50'
                                     : 'border-line',
                                 draggedIndex === index && 'opacity-50',
                             )}

@@ -91,7 +91,7 @@ export function ContactForm() {
             <Card padding="lg" className="space-y-4 text-center">
                 <span
                     aria-hidden="true"
-                    className="mx-auto flex size-14 items-center justify-center rounded-full bg-mint-200 text-ink"
+                    className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-ink"
                 >
                     <PartyPopper className="size-6" />
                 </span>
@@ -180,7 +180,7 @@ export function ContactForm() {
                                 href={whatsappUrl(contact.whatsapp, failure.whatsappText)}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-2 inline-flex items-center gap-1 rounded-sm font-semibold text-blush-700 underline underline-offset-2 hover:text-blush-800 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2"
+                                className="mt-2 inline-flex items-center gap-1 rounded-sm font-semibold text-rose-700 underline underline-offset-2 hover:text-rose-800 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
                             >
                                 <MessageCircle aria-hidden="true" className="size-4 shrink-0" />
                                 Enviar este mensaje por WhatsApp

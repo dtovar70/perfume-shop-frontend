@@ -4,17 +4,18 @@ import type { ProductVariant } from '@/@types/product'
 import { cn } from '@/utils/cn'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { isVariantSoldOut } from '@/utils/productStock'
+import { variantDisplayLabel } from '@/utils/variantLabel'
 
 const optionVariants = cva(
-    'inline-flex cursor-pointer items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition duration-200 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-blush-400 has-[input:focus-visible]:ring-offset-2',
+    'relative flex min-h-14 min-w-24 cursor-pointer flex-col items-center justify-center rounded-xl border px-4 py-2 text-center transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-gold-600',
     {
         variants: {
             isSelected: {
-                true: 'border-blush-400 bg-blush-100 text-blush-700',
-                false: 'border-line bg-white text-ink-soft hover:border-blush-200 hover:text-ink',
+                true: 'border-rose-700 bg-rose-50 text-rose-800 ring-1 ring-rose-700',
+                false: 'border-line bg-white text-ink hover:border-gold-400',
             },
             isSoldOut: {
-                true: 'cursor-not-allowed border-dashed border-line bg-cream text-ink-soft/60 hover:border-line hover:text-ink-soft/60',
+                true: 'cursor-not-allowed border-dashed border-line bg-ivory text-ink-soft/70 hover:border-line',
                 false: '',
             },
         },
@@ -23,7 +24,7 @@ const optionVariants = cva(
 )
 
 export interface VariantPickerProps {
-    /** Sold-out versions stay visible but disabled, marked "Agotada". */
+    /** Sold-out versions stay visible but disabled, marked "Agotado". */
     variants: ProductVariant[]
     /** The product's base price; each option shows its own final price when they differ. */
     basePrice: number
@@ -31,18 +32,23 @@ export interface VariantPickerProps {
     onSelect: (variantId: string) => void
 }
 
+/** Size picker: one card per bottle size (or version), with its price when prices differ. */
 export function VariantPicker({
     variants,
     basePrice,
     selectedVariantId,
     onSelect,
 }: VariantPickerProps) {
-    if (variants.length === 0) return null
+    // A single version is not a choice.
+    if (variants.length < 2) return null
     const showPrices = new Set(variants.map((variant) => variant.priceDelta)).size > 1
+    const bySize = variants.every((variant) => variant.volumeMl)
 
     return (
         <fieldset className="space-y-3">
-            <legend className="font-display text-base text-ink">Elige tu versión</legend>
+            <legend className="text-[11px] font-bold tracking-[0.22em] text-gold-700 uppercase">
+                {bySize ? 'Tamaño' : 'Presentación'}
+            </legend>
 
             <div className="flex flex-wrap gap-2">
                 {variants.map((variant) => {
@@ -63,13 +69,15 @@ export function VariantPicker({
                                 disabled={isSoldOut}
                                 onChange={() => onSelect(variant.id)}
                             />
-                            <span className={cn(isSoldOut && 'line-through')}>{variant.label}</span>
+                            <span className={cn('text-sm font-bold', isSoldOut && 'line-through')}>
+                                {variantDisplayLabel(variant)}
+                            </span>
                             {isSoldOut ? (
-                                <span className="text-xs font-semibold text-blush-700">
-                                    Agotada
+                                <span className="text-[11px] font-semibold text-rose-700">
+                                    Agotado
                                 </span>
                             ) : showPrices ? (
-                                <span className="text-xs text-ink-soft">
+                                <span className="text-xs text-ink-soft tabular-nums">
                                     {formatCurrency(basePrice + variant.priceDelta)}
                                 </span>
                             ) : null}

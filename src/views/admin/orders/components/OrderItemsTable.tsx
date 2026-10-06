@@ -1,13 +1,11 @@
 import { Link } from 'react-router'
 
 import type { AdminOrder } from '@/@types/order'
-import { CopyButton } from '@/components/shared/CopyButton'
 import { Card } from '@/components/ui'
 import { adminProductPath } from '@/constants/route.constant'
 import { formatBolivares, formatRate } from '@/utils/formatBolivares'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { formatDay } from '@/utils/formatDate'
-import { OrderItemDesign } from '@/views/admin/orders/components/OrderItemDesign'
 
 /** The ordered lines as frozen at checkout, the totals and the BCV rate used. */
 export function OrderItemsTable({ order }: { order: AdminOrder }) {
@@ -16,9 +14,9 @@ export function OrderItemsTable({ order }: { order: AdminOrder }) {
         <Card padding="md" className="space-y-4">
             <h2 className="font-display text-xl text-ink">Productos</h2>
             <ul className="divide-y divide-line">
-                {order.items.map((item, index) => (
+                {order.items.map((item) => (
                     <li key={item.id} className="flex items-center gap-3 py-3">
-                        <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-blush-50">
+                        <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-rose-50">
                             {item.imageUrl ? (
                                 <img
                                     src={item.imageUrl}
@@ -29,7 +27,7 @@ export function OrderItemsTable({ order }: { order: AdminOrder }) {
                             ) : (
                                 <span
                                     aria-hidden="true"
-                                    className="font-display text-lg text-blush-400"
+                                    className="font-display text-lg text-rose-400"
                                 >
                                     {item.productName.charAt(0)}
                                 </span>
@@ -39,7 +37,7 @@ export function OrderItemsTable({ order }: { order: AdminOrder }) {
                             {item.productId ? (
                                 <Link
                                     to={adminProductPath(item.productId)}
-                                    className="font-semibold break-words text-ink hover:text-blush-700"
+                                    className="font-semibold break-words text-ink hover:text-rose-700"
                                 >
                                     {item.productName}
                                 </Link>
@@ -56,28 +54,6 @@ export function OrderItemsTable({ order }: { order: AdminOrder }) {
                                     .filter(Boolean)
                                     .join(' · ')}
                             </p>
-                            {item.personalization ? (
-                                <div className="mt-1.5 flex items-start gap-1 rounded-xl border border-butter-400/70 bg-butter-200/40 py-1.5 pr-1 pl-3">
-                                    <p className="min-w-0 flex-1 py-1 text-sm break-words text-ink">
-                                        <span className="block text-[11px] font-bold tracking-wide text-ink-soft uppercase">
-                                            Personalización
-                                        </span>
-                                        {item.personalization}
-                                    </p>
-                                    <CopyButton
-                                        value={item.personalization}
-                                        label={`Copiar personalización de ${item.productName}`}
-                                        className="size-8"
-                                    />
-                                </div>
-                            ) : null}
-                            {item.design ? (
-                                <OrderItemDesign
-                                    design={item.design}
-                                    productName={item.productName}
-                                    line={index + 1}
-                                />
-                            ) : null}
                         </div>
                         <span className="shrink-0 text-sm font-semibold text-ink">
                             {formatCurrency(item.lineTotalUsd)}

@@ -1,12 +1,11 @@
 import type {
+    AdminBrand,
     AdminCategory,
     AdminProduct,
     AdminProductQueryParams,
     CategoryCreateInput,
+    BrandInput,
     CategoryInput,
-    DesignTemplateInput,
-    TemplateColorCreateInput,
-    TemplateColorInput,
     ProductInput,
 } from '@/@types/admin'
 import type { Paginated } from '@/@types/common'
@@ -15,13 +14,27 @@ import { apiClient } from '@/services/ApiClient'
 
 const PRODUCTS = '/admin/products'
 const CATEGORIES = '/admin/categories'
+const BRANDS = '/admin/brands'
+
+function brandPath(slug: string): string {
+    return `${BRANDS}/${encodeURIComponent(slug)}`
+}
+
+/** JSON body, or multipart when a logo file is attached. */
+function brandBody(input: Partial<BrandInput>): FormData | Partial<BrandInput> {
+    const { logo, ...fields } = input
+    if (!logo) return fields
+    const form = new FormData()
+    for (const [key, value] of Object.entries(fields)) {
+        if (value === undefined || value === null) continue
+        form.append(key, String(value))
+    }
+    form.append('logo', logo)
+    return form
+}
 
 function categoryPath(slug: CategorySlug, suffix = ''): string {
     return `${CATEGORIES}/${encodeURIComponent(slug)}${suffix}`
-}
-
-function templateColorPath(slug: CategorySlug, colorId: string, suffix = ''): string {
-    return categoryPath(slug, `/design-template/colors/${encodeURIComponent(colorId)}${suffix}`)
 }
 
 function productPath(id: string, suffix = ''): string {
@@ -36,6 +49,7 @@ export const AdminService = {
                 search: params.search?.trim(),
                 category: params.category,
                 isActive: params.isActive,
+                brand: params.brand,
                 page: params.page,
                 pageSize: params.pageSize,
             },
@@ -69,30 +83,10 @@ export const AdminService = {
     /** Rejected with 409 while the category still has products, hidden ones included. */
     deleteCategory: (slug: CategorySlug) => apiClient.delete(categoryPath(slug)),
 
-    /** "Plantilla para diseñar": the print size in cm, shared by every garment color. */
-    updateCategoryTemplate: (slug: CategorySlug, input: DesignTemplateInput) =>
-        apiClient.patch<AdminCategory>(categoryPath(slug, '/design-template'), input),
-    /** Adds a garment color with its photo (at most `maxColors`). */
-    addTemplateColor: (slug: CategorySlug, input: TemplateColorCreateInput) => {
-        const form = new FormData()
-        form.append('colorName', input.colorName)
-        form.append('colorHex', input.colorHex)
-        form.append('file', input.file)
-        return apiClient.post<AdminCategory>(categoryPath(slug, '/design-template/colors'), form)
-    },
-    updateTemplateColor: (slug: CategorySlug, colorId: string, input: TemplateColorInput) =>
-        apiClient.patch<AdminCategory>(templateColorPath(slug, colorId), input),
-    /** Replaces a color's photo; its print area stays. */
-    replaceTemplatePhoto: (slug: CategorySlug, colorId: string, file: File) => {
-        const form = new FormData()
-        form.append('file', file)
-        return apiClient.post<AdminCategory>(templateColorPath(slug, colorId, '/photo'), form)
-    },
-    deleteTemplateColor: (slug: CategorySlug, colorId: string) =>
-        apiClient.delete<AdminCategory>(templateColorPath(slug, colorId)),
-    /** `colorIds` must list every color of the category once; the first is the default. */
-    reorderTemplateColors: (slug: CategorySlug, colorIds: string[]) =>
-        apiClient.patch<AdminCategory>(categoryPath(slug, '/design-template/colors/order'), {
-            colorIds,
-        }),
+    getBrands: () => apiClient.get<AdminBrand[]>(BRANDS),
+    createBrand: (input: BrandInput) => apiClient.post<AdminBrand>(BRANDS, brandBody(input)),
+    updateBrand: (slug: string, input: Partial<BrandInput>) =>
+        apiClient.patch<AdminBrand>(brandPath(slug), brandBody(input)),
+    /** Rejected with 409 while the brand still has products. */
+    deleteBrand: (slug: string) => apiClient.delete(brandPath(slug)),
 } as const

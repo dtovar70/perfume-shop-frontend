@@ -48,8 +48,8 @@ export function ContactInfo() {
         <ul className="grid gap-4">
             {channels.map((channel) => (
                 <li key={channel.id} className="h-full">
-                    <Card tone="cream" className="flex h-full items-start gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+                    <Card tone="ivory" className="flex h-full items-start gap-3">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-700">
                             {channel.icon}
                         </span>
                         <div className="min-w-0 space-y-0.5">
@@ -57,7 +57,7 @@ export function ContactInfo() {
                             {channel.href ? (
                                 <a
                                     href={channel.href}
-                                    className="text-sm text-ink-soft transition hover:text-blush-700"
+                                    className="text-sm text-ink-soft transition hover:text-rose-700"
                                 >
                                     {channel.value}
                                 </a>

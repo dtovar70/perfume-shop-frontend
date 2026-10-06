@@ -10,8 +10,16 @@ const TOP_LEVEL_FIELDS = new Set<string>([
     'price',
     'compareAtPrice',
     'stock',
-    'printText',
-    'colorHex',
+    'brandSlug',
+    'gender',
+    'concentration',
+    'volumeMl',
+    'notesTop',
+    'notesHeart',
+    'notesBase',
+    'olfactoryFamily',
+    'isFeatured',
+    'sku',
     'description',
     'tags',
     'isActive',
@@ -20,9 +28,12 @@ const TOP_LEVEL_FIELDS = new Set<string>([
 /** API field path to form field path, or `null` when the form has no matching input. */
 function toFormPath(field: string): FieldPath<ProductFormValues> | null {
     if (TOP_LEVEL_FIELDS.has(field)) return field as FieldPath<ProductFormValues>
-    if (/^variants\.\d+\.(label|priceDelta|colorHex|stock)$/.test(field)) {
+    if (/^variants\.\d+\.(label|priceDelta|volumeMl|stock)$/.test(field)) {
         return field as FieldPath<ProductFormValues>
     }
+    // A single bad note pins the whole tier ("notesTop.2" -> "notesTop").
+    const note = /^(notesTop|notesHeart|notesBase)\.\d+$/.exec(field)
+    if (note) return note[1] as FieldPath<ProductFormValues>
     const highlight = /^highlights\.(\d+)$/.exec(field)
     if (highlight) return `highlights.${Number(highlight[1])}.value`
     return null

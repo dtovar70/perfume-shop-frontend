@@ -48,10 +48,10 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
     ].join('\n')
 
     return (
-        <div className="@container space-y-4 rounded-3xl border border-line bg-cream p-5 shadow-soft">
+        <div className="@container space-y-4 rounded-card border border-line bg-ivory p-5 shadow-soft">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-mint-200 text-ink">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-ink">
                         <Smartphone aria-hidden="true" className="size-5" />
                     </span>
                     <p className="font-display text-lg text-ink">Pago Móvil</p>
@@ -69,7 +69,7 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
                             key={row.label}
                             className={
                                 isAmount
-                                    ? 'flex min-w-0 items-center gap-2 rounded-2xl border-2 border-blush-300 bg-white px-4 py-3 @md:col-span-2'
+                                    ? 'flex min-w-0 items-center gap-2 rounded-2xl border border-rose-300 bg-white px-4 py-3 @md:col-span-2'
                                     : 'flex min-w-0 items-center gap-2 rounded-2xl bg-white px-4 py-2.5'
                             }
                         >

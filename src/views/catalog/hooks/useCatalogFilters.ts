@@ -2,7 +2,14 @@ import { useCallback, useMemo } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 
 import type { ProductQueryParams, SortOption } from '@/@types/common'
-import type { CategorySlug, ProductTag } from '@/@types/product'
+import {
+    CONCENTRATIONS,
+    PRODUCT_GENDERS,
+    type CategorySlug,
+    type Concentration,
+    type ProductGender,
+    type ProductTag,
+} from '@/@types/product'
 import { categoryPath, ROUTES } from '@/constants/route.constant'
 
 export const CATALOG_SEARCH_PARAM = 'search'
@@ -12,19 +19,24 @@ const SORT_PARAM = 'sort'
 const PRICE_PARAM = 'price'
 const TAGS_PARAM = 'tags'
 const PAGE_PARAM = 'page'
+/** Repeatable: `?brand=dior&brand=lattafa`. */
+export const BRAND_PARAM = 'brand'
+const GENDER_PARAM = 'gender'
+const CONCENTRATION_PARAM = 'concentration'
+const FAMILY_PARAM = 'family'
 
 export const SORT_OPTIONS = [
     'relevance',
     'price-asc',
     'price-desc',
     'newest',
+    'name-asc',
 ] as const satisfies readonly SortOption[]
 
 export const PRODUCT_TAGS = [
     'nuevo',
     'bestseller',
     'oferta',
-    'personalizable',
 ] as const satisfies readonly ProductTag[]
 
 export type PriceBracketId = 'all' | 'under-10' | '10-to-20' | 'over-20'
@@ -51,6 +63,10 @@ export interface CatalogFilters {
     sort: SortOption
     priceBracket: PriceBracketId
     tags: ProductTag[]
+    brands: string[]
+    gender?: ProductGender
+    concentration?: Concentration
+    family?: string
     page: number
 }
 
@@ -63,6 +79,12 @@ export interface UseCatalogFiltersResult {
     setSort: (sort: SortOption) => void
     setPriceBracket: (bracket: PriceBracketId) => void
     toggleTag: (tag: ProductTag) => void
+    toggleBrand: (slug: string) => void
+    setGender: (gender?: ProductGender) => void
+    setConcentration: (concentration?: Concentration) => void
+    setFamily: (family?: string) => void
+    /** Filters chosen besides the category, search and sort (drives the "Filtros" badge). */
+    activeFilterCount: number
     setPage: (page: number) => void
     clearFilters: () => void
 }
@@ -75,6 +97,9 @@ function parseFilters(categoryParam: string | undefined, params: URLSearchParams
     const rawSort = params.get(SORT_PARAM)
     const rawPrice = params.get(PRICE_PARAM)
     const rawPage = Number.parseInt(params.get(PAGE_PARAM) ?? '1', 10)
+    const rawGender = params.get(GENDER_PARAM)
+    const rawConcentration = params.get(CONCENTRATION_PARAM)
+    const family = params.get(FAMILY_PARAM)?.trim()
 
     return {
         // Categories are dynamic: any slug is kept, and the view decides whether it exists.
@@ -85,6 +110,10 @@ function parseFilters(categoryParam: string | undefined, params: URLSearchParams
         tags: (params.get(TAGS_PARAM)?.split(',') ?? []).filter((tag): tag is ProductTag =>
             isMember(PRODUCT_TAGS, tag),
         ),
+        brands: [...new Set(params.getAll(BRAND_PARAM).filter(Boolean))],
+        gender: isMember(PRODUCT_GENDERS, rawGender) ? rawGender : undefined,
+        concentration: isMember(CONCENTRATIONS, rawConcentration) ? rawConcentration : undefined,
+        family: family || undefined,
         page: Number.isFinite(rawPage) && rawPage > 1 ? rawPage : 1,
     }
 }
@@ -96,6 +125,10 @@ function serializeFilters(filters: CatalogFilters): string {
     if (filters.sort !== 'relevance') params.set(SORT_PARAM, filters.sort)
     if (filters.priceBracket !== 'all') params.set(PRICE_PARAM, filters.priceBracket)
     if (filters.tags.length > 0) params.set(TAGS_PARAM, filters.tags.join(','))
+    for (const brand of filters.brands) params.append(BRAND_PARAM, brand)
+    if (filters.gender) params.set(GENDER_PARAM, filters.gender)
+    if (filters.concentration) params.set(CONCENTRATION_PARAM, filters.concentration)
+    if (filters.family) params.set(FAMILY_PARAM, filters.family)
     if (filters.page > 1) params.set(PAGE_PARAM, String(filters.page))
 
     const query = params.toString()
@@ -112,6 +145,10 @@ function toQueryParams(filters: CatalogFilters): ProductQueryParams {
         minPrice: bracket?.minPrice,
         maxPrice: bracket?.maxPrice,
         tags: filters.tags.length > 0 ? filters.tags : undefined,
+        brands: filters.brands.length > 0 ? filters.brands : undefined,
+        gender: filters.gender,
+        concentration: filters.concentration,
+        family: filters.family,
         page: filters.page,
         pageSize: CATALOG_PAGE_SIZE,
     }
@@ -143,15 +180,23 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
         [filters, navigate],
     )
 
+    const activeFilterCount =
+        (filters.priceBracket !== 'all' ? 1 : 0) +
+        filters.tags.length +
+        filters.brands.length +
+        (filters.gender ? 1 : 0) +
+        (filters.concentration ? 1 : 0) +
+        (filters.family ? 1 : 0)
+
     return {
         filters,
         queryParams: toQueryParams(filters),
+        activeFilterCount,
         isFiltered:
             filters.category !== undefined ||
             filters.search !== '' ||
             filters.sort !== 'relevance' ||
-            filters.priceBracket !== 'all' ||
-            filters.tags.length > 0,
+            activeFilterCount > 0,
         setCategory: (category) => applyFilters({ category, page: 1 }),
         setSearch: (search) => applyFilters({ search, page: 1 }),
         setSort: (sort) => applyFilters({ sort, page: 1 }),
@@ -163,6 +208,16 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
                     : [...filters.tags, tag],
                 page: 1,
             }),
+        toggleBrand: (slug) =>
+            applyFilters({
+                brands: filters.brands.includes(slug)
+                    ? filters.brands.filter((current) => current !== slug)
+                    : [...filters.brands, slug],
+                page: 1,
+            }),
+        setGender: (gender) => applyFilters({ gender, page: 1 }),
+        setConcentration: (concentration) => applyFilters({ concentration, page: 1 }),
+        setFamily: (family) => applyFilters({ family, page: 1 }),
         setPage: (page) => applyFilters({ page }),
         clearFilters: () => void navigate(ROUTES.catalog, { replace: true }),
     }

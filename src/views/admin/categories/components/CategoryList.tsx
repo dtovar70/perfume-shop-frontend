@@ -8,7 +8,7 @@ import { moveItem } from '@/utils/moveItem'
 import { CategoryRow } from '@/views/admin/categories/components/CategoryRow'
 import { useReorderCategories } from '@/views/admin/hooks/useAdminCategories'
 
-const MENU_LIMIT = appConfig.categoryLinkLimits.header
+const MENU_LIMIT = appConfig.categoryLinkLimits.home
 
 export interface CategoryListProps {
     categories: AdminCategory[]
@@ -57,7 +57,7 @@ export function CategoryList({ categories, onDelete }: CategoryListProps) {
         <div className="space-y-3">
             <p className="text-sm text-ink-soft">
                 Arrastra las categorías o usa las flechas para cambiar el orden. Las primeras{' '}
-                {MENU_LIMIT} aparecen en el menú superior de la tienda.
+                {MENU_LIMIT} se destacan en la página de inicio; todas aparecen en el menú «Perfumes».
             </p>
 
             {reorder.isError ? (

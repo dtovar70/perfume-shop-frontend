@@ -21,9 +21,9 @@ export function PaymentPreviewCard({ payment }: PaymentPreviewCardProps) {
     return (
         <div className="space-y-1.5">
             <p className="text-xs font-semibold text-ink-soft">Así lo verá el cliente</p>
-            <div className="space-y-4 rounded-3xl border border-line bg-cream p-5 shadow-soft">
+            <div className="space-y-4 rounded-card border border-line bg-ivory p-5 shadow-soft">
                 <div className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-mint-200 text-ink">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-ink">
                         <Smartphone aria-hidden="true" className="size-5" />
                     </span>
                     <div className="min-w-0">

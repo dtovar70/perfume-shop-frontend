@@ -1,152 +1,136 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router'
 
-import type { Product, ProductTag } from '@/@types/product'
-import { AddToCartButton } from '@/components/shared/AddToCartButton'
+import type { Product } from '@/@types/product'
+import { BsApproximation } from '@/components/shared/BsApproximation'
+import { CardCartControl } from '@/components/shared/CardCartControl'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { ProductMedia } from '@/components/shared/ProductMedia'
-import { categorySurface } from '@/components/shared/illustration/artwork'
-import { Badge, Card, type BadgeProps } from '@/components/ui'
+import { Sticker } from '@/components/ui'
+import { formatPerfumeSpec } from '@/constants/product.constant'
 import { productPath } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
 import { priceRange } from '@/utils/productPrice'
-import { defaultVariant as pickDefaultVariant } from '@/utils/productStock'
-import { useCategory } from '@/views/catalog/hooks/useCategories'
+import { defaultVariant as pickDefaultVariant, stockOf } from '@/utils/productStock'
 import { productDetailQueryOptions } from '@/views/product/hooks/useProduct'
-import { PRODUCT_TAG_LABELS } from '@/constants/product.constant'
-
-const TAG_TONE: Record<ProductTag, NonNullable<BadgeProps['tone']>> = {
-    nuevo: 'solid',
-    bestseller: 'butter',
-    oferta: 'sky',
-    personalizable: 'mint',
-}
-
-const VISIBLE_TAGS = 2
-
-/** Which tags win the card's limited space: a deal first, then news, then the rest. */
-const TAG_PRIORITY: readonly ProductTag[] = ['oferta', 'nuevo', 'bestseller', 'personalizable']
 
 export interface ProductCardProps {
     product: Product
+    /**
+     * Layout of the card. Only `grid` exists today; `list` (one row per product) is the seam for
+     * the catalog's grid/list toggle.
+     */
+    variant?: 'grid'
+    /** The first row of a page: its photos load eagerly. */
+    priority?: boolean
+    className?: string
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+/** "-25%" when the product shows a "before" price; null otherwise. */
+function discountPercent(price: number, compareAt: number | undefined): number | null {
+    if (!compareAt || compareAt <= price) return null
+    return Math.round((1 - price / compareAt) * 100)
+}
+
+/**
+ * The one product card used everywhere (catalog, home rails, related products). The whole card
+ * is a link through the name's stretched `::after`; the cart control is a sibling above it, so
+ * there are no nested interactive elements.
+ */
+export function ProductCard({ product, priority = false, className }: ProductCardProps) {
     const queryClient = useQueryClient()
-    // First version in stock; when all are sold out the button shows "Agotado".
+    // First version in stock; when all are sold out the card shows "Agotado".
     const defaultVariant = pickDefaultVariant(product)
     const { min: fromPrice, max: toPrice } = priceRange(product)
-    const category = useCategory(product.category)
-    const accentColor = category?.colorHex
-    const surface = categorySurface(product.category, accentColor ?? product.colorHex)
     const coverImage = product.images.at(0)
+    const isSoldOut = stockOf(product, defaultVariant) <= 0
+    const discount = discountPercent(fromPrice, product.compareAtPrice)
+    const spec = formatPerfumeSpec(
+        product.concentration,
+        defaultVariant?.volumeMl ?? product.volumeMl,
+    )
 
     const prefetchDetail = () => {
         void queryClient.prefetchQuery(productDetailQueryOptions(product.slug))
     }
 
+    const badges: { key: string; label: string; tone: 'blush' | 'butter' | 'sky' | 'lilac' }[] =
+        []
+    if (isSoldOut) badges.push({ key: 'agotado', label: 'Agotado', tone: 'sky' })
+    if (discount) badges.push({ key: 'oferta', label: `Oferta -${discount}%`, tone: 'blush' })
+    else if (product.tags.includes('oferta')) {
+        badges.push({ key: 'oferta', label: 'Oferta', tone: 'blush' })
+    }
+    if (product.tags.includes('nuevo')) badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'butter' })
+
     return (
-        <Card
-            padding="none"
-            interactive
+        <article
             onMouseEnter={prefetchDetail}
             onFocus={prefetchDetail}
-            className="group relative flex h-full flex-col overflow-hidden"
+            className={cn('group relative flex h-full flex-col', className)}
         >
-            {/*
-              Fixed square frame. Photos (usually shot on white) get a white surface and are
-              contained below the badges, uncropped; drawings keep the category surface.
-            */}
-            <div
-                className={cn(
-                    'relative flex aspect-square items-center justify-center overflow-hidden p-3 sm:p-6',
-                    coverImage ? 'bg-white' : surface.className,
-                )}
-                style={coverImage ? undefined : surface.style}
-            >
-                {/*
-                  Two-column phone grid: one tag only, on a single line, so it never covers the
-                  photo; wider cards show two.
-                */}
-                <ul className="absolute top-2.5 right-2.5 left-2.5 z-10 flex gap-1 overflow-hidden sm:top-4 sm:right-4 sm:left-4 sm:flex-wrap sm:gap-1.5">
-                    {[...product.tags]
-                        .sort((a, b) => TAG_PRIORITY.indexOf(a) - TAG_PRIORITY.indexOf(b))
-                        .slice(0, VISIBLE_TAGS)
-                        .map((tag, index) => (
-                            <li key={tag} className={cn('shrink-0', index > 0 && 'max-sm:hidden')}>
-                                <Badge tone={TAG_TONE[tag]} size="sm">
-                                    {PRODUCT_TAG_LABELS[tag]}
-                                </Badge>
-                            </li>
-                        ))}
-                </ul>
-
+            <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line/70 bg-rose-50 transition-shadow duration-500 group-hover:shadow-lift">
                 <ProductMedia
-                    category={product.category}
-                    color={product.colorHex}
-                    printText={product.printText}
-                    accentColor={accentColor}
                     image={coverImage}
                     fallbackAlt={product.name}
-                    size="md"
-                    sizes="(min-width: 1280px) 18rem, (min-width: 640px) 33vw, 50vw"
+                    brandName={product.brand?.name}
+                    loading={priority ? 'eager' : 'lazy'}
+                    sizes="(min-width: 1280px) 20rem, (min-width: 768px) 30vw, 50vw"
                     className={cn(
-                        'transition-transform duration-300 motion-reduce:transform-none',
-                        coverImage
-                            ? 'absolute inset-0 size-full max-w-none rounded-none object-contain px-3 pt-10 pb-3 group-hover:scale-105 sm:px-6 sm:pt-14 sm:pb-6'
-                            : 'group-hover:-translate-y-1',
+                        'transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transform-none',
+                        isSoldOut && 'opacity-60 grayscale-[35%]',
                     )}
                 />
+
+                {badges.length > 0 ? (
+                    <ul className="pointer-events-none absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5 sm:top-3 sm:left-3">
+                        {badges.slice(0, 2).map((badge) => (
+                            <li key={badge.key}>
+                                <Sticker tone={badge.tone} size="sm">
+                                    {badge.label}
+                                </Sticker>
+                            </li>
+                        ))}
+                    </ul>
+                ) : null}
+
+                {defaultVariant && !isSoldOut ? (
+                    <CardCartControl
+                        product={product}
+                        variant={defaultVariant}
+                        className="absolute right-2.5 bottom-2.5 sm:right-3 sm:bottom-3"
+                    />
+                ) : null}
             </div>
 
-            <div className="flex flex-1 flex-col gap-1.5 p-3 sm:gap-2 sm:p-5">
-                {category ? (
-                    <p className="truncate text-[11px] font-semibold tracking-[0.12em] text-blush-700 uppercase sm:text-xs sm:tracking-[0.15em]">
-                        {category.name}
+            <div className="flex flex-1 flex-col gap-1 px-0.5 pt-3.5 sm:pt-4">
+                {product.brand ? (
+                    <p className="truncate text-[10px] font-bold tracking-[0.2em] text-gold-700 uppercase sm:text-[11px]">
+                        {product.brand.name}
                     </p>
                 ) : null}
 
-                <h3 className="font-display text-base leading-snug text-ink sm:text-lg">
+                <h3 className="line-clamp-2 font-display text-lg leading-tight font-semibold text-ink sm:text-xl">
                     <Link
                         to={productPath(product.slug)}
-                        className="rounded-sm after:absolute after:inset-0 after:content-['']"
+                        className="rounded-sm transition-colors after:absolute after:inset-0 after:rounded-card after:content-[''] group-hover:text-rose-700"
                     >
                         {product.name}
                     </Link>
                 </h3>
 
-                {product.description ? (
-                    <p className="line-clamp-2 text-xs text-ink-soft sm:text-sm">
-                        {product.description}
-                    </p>
-                ) : null}
+                {spec ? <p className="text-xs text-ink-soft">{spec}</p> : null}
 
-                {/*
-                  Price and button share a row only when the card is wide enough; a narrow card
-                  (three columns next to the filters) stacks them so the button never covers
-                  the price.
-                */}
-                <div className="@container mt-auto pt-2 sm:pt-3">
-                    <div className="flex flex-col gap-2 sm:gap-3 @[18rem]:flex-row @[18rem]:items-end @[18rem]:justify-between">
-                        <PriceTag
-                            price={fromPrice}
-                            isFromPrice={fromPrice !== toPrice}
-                            compareAtPrice={product.compareAtPrice}
-                            className="min-w-0"
-                        />
-
-                        {defaultVariant ? (
-                            <AddToCartButton
-                                product={product}
-                                variantId={defaultVariant.id}
-                                size="sm"
-                                // Narrow (two-column phone) cards let a long label wrap instead of overflowing.
-                                className="relative z-10 h-auto min-h-9 w-full shrink-0 py-1.5 leading-tight whitespace-normal @[18rem]:w-auto pointer-coarse:min-h-11"
-                            />
-                        ) : null}
-                    </div>
+                <div className="mt-auto space-y-0.5 pt-2">
+                    <PriceTag
+                        price={fromPrice}
+                        isFromPrice={fromPrice !== toPrice}
+                        compareAtPrice={product.compareAtPrice}
+                        size="sm"
+                    />
+                    <BsApproximation usd={fromPrice} compact />
                 </div>
             </div>
-        </Card>
+        </article>
     )
 }

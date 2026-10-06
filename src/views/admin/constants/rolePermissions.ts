@@ -54,6 +54,13 @@ export const ROLE_CAPABILITIES: readonly RoleCapabilityGroup[] = [
         ],
     },
     {
+        area: 'Marcas',
+        capabilities: [
+            { action: 'Crear y editar marcas y sus logos', roles: BOTH },
+            { action: 'Eliminar marcas', roles: ADMIN_ONLY },
+        ],
+    },
+    {
         area: 'Contenido',
         capabilities: [
             { action: 'Editar los textos e imágenes de la tienda', roles: BOTH },

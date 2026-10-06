@@ -95,7 +95,7 @@ export function ConfirmDialog({
                 if (event.target === event.currentTarget) requestClose()
             }}
             className={cn(
-                'fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-hidden rounded-3xl bg-cream p-0 text-ink shadow-lift backdrop:bg-ink/40 backdrop:backdrop-blur-sm',
+                'fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-hidden rounded-card bg-ivory p-0 text-ink shadow-lift backdrop:bg-ink/40 backdrop:backdrop-blur-sm',
                 size === 'lg' ? 'max-w-2xl' : 'max-w-md',
             )}
         >

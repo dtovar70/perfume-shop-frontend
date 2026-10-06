@@ -1,23 +1,18 @@
 import { useState } from 'react'
 import { cva } from 'class-variance-authority'
 
-import type { Product, ProductVariant } from '@/@types/product'
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
+import type { Product } from '@/@types/product'
 import { ProductMedia } from '@/components/shared/ProductMedia'
-import { categorySurface } from '@/components/shared/illustration/artwork'
 import { Sticker } from '@/components/ui'
 import { cldSrcSet, cldUrl } from '@/utils/cloudinary'
-import { cn } from '@/utils/cn'
-import { isVariantSoldOut } from '@/utils/productStock'
-import { useCategory } from '@/views/catalog/hooks/useCategories'
 
 const thumbVariants = cva(
-    'flex size-20 items-center justify-center rounded-2xl border-2 bg-white p-1.5 transition duration-200',
+    'relative flex aspect-[4/5] w-16 shrink-0 snap-start overflow-hidden rounded-xl border bg-white transition duration-200 sm:w-20',
     {
         variants: {
             isSelected: {
-                true: 'border-blush-400',
-                false: 'border-line hover:border-blush-200',
+                true: 'border-rose-700 ring-1 ring-rose-700',
+                false: 'border-line opacity-80 hover:border-gold-400 hover:opacity-100',
             },
         },
         defaultVariants: { isSelected: false },
@@ -26,116 +21,73 @@ const thumbVariants = cva(
 
 export interface ProductGalleryProps {
     product: Product
-    selectedVariant?: ProductVariant
-    onSelectVariant: (variantId: string) => void
 }
 
-function resolveColor(product: Product, variant?: ProductVariant): string {
-    return variant?.colorHex ?? product.colorHex
-}
-
-export function ProductGallery({ product, selectedVariant, onSelectVariant }: ProductGalleryProps) {
-    const hasDiscount =
-        product.compareAtPrice !== undefined && product.compareAtPrice > product.price
+/** Main photo (whole bottle, `object-contain`) with thumbnails; the placeholder without photos. */
+export function ProductGallery({ product }: ProductGalleryProps) {
     const [chosenImageId, setChosenImageId] = useState<string | null>(null)
-    const hasPhotos = product.images.length > 0
     const activeImage =
         product.images.find((image) => image.id === chosenImageId) ?? product.images.at(0)
-    const accentColor = useCategory(product.category)?.colorHex
-    const surface = categorySurface(product.category, accentColor ?? product.colorHex)
+    const hasDiscount =
+        product.compareAtPrice !== undefined && product.compareAtPrice > product.price
 
     return (
-        <div className="space-y-4">
-            <div
-                className={cn(
-                    'relative flex items-center justify-center rounded-blob border border-line p-8 sm:p-12',
-                    surface.className,
-                )}
-                style={surface.style}
-            >
-                {hasDiscount ? (
-                    <Sticker tone="blush" size="lg" className="absolute top-5 left-5 shadow-lift">
-                        ¡Oferta!
-                    </Sticker>
-                ) : null}
-
+        <div className="space-y-3 sm:space-y-4">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line bg-white sm:aspect-square lg:aspect-[4/5]">
                 <ProductMedia
-                    category={product.category}
-                    color={resolveColor(product, selectedVariant)}
-                    printText={product.printText}
-                    accentColor={accentColor}
                     image={activeImage}
                     fallbackAlt={product.name}
+                    brandName={product.brand?.name}
                     size="lg"
+                    fit="contain"
                     loading="eager"
                     fetchPriority="high"
-                    sizes="(min-width: 480px) 24rem, calc(100vw - 6rem)"
-                    className="max-w-sm"
+                    sizes="(min-width: 1024px) 40rem, 100vw"
+                    className={activeImage ? 'p-4 sm:p-8' : undefined}
                 />
+
+                {hasDiscount ? (
+                    <Sticker tone="blush" size="md" className="absolute top-4 left-4">
+                        Oferta
+                    </Sticker>
+                ) : product.tags.includes('nuevo') ? (
+                    <Sticker tone="butter" size="md" className="absolute top-4 left-4">
+                        Nuevo
+                    </Sticker>
+                ) : null}
             </div>
 
-            {hasPhotos ? (
-                product.images.length > 1 ? (
-                    <ul className="flex flex-wrap gap-3">
-                        {product.images.map((image, index) => (
-                            <li key={image.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => setChosenImageId(image.id)}
-                                    aria-pressed={image.id === activeImage?.id}
-                                    aria-label={`Ver foto ${index + 1} de ${product.images.length}`}
-                                    className={thumbVariants({
-                                        isSelected: image.id === activeImage?.id,
-                                    })}
-                                >
-                                    <img
-                                        src={cldUrl(image.url, 160)}
-                                        srcSet={cldSrcSet(image.url, [80, 160, 240])}
-                                        sizes="68px"
-                                        alt=""
-                                        loading="lazy"
-                                        decoding="async"
-                                        draggable={false}
-                                        className="size-full rounded-xl object-cover"
-                                    />
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                ) : null
-            ) : (
-                <ul className="flex flex-wrap gap-3">
-                    {product.variants.map((variant) => (
-                        <li key={variant.id}>
+            {product.images.length > 1 ? (
+                <ul
+                    aria-label="Fotos del producto"
+                    className="flex snap-x scrollbar-none gap-2.5 overflow-x-auto pb-1"
+                >
+                    {product.images.map((image, index) => (
+                        <li key={image.id}>
                             <button
                                 type="button"
-                                onClick={() => onSelectVariant(variant.id)}
-                                disabled={isVariantSoldOut(variant)}
-                                aria-pressed={variant.id === selectedVariant?.id}
-                                aria-label={
-                                    isVariantSoldOut(variant)
-                                        ? `${variant.label} (agotada)`
-                                        : `Ver ${variant.label}`
-                                }
-                                className={cn(
-                                    thumbVariants({
-                                        isSelected: variant.id === selectedVariant?.id,
-                                    }),
-                                    'disabled:cursor-not-allowed disabled:opacity-40',
-                                )}
+                                onClick={() => setChosenImageId(image.id)}
+                                aria-pressed={image.id === activeImage?.id}
+                                aria-label={`Ver foto ${index + 1} de ${product.images.length}`}
+                                className={thumbVariants({
+                                    isSelected: image.id === activeImage?.id,
+                                })}
                             >
-                                <ProductIllustration
-                                    category={product.category}
-                                    color={resolveColor(product, variant)}
-                                    printText={product.printText}
-                                    accentColor={accentColor}
-                                    size="lg"
+                                <img
+                                    src={cldUrl(image.url, 160)}
+                                    srcSet={cldSrcSet(image.url, [80, 160, 240])}
+                                    sizes="80px"
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                    draggable={false}
+                                    className="size-full object-cover"
                                 />
                             </button>
                         </li>
                     ))}
                 </ul>
-            )}
+            ) : null}
         </div>
     )
 }

@@ -13,7 +13,7 @@ export const ORDER_PROGRESS: readonly OrderStatus[] = [
 
 export const DELIVERY_METHOD_LABELS = {
     delivery: 'Envío a domicilio',
-    pickup: 'Retiro en el taller',
+    pickup: 'Retiro en tienda',
 } as const
 
 /** While a proof is being checked the order page refreshes itself this often. */

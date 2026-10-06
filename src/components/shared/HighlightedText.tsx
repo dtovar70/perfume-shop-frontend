@@ -9,11 +9,11 @@ export interface HighlightedTextProps {
     className?: string
 }
 
-/** Paints the *marked* words in blush, the brand's signature headline accent. */
+/** Sets the *marked* words in rose italic, the brand's signature headline accent. */
 export function HighlightedText({ text, className }: HighlightedTextProps) {
     return splitHighlights(text).map((segment, index) =>
         segment.highlighted ? (
-            <span key={index} className={cn('text-blush-500', className)}>
+            <span key={index} className={cn('text-rose-700 italic', className)}>
                 {segment.text}
             </span>
         ) : (

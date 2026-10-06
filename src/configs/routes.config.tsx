@@ -8,6 +8,8 @@ import { ADMIN_ROUTES, DEV_ROUTES, ROUTES } from '@/constants/route.constant'
 import { LoaderPreviewView } from '@/views/others/LoaderPreviewView'
 import {
     AboutView,
+    BrandsView,
+    AdminBrandsView,
     AdminCatalogsView,
     AdminCategoriesView,
     AdminContentView,
@@ -63,6 +65,7 @@ export const routes: RouteObject[] = [
             { path: ROUTES.order, element: withSuspense(<OrderView />) },
             { path: ROUTES.myOrders, element: withSuspense(<MyOrdersView />) },
             { path: ROUTES.orderLookup, element: withSuspense(<OrderLookupView />) },
+            { path: ROUTES.brands, element: withSuspense(<BrandsView />) },
             { path: ROUTES.about, element: withSuspense(<AboutView />) },
             { path: ROUTES.contact, element: withSuspense(<ContactView />) },
             ...devRoutes,
@@ -96,6 +99,7 @@ export const routes: RouteObject[] = [
             { path: ADMIN_ROUTES.productNew, element: withSuspense(<AdminProductCreateView />) },
             { path: ADMIN_ROUTES.productEdit, element: withSuspense(<AdminProductEditView />) },
             { path: ADMIN_ROUTES.categories, element: withSuspense(<AdminCategoriesView />) },
+            { path: ADMIN_ROUTES.brands, element: withSuspense(<AdminBrandsView />) },
             { path: ADMIN_ROUTES.content, element: withSuspense(<AdminContentView />) },
             { path: ADMIN_ROUTES.catalogs, element: withSuspense(<AdminCatalogsView />) },
             { path: ADMIN_ROUTES.telegram, element: withSuspense(<AdminTelegramView />) },

@@ -77,9 +77,9 @@ export function GeneralSection(props: SectionFormProps<'general'>) {
                     maxLength={CONTENT_LIMITS.metaDescription}
                     {...register('metaDescription')}
                 />
-                <div className="rounded-2xl border-2 border-dashed border-line bg-cream px-4 py-3">
+                <div className="rounded-2xl border border-dashed border-line bg-ivory px-4 py-3">
                     <p className="text-xs font-semibold text-ink-soft">Vista previa en Google</p>
-                    <p className="font-display text-base break-words text-sky-700">{pageTitle}</p>
+                    <p className="font-display text-base break-words text-gold-700">{pageTitle}</p>
                     <p className="text-sm break-words text-ink-soft">{fill(metaDescription)}</p>
                 </div>
             </FieldGroup>

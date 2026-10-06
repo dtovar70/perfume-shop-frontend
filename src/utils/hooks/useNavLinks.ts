@@ -10,11 +10,7 @@ export function useCategoryLinks(limit?: number): NavLink[] {
         .map((category) => ({ label: category.name, to: categoryPath(category.slug) }))
 }
 
-/** Main navigation with the live categories slotted in after "Catálogo". */
-export function useNavLinks(categoryLimit?: number): NavLink[] {
-    return [
-        ...appConfig.navLinks.before,
-        ...useCategoryLinks(categoryLimit),
-        ...appConfig.navLinks.after,
-    ]
+/** Main navigation: "Inicio", then the "Perfumes" menu (rendered apart), then the rest. */
+export function useNavLinks(): { before: NavLink[]; after: NavLink[] } {
+    return { before: appConfig.navLinks.before, after: appConfig.navLinks.after }
 }

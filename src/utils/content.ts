@@ -127,10 +127,11 @@ const COUNT_WORDS = [
     'Diez',
 ]
 
-/** What `{categorias}` renders: "Tres formatos", "Un formato", "Varios formatos". */
+/** What `{categorias}` renders: "Tres colecciones", "Una colección", "Varias colecciones". */
 export function categoryCountPhrase(count: number | undefined): string {
-    if (count === undefined || count === 0) return 'Varios formatos'
-    return `${COUNT_WORDS[count - 1] ?? 'Varios'} ${count === 1 ? 'formato' : 'formatos'}`
+    if (count === undefined || count === 0) return 'Varias colecciones'
+    if (count === 1) return 'Una colección'
+    return `${COUNT_WORDS[count - 1] ?? 'Varias'} colecciones`
 }
 
 /** The wordmark is set on two lines: every word but the last, then the last one. */
@@ -165,7 +166,7 @@ export function whatsappUrl(phone: string, message?: string): string {
 }
 
 export interface SocialLink {
-    label: string
+    label: 'Instagram' | 'TikTok' | 'WhatsApp'
     handle: string
     href: string
 }

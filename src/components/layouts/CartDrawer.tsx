@@ -1,23 +1,29 @@
 import { ShoppingBag, Trash2 } from 'lucide-react'
 import { Link } from 'react-router'
 
+import { CartLineMedia } from '@/components/shared/CartLineMedia'
 import { CartLineStockNotice } from '@/components/shared/CartLineStockNotice'
-import { CartPersonalization } from '@/components/shared/CartPersonalization'
+import { CheckoutCta } from '@/components/shared/CheckoutCta'
 import { ClearCartButton } from '@/components/shared/ClearCartButton'
 import { FreeShippingProgress } from '@/components/shared/FreeShippingProgress'
-import { CartLineMedia } from '@/components/shared/CartLineMedia'
-import { DesignBadge, GarmentColorNote } from '@/components/shared/DesignBadge'
-import { Button, ButtonLink, Drawer, QuantityStepper } from '@/components/ui'
-import { MAX_LINE_QUANTITY, useCartActions, useCartItems, useCartSubtotal } from '@/store/cartStore'
+import { ButtonLink, Drawer, QuantityStepper } from '@/components/ui'
 import { productPath, ROUTES } from '@/constants/route.constant'
+import {
+    MAX_LINE_QUANTITY,
+    useCartActions,
+    useCartCount,
+    useCartItems,
+    useCartSubtotal,
+} from '@/store/cartStore'
 import { useCartDrawer } from '@/store/uiStore'
-import { formatCurrency } from '@/utils/formatCurrency'
 import { CART_STOCK_BLOCKED_MESSAGE } from '@/utils/cartAvailability'
+import { formatCurrency } from '@/utils/formatCurrency'
 import { useCartAvailability } from '@/utils/hooks/useCartAvailability'
 
 export function CartDrawer() {
     const { isOpen, close } = useCartDrawer()
     const items = useCartItems()
+    const count = useCartCount()
     const subtotal = useCartSubtotal()
     const { updateQuantity, removeItem } = useCartActions()
     const availability = useCartAvailability(items, isOpen)
@@ -26,72 +32,61 @@ export function CartDrawer() {
         <Drawer
             isOpen={isOpen}
             onClose={close}
-            title="Tu carrito"
+            title="Carrito de compras"
+            size="sm"
+            closeStyle="back"
             footer={
                 items.length > 0 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <FreeShippingProgress subtotal={subtotal} />
-                        <div className="flex items-baseline justify-between">
-                            <span className="text-sm text-ink-soft">Subtotal</span>
-                            <span className="font-display text-xl text-ink">
-                                {formatCurrency(subtotal)}
-                            </span>
-                        </div>
-                        <div className="grid gap-2">
-                            {availability.hasIssues ? (
-                                <>
-                                    <p
-                                        role="status"
-                                        className="text-xs font-semibold text-blush-700"
-                                    >
-                                        {CART_STOCK_BLOCKED_MESSAGE}
-                                    </p>
-                                    <Button fullWidth disabled>
-                                        Ir al checkout
-                                    </Button>
-                                </>
-                            ) : (
-                                <ButtonLink to={ROUTES.checkout} onClick={close} fullWidth>
-                                    Ir al checkout
-                                </ButtonLink>
-                            )}
-                            <ButtonLink
-                                to={ROUTES.cart}
-                                onClick={close}
-                                variant="secondary"
-                                fullWidth
-                            >
-                                Ver el carrito
-                            </ButtonLink>
-                        </div>
+                        {availability.hasIssues ? (
+                            <p role="status" className="text-xs font-semibold text-rose-700">
+                                {CART_STOCK_BLOCKED_MESSAGE}
+                            </p>
+                        ) : null}
+                        <CheckoutCta
+                            to={ROUTES.checkout}
+                            label="Finalizar compra"
+                            count={count}
+                            total={subtotal}
+                            disabled={availability.hasIssues}
+                            onClick={close}
+                        />
+                        <Link
+                            to={ROUTES.cart}
+                            onClick={close}
+                            className="flex min-h-11 items-center justify-center text-sm font-semibold text-ink-soft underline-offset-4 transition hover:text-rose-700 hover:underline"
+                        >
+                            Ver el carrito completo
+                        </Link>
                     </div>
                 ) : null
             }
         >
             {items.length === 0 ? (
-                <div className="flex min-h-full flex-col items-center justify-center gap-4 py-8 text-center">
+                <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center">
                     <span
                         aria-hidden="true"
-                        className="flex size-16 items-center justify-center rounded-full bg-blush-100 text-blush-500"
+                        className="gradient-blush flex size-20 items-center justify-center rounded-full text-rose-700 ring-1 ring-gold-200"
                     >
-                        <ShoppingBag className="size-7" />
+                        <ShoppingBag className="size-8" strokeWidth={1.4} />
                     </span>
-                    <p className="font-display text-lg">Tu carrito está vacío</p>
+                    <p className="font-display text-2xl font-semibold">Tu carrito está vacío</p>
                     <p className="max-w-xs text-sm text-ink-soft">
-                        Elige una taza, una franela o un llavero y personalízalo a tu gusto.
+                        Agrega algunos perfumes para comenzar.
                     </p>
                     <ButtonLink to={ROUTES.catalog} onClick={close}>
-                        Explorar catálogo
+                        Explorar perfumes
                     </ButtonLink>
                 </div>
             ) : (
                 <>
-                    {items.length > 1 ? (
-                        <div className="flex items-center justify-between gap-3 pb-2">
-                            <span className="text-sm text-ink-soft">{items.length} productos</span>
-                            <ClearCartButton itemCount={items.length} />
-                        </div>
-                    ) : null}
+                    <div className="-mt-2 flex items-center justify-between gap-3">
+                        <span className="text-sm text-ink-soft">
+                            {count} {count === 1 ? 'artículo' : 'artículos'}
+                        </span>
+                        <ClearCartButton itemCount={items.length} className="-mr-2" />
+                    </div>
 
                     <ul className="divide-y divide-line">
                         {items.map((item) => {
@@ -99,30 +94,24 @@ export function CartDrawer() {
                             const max = stock?.max ?? MAX_LINE_QUANTITY
                             return (
                                 <li key={item.lineId} className="flex gap-3 py-4">
-                                    <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-white p-1.5">
-                                        <CartLineMedia item={item} size="sm" />
-                                    </div>
+                                    <CartLineMedia item={item} size="sm" />
 
-                                    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                                        {item.brandName ? (
+                                            <p className="truncate text-[10px] font-bold tracking-[0.2em] text-gold-700 uppercase">
+                                                {item.brandName}
+                                            </p>
+                                        ) : null}
                                         <Link
                                             to={productPath(item.slug)}
                                             onClick={close}
-                                            className="font-display text-sm leading-snug text-ink"
+                                            className="font-display text-lg leading-tight font-semibold text-ink transition hover:text-rose-700"
                                         >
                                             {item.name}
                                         </Link>
                                         <p className="text-xs text-ink-soft">{item.variantLabel}</p>
-                                        {item.design ? <DesignBadge /> : null}
-                                        {item.design?.color ? (
-                                            <GarmentColorNote color={item.design.color} />
-                                        ) : null}
-                                        <CartPersonalization
-                                            item={item}
-                                            size="sm"
-                                            editable={false}
-                                        />
 
-                                        <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
                                             <QuantityStepper
                                                 value={item.quantity}
                                                 max={Math.max(max, 1)}
@@ -131,7 +120,7 @@ export function CartDrawer() {
                                                     updateQuantity(item.lineId, quantity, max)
                                                 }
                                             />
-                                            <span className="text-sm font-semibold text-ink">
+                                            <span className="text-sm font-bold text-ink tabular-nums">
                                                 {formatCurrency(item.unitPrice * item.quantity)}
                                             </span>
                                         </div>
@@ -145,15 +134,14 @@ export function CartDrawer() {
                                         ) : null}
                                     </div>
 
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        aria-label={`Quitar ${item.name}${item.personalization ? ` (${item.personalization})` : ''} del carrito`}
+                                    <button
+                                        type="button"
+                                        aria-label={`Quitar ${item.name} del carrito`}
                                         onClick={() => removeItem(item.lineId)}
-                                        className="size-11 shrink-0 self-start px-0 text-ink-soft"
+                                        className="-mt-2 -mr-2 flex size-11 shrink-0 items-center justify-center self-start rounded-full text-ink-soft transition hover:bg-rose-50 hover:text-rose-700"
                                     >
                                         <Trash2 aria-hidden="true" className="size-4" />
-                                    </Button>
+                                    </button>
                                 </li>
                             )
                         })}

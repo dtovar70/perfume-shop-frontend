@@ -5,6 +5,7 @@ export const ROUTES = {
     catalog: '/catalogo',
     catalogByCategory: '/catalogo/:category',
     product: '/producto/:slug',
+    brands: '/marcas',
     cart: '/carrito',
     checkout: '/checkout',
     order: '/pedido/:code',
@@ -34,6 +35,7 @@ export const ADMIN_ROUTES = {
     productNew: '/admin/productos/nuevo',
     productEdit: '/admin/productos/:id',
     categories: '/admin/categorias',
+    brands: '/admin/marcas',
     content: '/admin/contenido',
     catalogs: '/admin/catalogos',
     telegram: '/admin/telegram',
@@ -93,4 +95,9 @@ export function productPath(slug: string): string {
 
 export function categoryPath(slug: CategorySlug): string {
     return `/catalogo/${encodeURIComponent(slug)}`
+}
+
+/** The catalog filtered by one brand. */
+export function brandCatalogPath(slug: string): string {
+    return `/catalogo?${new URLSearchParams({ brand: slug })}`
 }

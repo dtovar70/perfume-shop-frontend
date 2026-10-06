@@ -2,7 +2,6 @@ import type { CartItem } from '@/@types/cart'
 import type { OrderLineProblem } from '@/@types/order'
 import { BsApproximation } from '@/components/shared/BsApproximation'
 import { CartLineMedia } from '@/components/shared/CartLineMedia'
-import { DesignBadge, GarmentColorNote } from '@/components/shared/DesignBadge'
 import { Button, Card } from '@/components/ui'
 import { formatCurrency } from '@/utils/formatCurrency'
 
@@ -28,8 +27,8 @@ export function OrderSummary({
     const problemAt = (index: number) => problems.find((problem) => problem.index === index)
 
     return (
-        <Card tone="cream" padding="lg" className="h-fit space-y-5 lg:sticky lg:top-28">
-            <h2 className="font-display text-xl text-ink">Tu pedido</h2>
+        <Card tone="ivory" padding="lg" className="h-fit space-y-5 lg:sticky lg:top-28">
+            <h2 className="font-display text-2xl font-semibold text-ink">Tu pedido</h2>
 
             <ul className="space-y-4">
                 {items.map((item, index) => {
@@ -37,36 +36,21 @@ export function OrderSummary({
                     return (
                         <li key={item.lineId} className="space-y-1.5">
                             <div className="flex items-center gap-3">
-                                <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white p-1.5">
-                                    <CartLineMedia item={item} size="sm" />
-                                </div>
+                                <CartLineMedia item={item} size="sm" className="w-14 sm:w-14" />
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate font-display text-sm text-ink">
+                                    <p className="truncate font-display text-base font-semibold text-ink">
                                         {item.name}
                                     </p>
                                     <p className="text-xs text-ink-soft">
                                         {item.variantLabel} · {item.quantity} u.
                                     </p>
-                                    {item.design ? <DesignBadge className="mt-1" /> : null}
-                                    {item.design?.color ? (
-                                        <GarmentColorNote
-                                            color={item.design.color}
-                                            className="mt-0.5"
-                                        />
-                                    ) : null}
-                                    {item.personalization ? (
-                                        <p className="text-xs break-words text-ink">
-                                            <span className="text-ink-soft">Personalización:</span>{' '}
-                                            “{item.personalization}”
-                                        </p>
-                                    ) : null}
                                 </div>
                                 <span className="shrink-0 text-sm font-semibold text-ink">
                                     {formatCurrency(item.unitPrice * item.quantity)}
                                 </span>
                             </div>
                             {problem ? (
-                                <p role="alert" className="text-sm font-medium text-blush-700">
+                                <p role="alert" className="text-sm font-medium text-rose-700">
                                     {problem.message}
                                 </p>
                             ) : null}
@@ -93,8 +77,10 @@ export function OrderSummary({
                     </dd>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-line pt-3">
-                    <dt className="font-display text-base text-ink">Total</dt>
-                    <dd className="font-display text-2xl text-ink">{formatCurrency(total)}</dd>
+                    <dt className="font-bold text-ink">Total</dt>
+                    <dd className="text-2xl font-bold text-ink tabular-nums">
+                        {formatCurrency(total)}
+                    </dd>
                 </div>
             </dl>
             <BsApproximation usd={total} />

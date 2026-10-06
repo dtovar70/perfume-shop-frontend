@@ -16,7 +16,7 @@ export function ContactView() {
             <section className={cn(CONTAINER, 'relative isolate space-y-6 pt-12 lg:pt-20')}>
                 <div
                     aria-hidden="true"
-                    className="absolute -top-20 left-1/3 -z-10 size-72 rounded-full bg-blush-200 opacity-60 blur-3xl"
+                    className="absolute -top-20 left-1/3 -z-10 size-72 rounded-full bg-rose-200 opacity-60 blur-3xl"
                 />
 
                 <Sticker tone="sky" rotation="right">

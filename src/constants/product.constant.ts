@@ -1,4 +1,4 @@
-import type { ProductTag } from '@/@types/product'
+import type { Concentration, ProductGender, ProductTag } from '@/@types/product'
 
 /**
  * How each tag reads in the store. The stored value stays `bestseller` (it drives the
@@ -8,5 +8,34 @@ export const PRODUCT_TAG_LABELS: Record<ProductTag, string> = {
     nuevo: 'nuevo',
     bestseller: 'favorito',
     oferta: 'oferta',
-    personalizable: 'personalizable',
+}
+
+export const GENDER_LABELS: Record<ProductGender, string> = {
+    mujer: 'Mujer',
+    hombre: 'Hombre',
+    unisex: 'Unisex',
+}
+
+/** Short label shown on cards ("EDP"), long one on the product page. */
+export const CONCENTRATION_LABELS: Record<Concentration, { short: string; long: string }> = {
+    EDC: { short: 'EDC', long: 'Eau de Cologne' },
+    EDT: { short: 'EDT', long: 'Eau de Toilette' },
+    EDP: { short: 'EDP', long: 'Eau de Parfum' },
+    PARFUM: { short: 'Parfum', long: 'Parfum' },
+    EXTRAIT: { short: 'Extrait', long: 'Extrait de Parfum' },
+}
+
+/** "EDP · 100 ml", or whichever half is known; empty when neither is. */
+export function formatPerfumeSpec(
+    concentration: Concentration | null,
+    volumeMl: number | null,
+    long = false,
+): string {
+    const parts: string[] = []
+    if (concentration) {
+        const label = CONCENTRATION_LABELS[concentration]
+        parts.push(long ? label.long : label.short)
+    }
+    if (volumeMl) parts.push(`${volumeMl} ml`)
+    return parts.join(' · ')
 }

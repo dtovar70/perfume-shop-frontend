@@ -19,10 +19,10 @@ import { useFillPlaceholders } from '@/utils/hooks/useSiteContent'
 type MessageTone = 'butter' | 'sky' | 'mint' | 'blush' | 'neutral'
 
 const TONE_CLASS: Record<MessageTone, string> = {
-    butter: 'border-butter-400/70 bg-butter-200/40',
-    sky: 'border-sky-300 bg-sky-50',
-    mint: 'border-mint-400/60 bg-mint-200/40',
-    blush: 'border-blush-300 bg-blush-50',
+    butter: 'border-gold-400/70 bg-gold-100/40',
+    sky: 'border-gold-300 bg-gold-50',
+    mint: 'border-emerald-500/60 bg-emerald-100/40',
+    blush: 'border-rose-300 bg-rose-50',
     neutral: 'border-line bg-white',
 }
 
@@ -87,7 +87,7 @@ export function StatusMessage({ order, late = false }: StatusMessageProps) {
     return (
         <div
             role="status"
-            className={cn('flex items-start gap-4 rounded-3xl border-2 p-5', TONE_CLASS[tone])}
+            className={cn('flex items-start gap-4 rounded-card border p-5', TONE_CLASS[tone])}
         >
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink shadow-soft">
                 <Icon aria-hidden="true" className="size-5" />

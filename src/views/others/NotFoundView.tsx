@@ -1,45 +1,38 @@
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
-import { ButtonLink, Sticker } from '@/components/ui'
+import { PerfumeArt } from '@/components/shared/PerfumeArt'
+import { ButtonLink } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
-import { PALETTE } from '@/constants/theme.constant'
 import { cn } from '@/utils/cn'
 
 export function NotFoundView() {
     return (
-        <section className={cn(CONTAINER, 'relative isolate py-20 lg:py-28')}>
+        <section className={cn(CONTAINER, 'relative isolate py-16 lg:py-24')}>
             <div
                 aria-hidden="true"
-                className="absolute top-10 left-1/2 -z-10 size-80 -translate-x-1/2 rounded-full bg-blush-200 opacity-60 blur-3xl"
+                className="absolute top-10 left-1/2 -z-10 size-80 -translate-x-1/2 rounded-full bg-rose-100 opacity-80 blur-3xl"
             />
 
             <div className="mx-auto flex max-w-xl flex-col items-center gap-7 text-center">
-                <div className="relative w-56">
-                    <ProductIllustration
-                        category="mugs"
-                        color={PALETTE.sky300}
-                        printText="Página perdida"
-                        size="lg"
-                    />
-                    <Sticker tone="butter" className="absolute -top-2 -right-2">
-                        Error 404
-                    </Sticker>
-                </div>
+                <PerfumeArt notes={false} className="w-44 sm:w-52" />
 
-                <h1 className="font-display text-5xl tracking-tight text-balance text-ink uppercase sm:text-6xl">
-                    Se nos <span className="text-blush-500">derramó</span> el café
+                <p className="text-[11px] font-bold tracking-[0.3em] text-gold-700 uppercase sm:text-xs">
+                    Error 404
+                </p>
+
+                <h1 className="-mt-3 font-display text-5xl leading-none font-semibold text-balance text-ink sm:text-6xl">
+                    Esta fragancia se <span className="text-rose-700 italic">evaporó</span>
                 </h1>
 
                 <p className="text-lg text-ink-soft">
-                    Esta página no existe o cambió de lugar. Pero el catálogo sigue calientito.
+                    La página que buscas no existe o cambió de lugar. Nuestro catálogo sigue aquí.
                 </p>
 
-                <div className="flex flex-wrap justify-center gap-3">
+                <div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
                     <ButtonLink to={ROUTES.home} size="lg">
                         Volver al inicio
                     </ButtonLink>
                     <ButtonLink to={ROUTES.catalog} size="lg" variant="secondary">
-                        Ver el catálogo
+                        Ver perfumes
                     </ButtonLink>
                 </div>
             </div>

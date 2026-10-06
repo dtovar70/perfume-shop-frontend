@@ -40,7 +40,7 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                 className={cn(
                                     'flex flex-col gap-4 rounded-2xl border p-4 sm:flex-row',
                                     payment.status === 'PENDIENTE'
-                                        ? 'border-sky-300 bg-sky-50/60'
+                                        ? 'border-gold-300 bg-gold-50/60'
                                         : 'border-line bg-white',
                                 )}
                             >
@@ -84,7 +84,7 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                                 className={cn(
                                                     'font-semibold',
                                                     payment.amountMismatch
-                                                        ? 'text-blush-700'
+                                                        ? 'text-rose-700'
                                                         : 'text-ink',
                                                 )}
                                             >
@@ -130,7 +130,7 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                             : ''}
                                     </p>
                                     {payment.rejectionReason ? (
-                                        <p className="font-medium break-words text-blush-700">
+                                        <p className="font-medium break-words text-rose-700">
                                             Motivo: {payment.rejectionReason}
                                         </p>
                                     ) : null}

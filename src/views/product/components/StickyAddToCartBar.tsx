@@ -4,14 +4,16 @@ import { PriceTag } from '@/components/shared/PriceTag'
 import { cn } from '@/utils/cn'
 
 /** Matches the bar's height below `lg` (where the bar is shown). */
-const BODY_PADDING_CLASS = 'max-lg:pb-20'
+const BODY_PADDING_CLASS = 'max-lg:pb-24'
 
 export interface StickyAddToCartBarProps {
     /** The inline add-to-cart row; the bar shows once it has scrolled up out of view. */
     anchorRef: RefObject<HTMLElement | null>
     price: number
     compareAtPrice?: number
-    /** The add button (same rules as the inline one: stock, design, quantity). */
+    /** Product name, shown above the price. */
+    title?: string
+    /** The add button (same rules as the inline one: stock, quantity). */
     children: ReactNode
 }
 
@@ -23,6 +25,7 @@ export function StickyAddToCartBar({
     anchorRef,
     price,
     compareAtPrice,
+    title,
     children,
 }: StickyAddToCartBarProps) {
     const [isVisible, setIsVisible] = useState(false)
@@ -51,18 +54,26 @@ export function StickyAddToCartBar({
             aria-hidden={!isVisible}
             inert={!isVisible}
             className={cn(
-                'fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lift backdrop-blur transition-transform duration-300 motion-reduce:transition-none lg:hidden',
+                'fixed inset-x-0 bottom-0 z-30 border-t border-gold-200/70 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-12px_32px_-18px_rgb(43_31_36/0.3)] backdrop-blur transition-transform duration-300 motion-reduce:transition-none lg:hidden',
                 isVisible ? 'translate-y-0' : 'translate-y-full',
             )}
         >
             <div className="mx-auto flex max-w-xl items-center gap-3">
+                {title ? (
+                    <div className="min-w-0 shrink">
+                        <p className="truncate font-display text-base leading-tight font-semibold text-ink">
+                            {title}
+                        </p>
+                        <PriceTag price={price} compareAtPrice={compareAtPrice} size="sm" />
+                    </div>
+                ) : null}
                 <PriceTag
                     price={price}
                     compareAtPrice={compareAtPrice}
                     size="md"
-                    className="min-w-0 shrink-0 flex-col items-start gap-0"
+                    className={cn('min-w-0 shrink-0 flex-col items-start gap-0', title && 'hidden')}
                 />
-                <div className="min-w-0 flex-1 [&>button]:w-full">{children}</div>
+                <div className="ml-auto max-w-56 min-w-0 flex-1 [&>button]:w-full">{children}</div>
             </div>
         </div>
     )

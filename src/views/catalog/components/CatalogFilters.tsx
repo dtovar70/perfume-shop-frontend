@@ -1,126 +1,223 @@
+import type { ReactNode } from 'react'
 import { cva } from 'class-variance-authority'
+import { Check } from 'lucide-react'
 
-import type { CategorySlug, ProductTag } from '@/@types/product'
+import type { Concentration, ProductFacets, ProductGender, ProductTag } from '@/@types/product'
 import { Button } from '@/components/ui'
-import { useCategories } from '@/views/catalog/hooks/useCategories'
+import {
+    CONCENTRATION_LABELS,
+    GENDER_LABELS,
+    PRODUCT_TAG_LABELS,
+} from '@/constants/product.constant'
+import { cn } from '@/utils/cn'
 import {
     PRICE_BRACKETS,
     PRODUCT_TAGS,
     type CatalogFilters as CatalogFiltersState,
     type PriceBracketId,
 } from '@/views/catalog/hooks/useCatalogFilters'
-import { PRODUCT_TAG_LABELS } from '@/constants/product.constant'
 
 const chipVariants = cva(
-    'inline-flex cursor-pointer items-center rounded-full border-2 px-3.5 py-1.5 text-sm font-semibold transition duration-200 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-blush-400 has-[input:focus-visible]:ring-offset-2',
+    'inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-sm transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-gold-600',
     {
         variants: {
             isSelected: {
-                true: 'border-blush-400 bg-blush-100 text-blush-700',
-                false: 'border-line bg-white text-ink-soft hover:border-blush-200 hover:text-ink',
+                true: 'border-rose-700 bg-rose-700 font-bold text-white',
+                false: 'border-line bg-white font-semibold text-ink-soft hover:border-gold-400 hover:text-ink',
             },
         },
         defaultVariants: { isSelected: false },
     },
 )
 
+const legendClass = 'mb-3 text-[11px] font-bold tracking-[0.22em] text-gold-700 uppercase'
+
+function FilterGroup({ legend, children }: { legend: string; children: ReactNode }) {
+    return (
+        <fieldset className="border-t border-line pt-5 first:border-t-0 first:pt-0">
+            <legend className={cn(legendClass, 'float-left w-full')}>{legend}</legend>
+            <div className="clear-both">{children}</div>
+        </fieldset>
+    )
+}
+
 export interface CatalogFiltersProps {
     filters: CatalogFiltersState
+    facets: ProductFacets | undefined
     isFiltered: boolean
-    onCategoryChange: (category?: CategorySlug) => void
+    onBrandToggle: (slug: string) => void
+    onGenderChange: (gender?: ProductGender) => void
+    onConcentrationChange: (concentration?: Concentration) => void
+    onFamilyChange: (family?: string) => void
     onPriceBracketChange: (bracket: PriceBracketId) => void
     onTagToggle: (tag: ProductTag) => void
     onClear: () => void
 }
 
+/** Brand, gender, concentration, family, price and tag filters (sidebar or drawer). */
 export function CatalogFilters({
     filters,
+    facets,
     isFiltered,
-    onCategoryChange,
+    onBrandToggle,
+    onGenderChange,
+    onConcentrationChange,
+    onFamilyChange,
     onPriceBracketChange,
     onTagToggle,
     onClear,
 }: CatalogFiltersProps) {
-    const { data: categories } = useCategories()
+    const brands = facets?.brands ?? []
+    // A selected brand stays listed even if the current scope has none of it.
+    const missingBrands = filters.brands.filter((slug) => !brands.some((b) => b.slug === slug))
+    const genders = facets?.genders.filter((facet) => facet.count > 0) ?? []
+    const concentrations = facets?.concentrations.filter((facet) => facet.count > 0) ?? []
+    const families = facets?.families.filter((facet) => facet.count > 0) ?? []
 
     return (
-        <div className="space-y-7">
-            <fieldset className="space-y-3">
-                <legend className="font-display text-base text-ink">Categoría</legend>
-                <div className="flex flex-wrap gap-2">
-                    <label className={chipVariants({ isSelected: filters.category === undefined })}>
-                        <input
-                            type="radio"
-                            name="category"
-                            className="sr-only"
-                            checked={filters.category === undefined}
-                            onChange={() => onCategoryChange(undefined)}
+        <div className="space-y-5">
+            {brands.length > 0 || missingBrands.length > 0 ? (
+                <FilterGroup legend="Marca">
+                    <ul className="scroll-soft -mx-1 max-h-64 space-y-0.5 overflow-y-auto px-1">
+                        {[
+                            ...brands,
+                            ...missingBrands.map((slug) => ({ slug, name: slug, count: 0 })),
+                        ].map((brand) => {
+                            const checked = filters.brands.includes(brand.slug)
+                            return (
+                                <li key={brand.slug}>
+                                    <label className="group flex min-h-10 cursor-pointer items-center gap-3 rounded-lg px-1 text-sm text-ink transition hover:bg-rose-50/70 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-gold-600">
+                                        <input
+                                            type="checkbox"
+                                            className="peer sr-only"
+                                            checked={checked}
+                                            onChange={() => onBrandToggle(brand.slug)}
+                                        />
+                                        <span
+                                            aria-hidden="true"
+                                            className={cn(
+                                                'flex size-5 shrink-0 items-center justify-center rounded-md border transition',
+                                                checked
+                                                    ? 'border-rose-700 bg-rose-700 text-white'
+                                                    : 'border-ink/25 bg-white group-hover:border-rose-400',
+                                            )}
+                                        >
+                                            {checked ? <Check className="size-3.5" strokeWidth={3} /> : null}
+                                        </span>
+                                        <span className={cn('flex-1 truncate', checked && 'font-bold')}>
+                                            {brand.name}
+                                        </span>
+                                        <span className="text-xs text-ink-soft tabular-nums">
+                                            {brand.count}
+                                        </span>
+                                    </label>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </FilterGroup>
+            ) : null}
+
+            {genders.length > 0 ? (
+                <FilterGroup legend="Para">
+                    <div className="flex flex-wrap gap-2">
+                        <RadioChip
+                            name="gender"
+                            label="Todos"
+                            checked={filters.gender === undefined}
+                            onSelect={() => onGenderChange(undefined)}
                         />
-                        Todas
-                    </label>
-
-                    {(categories ?? []).map((category) => (
-                        <label
-                            key={category.slug}
-                            className={chipVariants({
-                                isSelected: filters.category === category.slug,
-                            })}
-                        >
-                            <input
-                                type="radio"
-                                name="category"
-                                className="sr-only"
-                                checked={filters.category === category.slug}
-                                onChange={() => onCategoryChange(category.slug)}
+                        {genders.map((facet) => (
+                            <RadioChip
+                                key={facet.value}
+                                name="gender"
+                                label={GENDER_LABELS[facet.value] ?? facet.value}
+                                checked={filters.gender === facet.value}
+                                onSelect={() => onGenderChange(facet.value)}
                             />
-                            {category.name}
-                        </label>
-                    ))}
-                </div>
-            </fieldset>
+                        ))}
+                    </div>
+                </FilterGroup>
+            ) : null}
 
-            <fieldset className="space-y-3">
-                <legend className="font-display text-base text-ink">Precio</legend>
+            {concentrations.length > 0 ? (
+                <FilterGroup legend="Concentración">
+                    <div className="flex flex-wrap gap-2">
+                        <RadioChip
+                            name="concentration"
+                            label="Todas"
+                            checked={filters.concentration === undefined}
+                            onSelect={() => onConcentrationChange(undefined)}
+                        />
+                        {concentrations.map((facet) => (
+                            <RadioChip
+                                key={facet.value}
+                                name="concentration"
+                                label={CONCENTRATION_LABELS[facet.value]?.long ?? facet.value}
+                                checked={filters.concentration === facet.value}
+                                onSelect={() => onConcentrationChange(facet.value)}
+                            />
+                        ))}
+                    </div>
+                </FilterGroup>
+            ) : null}
+
+            {families.length > 0 ? (
+                <FilterGroup legend="Familia olfativa">
+                    <div className="flex flex-wrap gap-2">
+                        <RadioChip
+                            name="family"
+                            label="Todas"
+                            checked={filters.family === undefined}
+                            onSelect={() => onFamilyChange(undefined)}
+                        />
+                        {families.map((facet) => (
+                            <RadioChip
+                                key={facet.value}
+                                name="family"
+                                label={facet.value}
+                                checked={filters.family === facet.value}
+                                onSelect={() => onFamilyChange(facet.value)}
+                            />
+                        ))}
+                    </div>
+                </FilterGroup>
+            ) : null}
+
+            <FilterGroup legend="Precio">
                 <div className="flex flex-wrap gap-2">
                     {PRICE_BRACKETS.map((bracket) => (
-                        <label
+                        <RadioChip
                             key={bracket.id}
-                            className={chipVariants({
-                                isSelected: filters.priceBracket === bracket.id,
-                            })}
-                        >
-                            <input
-                                type="radio"
-                                name="price"
-                                className="sr-only"
-                                checked={filters.priceBracket === bracket.id}
-                                onChange={() => onPriceBracketChange(bracket.id)}
-                            />
-                            {bracket.label}
-                        </label>
+                            name="price"
+                            label={bracket.label}
+                            checked={filters.priceBracket === bracket.id}
+                            onSelect={() => onPriceBracketChange(bracket.id)}
+                        />
                     ))}
                 </div>
-            </fieldset>
+            </FilterGroup>
 
-            <fieldset className="space-y-3">
-                <legend className="font-display text-base text-ink">Etiquetas</legend>
+            <FilterGroup legend="Destacados">
                 <div className="flex flex-wrap gap-2">
-                    {PRODUCT_TAGS.map((tag) => (
-                        <label
-                            key={tag}
-                            className={chipVariants({ isSelected: filters.tags.includes(tag) })}
-                        >
-                            <input
-                                type="checkbox"
-                                className="sr-only"
-                                checked={filters.tags.includes(tag)}
-                                onChange={() => onTagToggle(tag)}
-                            />
-                            {PRODUCT_TAG_LABELS[tag]}
-                        </label>
-                    ))}
+                    {PRODUCT_TAGS.map((tag) => {
+                        const checked = filters.tags.includes(tag)
+                        return (
+                            <label key={tag} className={chipVariants({ isSelected: checked })}>
+                                <input
+                                    type="checkbox"
+                                    className="sr-only"
+                                    checked={checked}
+                                    onChange={() => onTagToggle(tag)}
+                                />
+                                <span className="first-letter:uppercase">
+                                    {PRODUCT_TAG_LABELS[tag]}
+                                </span>
+                            </label>
+                        )
+                    })}
                 </div>
-            </fieldset>
+            </FilterGroup>
 
             {isFiltered ? (
                 <Button variant="secondary" size="sm" fullWidth onClick={onClear}>
@@ -128,5 +225,27 @@ export function CatalogFilters({
                 </Button>
             ) : null}
         </div>
+    )
+}
+
+interface RadioChipProps {
+    name: string
+    label: string
+    checked: boolean
+    onSelect: () => void
+}
+
+function RadioChip({ name, label, checked, onSelect }: RadioChipProps) {
+    return (
+        <label className={chipVariants({ isSelected: checked })}>
+            <input
+                type="radio"
+                name={name}
+                className="sr-only"
+                checked={checked}
+                onChange={onSelect}
+            />
+            {label}
+        </label>
     )
 }

@@ -42,7 +42,7 @@ export function PaymentHistory({ payments }: { payments: OrderPayment[] }) {
                                 {payment.hasProof ? ' · con captura' : ''}
                             </p>
                             {payment.rejectionReason ? (
-                                <p className="text-sm font-medium break-words text-blush-700">
+                                <p className="text-sm font-medium break-words text-rose-700">
                                     Motivo: {payment.rejectionReason}
                                 </p>
                             ) : null}

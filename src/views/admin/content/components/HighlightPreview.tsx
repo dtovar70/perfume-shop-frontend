@@ -16,7 +16,7 @@ export function HighlightPreview({ text, size = 'heading', className }: Highligh
     return (
         <div
             className={cn(
-                'rounded-2xl border-2 border-dashed border-line bg-cream px-4 py-3',
+                'rounded-2xl border border-dashed border-line bg-ivory px-4 py-3',
                 className,
             )}
         >

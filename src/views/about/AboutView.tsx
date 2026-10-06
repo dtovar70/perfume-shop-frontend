@@ -1,10 +1,9 @@
 import { HighlightedText } from '@/components/shared/HighlightedText'
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
+import { PerfumeArt } from '@/components/shared/PerfumeArt'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { ButtonLink, Sticker } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
-import { PALETTE } from '@/constants/theme.constant'
 import { cn } from '@/utils/cn'
 import { useFillPlaceholders, useSiteContent } from '@/utils/hooks/useSiteContent'
 import { StatsRow } from '@/views/about/components/StatsRow'
@@ -24,22 +23,27 @@ export function AboutView() {
             >
                 <div
                     aria-hidden="true"
-                    className="absolute -top-16 right-0 -z-10 size-80 rounded-full bg-sky-200 opacity-60 blur-3xl"
+                    className="absolute -top-16 right-0 -z-10 size-80 rounded-full bg-gold-100 opacity-80 blur-3xl"
                 />
 
                 <div className="space-y-6">
-                    <Sticker tone="lilac" rotation="right">
+                    <p className="flex items-center gap-3 text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
+                        <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
                         {about.badge}
-                    </Sticker>
+                    </p>
 
-                    <h1 className="font-display text-4xl leading-tight tracking-tight text-balance text-ink uppercase sm:text-5xl lg:text-6xl">
+                    <h1 className="font-display text-[2.6rem] leading-[1.02] font-semibold text-balance text-ink sm:text-5xl lg:text-6xl">
                         <HighlightedText text={about.title} />
                     </h1>
 
                     {about.paragraphs.map((paragraph, index) => (
                         <p
                             key={index}
-                            className={index === 0 ? 'text-lg text-ink-soft' : 'text-ink-soft'}
+                            className={
+                                index === 0
+                                    ? 'font-display text-2xl leading-snug text-ink'
+                                    : 'leading-relaxed text-ink-soft'
+                            }
                         >
                             {fill(paragraph)}
                         </p>
@@ -50,16 +54,9 @@ export function AboutView() {
                     </ButtonLink>
                 </div>
 
-                <div className="relative mx-auto w-full max-w-sm">
-                    <div className="rounded-blob border border-line bg-white p-6 shadow-lift">
-                        <ProductIllustration
-                            category="tees"
-                            color={PALETTE.blush300}
-                            printText="Hecho a mano"
-                            size="lg"
-                        />
-                    </div>
-                    <Sticker tone="butter" className="absolute -bottom-3 left-6 shadow-lift">
+                <div className="relative mx-auto w-full max-w-sm px-4">
+                    <PerfumeArt notes={false} />
+                    <Sticker tone="butter" size="lg" className="absolute bottom-6 left-0 shadow-lift">
                         {about.imageBadge}
                     </Sticker>
                 </div>

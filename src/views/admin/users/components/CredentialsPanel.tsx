@@ -12,7 +12,7 @@ export interface CredentialsPanelProps {
 
 function CredentialRow({ label, value }: { label: string; value: string }) {
     return (
-        <div className="flex items-center gap-2 rounded-2xl border-2 border-line bg-white py-1.5 pr-1.5 pl-4">
+        <div className="flex items-center gap-2 rounded-2xl border border-line bg-white py-1.5 pr-1.5 pl-4">
             <div className="min-w-0 flex-1">
                 <p className="text-xs font-semibold text-ink-soft">{label}</p>
                 <p className="font-mono text-sm break-all text-ink">{value}</p>
@@ -31,7 +31,7 @@ export function CredentialsPanel({ email, password, kind }: CredentialsPanelProp
     const message = `Tu acceso al panel de Manada Russo:\n${loginUrl}\nCorreo: ${email}\nContraseña: ${password}\n\nCuando entres, cámbiala desde «Mi cuenta».`
 
     return (
-        <div className="space-y-4 rounded-3xl border-2 border-mint-400/60 bg-mint-200/30 p-4 sm:p-5">
+        <div className="space-y-4 rounded-card border border-emerald-500/60 bg-emerald-100/30 p-4 sm:p-5">
             <div className="flex items-start gap-3">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-ink">
                     <KeyRound aria-hidden="true" className="size-4" />

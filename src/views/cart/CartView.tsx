@@ -25,31 +25,35 @@ export function CartView() {
     const total = subtotal + shipping
 
     return (
-        <div className={cn(CONTAINER, 'space-y-8 py-12 lg:py-16')}>
-            <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                Tu <span className="text-blush-500">carrito</span>
-            </h1>
+        <div className={cn(CONTAINER, 'space-y-8 py-10 lg:py-14')}>
+            <header className="space-y-2">
+                <p className="text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
+                    Tu selección
+                </p>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl">
+                    Carrito de <span className="text-rose-700 italic">compras</span>
+                </h1>
+            </header>
 
             {items.length === 0 ? (
                 <EmptyState
-                    title="Todavía no hay nada aquí"
-                    description="Cuando encuentres el diseño perfecto, aparecerá en esta lista."
+                    title="Tu carrito está vacío"
+                    description="Agrega algunos perfumes para comenzar."
                     icon={<ShoppingBag className="size-6" />}
-                    action={<ButtonLink to={ROUTES.catalog}>Explorar catálogo</ButtonLink>}
+                    action={<ButtonLink to={ROUTES.catalog}>Explorar perfumes</ButtonLink>}
                 />
             ) : (
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
                     <div className="space-y-3">
-                        {items.length > 1 ? (
-                            <div className="flex items-center justify-between gap-3 px-1">
-                                <span className="text-sm text-ink-soft">
-                                    {items.length} productos en tu carrito
-                                </span>
-                                <ClearCartButton itemCount={items.length} />
-                            </div>
-                        ) : null}
+                        <div className="flex items-center justify-between gap-3 px-1">
+                            <span className="text-sm text-ink-soft">
+                                {items.length} {items.length === 1 ? 'producto' : 'productos'} en
+                                tu carrito
+                            </span>
+                            <ClearCartButton itemCount={items.length} />
+                        </div>
 
-                        <Card padding="none" className="px-6">
+                        <Card padding="none" className="px-4 sm:px-6">
                             <ul className="divide-y divide-line">
                                 {items.map((item) => (
                                     <CartLine
@@ -63,12 +67,12 @@ export function CartView() {
                     </div>
 
                     <Card
-                        tone="cream"
+                        tone="ivory"
                         padding="lg"
                         className="h-fit space-y-5 lg:sticky lg:top-28"
                         aria-label="Resumen del pedido"
                     >
-                        <h2 className="font-display text-xl text-ink">Resumen</h2>
+                        <h2 className="font-display text-2xl font-semibold text-ink">Resumen</h2>
 
                         <FreeShippingProgress subtotal={subtotal} />
 
@@ -86,8 +90,8 @@ export function CartView() {
                                 </dd>
                             </div>
                             <div className="flex items-baseline justify-between border-t border-line pt-3">
-                                <dt className="font-display text-base text-ink">Total</dt>
-                                <dd className="font-display text-2xl text-ink">
+                                <dt className="font-bold text-ink">Total</dt>
+                                <dd className="text-2xl font-bold text-ink tabular-nums">
                                     {formatCurrency(total)}
                                 </dd>
                             </div>
@@ -99,17 +103,17 @@ export function CartView() {
                                 <>
                                     <p
                                         role="status"
-                                        className="text-sm font-semibold text-blush-700"
+                                        className="text-sm font-semibold text-rose-700"
                                     >
                                         {CART_STOCK_BLOCKED_MESSAGE}
                                     </p>
-                                    <Button fullWidth disabled>
-                                        Ir al checkout
+                                    <Button fullWidth size="lg" disabled>
+                                        Finalizar compra
                                     </Button>
                                 </>
                             ) : (
-                                <ButtonLink to={ROUTES.checkout} fullWidth>
-                                    Ir al checkout
+                                <ButtonLink to={ROUTES.checkout} fullWidth size="lg">
+                                    Finalizar compra
                                 </ButtonLink>
                             )}
                             <ButtonLink to={ROUTES.catalog} variant="secondary" fullWidth>

@@ -3,7 +3,7 @@
  * editable. `GET /content` merges the stored values over these, so a section nobody edited (or a
  * field added later) renders these.
  *
- * Mirror of backend-cups/src/content/content.defaults.ts; the storefront falls back to it when the
+ * Mirror of the API's src/content/content.defaults.ts; the storefront falls back to it when the
  * API is slow or cannot be reached. Keep both files identical (only the import and this
  * comment differ).
  */
@@ -11,145 +11,145 @@ import type { SiteContent } from '@/@types/content'
 
 export const DEFAULT_SITE_CONTENT: SiteContent = {
     general: {
-        brandName: 'Manada Russo Creativa',
-        tagline: 'Sublimación hecha con amor',
+        brandName: 'KaiZen',
+        tagline: 'Fragancias originales que cuentan tu historia',
         description:
-            'Tazas, franelas y llaveros personalizados con sublimación. Tú mandas el diseño, nosotros lo hacemos realidad.',
-        titleSuffix: 'Sublimación hecha con amor',
+            'Perfumería con fragancias 100% originales de diseñador y árabes, para mujer y hombre. Asesoría personalizada y envíos a toda Venezuela.',
+        titleSuffix: 'Perfumería — fragancias originales',
         metaDescription:
-            'Tazas, franelas y llaveros personalizados con sublimación. Diseños 100% a tu medida, hechos a mano en Venezuela y con envío gratis desde {envioGratis}.',
-        searchPlaceholder: 'Buscar tazas, franelas…',
+            'Perfumes originales de diseñador y árabes para mujer y hombre. Pago Móvil y divisas, envío gratis desde {envioGratis} a toda Venezuela.',
+        searchPlaceholder: 'Buscar perfumes, marcas…',
     },
     announcements: {
         messages: [
-            'Envío gratis desde {envioGratis}',
-            'Diseños 100% personalizables',
-            'Hecho a mano en Venezuela',
+            'Envío gratis desde {envioGratis} a toda Venezuela',
+            'Fragancias 100% originales',
+            'Paga con Pago Móvil o en divisas',
         ],
     },
     home: {
-        heroBadge: 'Sublimación hecha con amor',
-        heroTitle: 'Tazas, franelas y llaveros *que hablan* por ti',
+        heroBadge: 'Perfumería de autor',
+        heroTitle: 'Tu esencia, *en cada gota*',
         heroSubtitle:
-            'Tú mandas la idea, nosotros la sublimamos. Piezas únicas para regalar, para tu marca o simplemente porque sí.',
-        heroPrimaryCta: 'Explorar catálogo',
-        heroSecondaryCta: 'Personalizar el mío',
-        heroFeatures: ['100% personalizable', 'Envío nacional', 'Hecho a mano'],
-        categoriesEyebrow: 'Qué hacemos',
-        categoriesTitle: 'Elige tu *lienzo* favorito',
+            'Fragancias originales de las casas que amas, elegidas una a una. Encuentra el aroma que te define y recíbelo en la puerta de tu casa.',
+        heroPrimaryCta: 'Ver catálogo',
+        heroSecondaryCta: 'Pedir por WhatsApp',
+        heroFeatures: ['100% originales', 'Envíos a todo el país', 'Asesoría personalizada'],
+        categoriesEyebrow: 'Colecciones',
+        categoriesTitle: 'Encuentra tu *próxima firma*',
         categoriesDescription:
-            '{categorias}, infinitas ideas. Todos se personalizan con tu texto, tu foto o tu logo.',
-        featuredEyebrow: 'Los más pedidos',
-        featuredTitle: 'Tus *favoritos*',
-        featuredDescription: 'Los diseños que más salen de nuestro taller esta temporada.',
+            '{categorias} pensadas para cada momento: del día a día a la noche especial.',
+        featuredEyebrow: 'Selección KaiZen',
+        featuredTitle: 'Fragancias *destacadas*',
+        featuredDescription: 'Las que más nos piden y las que no dejamos de recomendar.',
         featuredCta: 'Ver todo el catálogo',
-        stepsEyebrow: 'Así de fácil',
-        stepsTitle: '*Tres pasos* y listo',
-        stepsDescription: 'Sin mínimos imposibles ni formularios eternos.',
+        stepsEyebrow: 'Comprar es fácil',
+        stepsTitle: 'Tu perfume en *tres pasos*',
+        stepsDescription: 'Sin complicaciones, con atención real de principio a fin.',
         steps: [
             {
-                title: 'Elige tu producto',
+                title: 'Elige tu fragancia',
                 description:
-                    'Taza, franela o llavero. Escoge el modelo, el tamaño y el color que mejor va con tu idea.',
+                    'Filtra por marca, familia olfativa o concentración. Si dudas, te asesoramos por WhatsApp.',
             },
             {
-                title: 'Envía tu diseño',
+                title: 'Paga como prefieras',
                 description:
-                    'Mándanos tu foto, tu texto o tu logo por WhatsApp. Si no tienes arte, lo armamos contigo.',
+                    'Pago Móvil con la tasa BCV del día o en divisas. Confirmamos tu pago en minutos.',
             },
             {
-                title: 'Lo sublimamos y enviamos',
+                title: 'Recíbelo en casa',
                 description:
-                    'Producimos en 3 a 5 días hábiles y te lo llevamos a la puerta, listo para regalar.',
+                    'Enviamos a toda Venezuela, bien protegido, o retíralo en tienda cuando quieras.',
             },
         ],
-        testimonialsEyebrow: 'Clientes felices',
-        testimonialsTitle: 'Lo que *dicen* de nosotros',
+        testimonialsEyebrow: 'Opiniones',
+        testimonialsTitle: 'Lo que *dicen* nuestros clientes',
         testimonials: [],
-        ctaBadge: 'Pedidos por mayor',
-        ctaTitle: '¿Tienes una *idea* en mente?',
+        ctaBadge: 'Asesoría personalizada',
+        ctaTitle: '¿No sabes cuál *elegir*?',
         ctaDescription:
-            'Cuéntanos qué necesitas y te mandamos un boceto sin compromiso. Desde una pieza hasta cien.',
-        ctaPrimary: 'Pedir mi diseño',
+            'Cuéntanos qué aromas te gustan y para qué ocasión. Te recomendamos opciones a tu medida, sin compromiso.',
+        ctaPrimary: 'Escríbenos',
         ctaSecondary: 'Conócenos',
     },
     about: {
-        badge: 'Desde 2020',
-        title: 'Un taller pequeño con *ideas grandes*',
+        badge: 'Perfumería KaiZen',
+        title: 'El arte de *elegir bien*',
         paragraphs: [
-            '{marca} nació en una mesa de comedor con una prensa de segunda mano y muchas ganas. Hoy seguimos siendo un equipo chiquito, y eso es justo lo que nos permite cuidar cada pieza como si fuera para nuestra casa.',
-            'Sublimamos en {ciudad} y enviamos a todo el país. Cada pedido pasa por una revisión de arte antes de entrar a la prensa, porque una taza mal centrada no se arregla después.',
+            '{marca} nació de una pasión sencilla: que cada persona encuentre la fragancia que la acompaña. Seleccionamos cada perfume con cuidado y solo trabajamos con productos 100% originales.',
+            'Atendemos desde {ciudad} y enviamos a todo el país. Te asesoramos antes de comprar y te acompañamos hasta que tu perfume llega a tus manos.',
         ],
-        ctaLabel: 'Hablemos de tu idea',
-        imageBadge: 'Taller propio',
-        valuesEyebrow: 'Cómo trabajamos',
-        valuesTitle: 'Lo que *no negociamos*',
-        valuesDescription: 'Cuatro cosas que sostienen todo lo que sale del taller.',
+        ctaLabel: 'Hablemos de fragancias',
+        imageBadge: '100% originales',
+        valuesEyebrow: 'Nuestra esencia',
+        valuesTitle: 'Lo que *nos define*',
+        valuesDescription: 'Cuatro promesas detrás de cada frasco que enviamos.',
         values: [
             {
-                icon: 'palette',
-                title: 'Diseño con criterio',
+                icon: 'shield-check',
+                title: 'Originalidad garantizada',
                 description:
-                    'Si tu idea no se va a ver bien sublimada, te lo decimos y te proponemos una alternativa.',
+                    'Solo vendemos fragancias auténticas, selladas y de proveedores de confianza.',
             },
             {
                 icon: 'heart-handshake',
-                title: 'Trato cercano',
+                title: 'Asesoría cercana',
                 description:
-                    'Hablas con la persona que produce tu pedido, no con un formulario ni con un bot.',
+                    'Te ayudamos a elegir según tus gustos, tu piel y la ocasión. Hablas con personas, no con un bot.',
             },
             {
-                icon: 'timer',
-                title: 'Tiempos reales',
+                icon: 'truck',
+                title: 'Envíos seguros',
                 description:
-                    'Prometemos lo que podemos cumplir. Si algo se atrasa, te avisamos antes de que preguntes.',
+                    'Empacamos cada perfume con protección y te enviamos el número de guía apenas sale.',
             },
             {
-                icon: 'leaf',
-                title: 'Materiales que duran',
+                icon: 'sparkles',
+                title: 'Curaduría con criterio',
                 description:
-                    'Cerámica, algodón y acrílico probados en el taller antes de ofrecerlos en el catálogo.',
+                    'Un catálogo elegido a mano: clásicos imprescindibles y descubrimientos que vale la pena probar.',
             },
         ],
         statsEyebrow: 'En números',
-        statsTitle: 'El taller en *cifras*',
+        statsTitle: 'KaiZen en *cifras*',
         stats: [
-            { value: '+4.800', label: 'pedidos entregados' },
-            { value: '6', label: 'años sublimando' },
-            { value: '23', label: 'ciudades atendidas' },
+            { value: '+1.500', label: 'clientes felices' },
+            { value: '+120', label: 'fragancias' },
+            { value: '23', label: 'estados con envío' },
         ],
     },
     contact: {
-        email: 'hola@manadarusso.com',
+        email: 'hola@kaizenperfumeria.com',
         phone: '0414-5086536',
         whatsapp: '0414-5086536',
         city: 'Quíbor, estado Lara',
-        schedule: 'Lunes a viernes, 9:00 a.m. – 6:00 p.m.',
-        instagram: 'manadarussocreativa',
-        tiktok: 'manadarussocreativa',
+        schedule: 'Lunes a sábado, 9:00 a.m. – 6:00 p.m.',
+        instagram: 'kaizen.perfumeria',
+        tiktok: 'kaizen.perfumeria',
     },
     contactPage: {
         badge: 'Respondemos rápido',
-        title: 'Cuéntanos qué quieres *sublimar*',
-        intro: 'Un regalo, el uniforme del equipo o el detalle de tu evento. Escríbenos y armamos la propuesta contigo.',
+        title: '¿Te ayudamos a *elegir*?',
+        intro: 'Escríbenos para pedir una recomendación, consultar disponibilidad o resolver cualquier duda sobre tu pedido.',
         faqEyebrow: 'Dudas comunes',
         faqTitle: 'Preguntas *frecuentes*',
         faq: [
             {
-                question: '¿Hay cantidad mínima de pedido?',
-                answer: 'No. Hacemos desde una sola pieza. A partir de 12 unidades aplicamos precio por mayor.',
+                question: '¿Los perfumes son originales?',
+                answer: 'Sí. Todas nuestras fragancias son 100% originales, selladas y de proveedores de confianza.',
             },
             {
-                question: 'No tengo el diseño listo, ¿me ayudan?',
-                answer: 'Sí. Cuéntanos la idea y te preparamos una propuesta sin costo. Solo cobramos el arte si pides más de dos rondas de cambios.',
+                question: '¿Cómo puedo pagar?',
+                answer: 'Por Pago Móvil, con el monto en bolívares a la tasa BCV del día, o en divisas. Te confirmamos el pago apenas lo verificamos.',
             },
             {
-                question: '¿Cuánto tardan en producir?',
-                answer: '{produccion}, contados desde que apruebas el boceto. Los pedidos grandes pueden tomar un poco más.',
+                question: '¿Cuánto tarda mi pedido?',
+                answer: '{produccion}. Te enviamos el número de guía apenas sale el paquete.',
             },
             {
                 question: '¿Cómo funciona el envío?',
-                answer: 'Envío gratis desde {envioGratis}. Por debajo de ese monto cobramos una tarifa plana y te enviamos el número de guía apenas sale el paquete.',
+                answer: 'Enviamos a toda Venezuela. Envío gratis desde {envioGratis}; por debajo de ese monto la tarifa es de {tarifaEnvio}. También puedes retirar en tienda.',
             },
         ],
     },
@@ -157,9 +157,9 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         freeThreshold: 35,
         flatRate: 4,
         freeShippingCopy: 'Envío gratis desde {envioGratis}',
-        productionCopy: 'Producción en 3 a 5 días hábiles',
+        productionCopy: 'Despachamos en 1 a 2 días hábiles',
     },
-    /** Not shown on the storefront yet (checkout will use it); empty until the owner fills it. */
+    /** Shown at checkout and on the order page; empty until the owner fills it. */
     payment: {
         bankCode: '',
         bankName: '',

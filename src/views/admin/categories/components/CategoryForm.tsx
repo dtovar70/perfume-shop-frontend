@@ -16,7 +16,6 @@ import {
     EMPTY_CATEGORY_FORM,
     type CategoryFormValues,
 } from '@/views/admin/categories/schema/category.schema'
-import { CategoryDesignTemplate } from '@/views/admin/categories/components/CategoryDesignTemplate'
 import { useCreateCategory, useUpdateCategory } from '@/views/admin/hooks/useAdminCategories'
 
 function toFormValues(category: AdminCategory): CategoryFormValues {
@@ -208,7 +207,7 @@ export function CategoryForm(props: CategoryFormProps) {
                                 shouldValidate: true,
                             })
                         }
-                        className="size-11 cursor-pointer rounded-full border-2 border-line bg-white p-1"
+                        className="size-11 cursor-pointer rounded-full border border-line bg-white p-1"
                     />
                 </label>
                 <div className="w-full max-w-48">
@@ -263,9 +262,6 @@ export function CategoryForm(props: CategoryFormProps) {
     return props.mode === 'create' ? (
         <Card className="@container">{form}</Card>
     ) : (
-        <div className="@container space-y-6">
-            {form}
-            <CategoryDesignTemplate category={props.category} />
-        </div>
+        <div className="@container space-y-6">{form}</div>
     )
 }

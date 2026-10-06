@@ -1,34 +1,16 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-
-import type { CategorySlug } from '@/@types/product'
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
 import { cldSrcSet, cldUrl } from '@/utils/cloudinary'
 import { cn } from '@/utils/cn'
 
-/** Same width caps as `ProductIllustration`, so a photo and a drawing occupy the same slot. */
-const photoVariants = cva('aspect-square w-full rounded-2xl object-cover select-none', {
-    variants: {
-        size: {
-            sm: 'max-w-16 rounded-xl',
-            md: 'max-w-60',
-            lg: 'max-w-full',
-        },
-    },
-    defaultVariants: {
-        size: 'md',
-    },
-})
-
-type PhotoSize = 'sm' | 'md' | 'lg'
+type MediaSize = 'sm' | 'md' | 'lg'
 
 /**
  * Candidate widths (for `srcSet`) and the default `sizes` of each slot. Phones with 2-3x screens
  * pick the larger candidates; nothing ever downloads the full-size upload.
  */
-const RESPONSIVE: Record<PhotoSize, { widths: number[]; sizes: string }> = {
-    sm: { widths: [64, 128, 192], sizes: '64px' },
-    md: { widths: [240, 360, 480, 720], sizes: '240px' },
-    lg: { widths: [400, 640, 800, 1200], sizes: '(min-width: 640px) 24rem, 100vw' },
+const RESPONSIVE: Record<MediaSize, { widths: number[]; sizes: string }> = {
+    sm: { widths: [96, 192, 288], sizes: '96px' },
+    md: { widths: [320, 480, 640, 800], sizes: '(min-width: 1024px) 22rem, 50vw' },
+    lg: { widths: [480, 800, 1200, 1600], sizes: '(min-width: 1024px) 40rem, 100vw' },
 }
 
 export interface ProductMediaImage {
@@ -36,16 +18,17 @@ export interface ProductMediaImage {
     alt?: string | null
 }
 
-export interface ProductMediaProps extends VariantProps<typeof photoVariants> {
-    category: CategorySlug
-    color: string
-    printText: string
-    /** Category color, used to tint the generic illustration (see `ProductIllustration`). */
-    accentColor?: string
-    /** Uploaded photo; when missing, the generated illustration is drawn instead. */
+export interface ProductMediaProps {
+    /** Uploaded photo; when missing, the bottle placeholder is drawn instead. */
     image?: ProductMediaImage
     /** Accessible name for the photo when it has no `alt` of its own. */
     fallbackAlt?: string
+    /** Shown on the placeholder under the bottle. */
+    brandName?: string | null
+    size?: MediaSize
+    /** `cover` crops to fill the frame (cards); `contain` shows the whole photo (gallery). */
+    fit?: 'cover' | 'contain'
+    /** Applied to the image (or placeholder); both fill their parent frame. */
     className?: string
     loading?: 'eager' | 'lazy'
     /** `sizes` of the photo when its slot is not the size variant's default width. */
@@ -54,34 +37,26 @@ export interface ProductMediaProps extends VariantProps<typeof photoVariants> {
     fetchPriority?: 'high' | 'low' | 'auto'
 }
 
-/** A product's photo when it has one, otherwise its generated illustration. */
+/**
+ * A product's photo, or a blush placeholder with a line-drawn bottle when it has none. Both fill
+ * the parent: the caller owns the frame (aspect ratio, radius, background).
+ */
 export function ProductMedia({
-    category,
-    color,
-    printText,
-    accentColor,
     image,
     fallbackAlt,
-    size,
+    brandName,
+    size = 'md',
+    fit = 'cover',
     className,
     loading = 'lazy',
     sizes,
     fetchPriority,
 }: ProductMediaProps) {
     if (!image) {
-        return (
-            <ProductIllustration
-                category={category}
-                color={color}
-                printText={printText}
-                accentColor={accentColor}
-                size={size}
-                className={className}
-            />
-        )
+        return <BottlePlaceholder brandName={brandName} size={size} className={className} />
     }
 
-    const responsive = RESPONSIVE[size ?? 'md']
+    const responsive = RESPONSIVE[size]
     const srcSet = cldSrcSet(image.url, responsive.widths)
 
     return (
@@ -94,7 +69,67 @@ export function ProductMedia({
             fetchPriority={fetchPriority}
             decoding="async"
             draggable={false}
-            className={cn(photoVariants({ size }), className)}
+            className={cn(
+                'size-full select-none',
+                fit === 'cover' ? 'object-cover' : 'object-contain',
+                className,
+            )}
         />
+    )
+}
+
+interface BottlePlaceholderProps {
+    brandName?: string | null
+    size: MediaSize
+    className?: string
+}
+
+/** Blush-to-champagne card with a minimal perfume bottle and the brand name. Decorative. */
+function BottlePlaceholder({ brandName, size, className }: BottlePlaceholderProps) {
+    const isSmall = size === 'sm'
+
+    return (
+        <div
+            aria-hidden="true"
+            className={cn(
+                'gradient-blush relative flex size-full flex-col items-center justify-center gap-3 overflow-hidden select-none',
+                className,
+            )}
+        >
+            {/* Soft light behind the bottle. */}
+            <span className="absolute top-1/2 left-1/2 size-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60 blur-2xl" />
+
+            <svg
+                viewBox="0 0 80 112"
+                fill="none"
+                className={cn(
+                    'relative text-rose-700/70',
+                    isSmall ? 'h-3/5 w-auto' : 'h-auto w-[28%] max-w-28 min-w-12',
+                )}
+            >
+                {/* Cap */}
+                <rect x="28" y="6" width="24" height="18" rx="3" className="fill-gold-300/70" />
+                <path d="M28 14h24" stroke="#a77b3b" strokeOpacity=".5" strokeWidth="1" />
+                {/* Neck */}
+                <rect x="33" y="24" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                {/* Body */}
+                <rect x="8" y="33" width="64" height="73" rx="12" stroke="currentColor" strokeWidth="1.5" />
+                {/* Juice */}
+                <path
+                    d="M12 72c10 5 46 5 56 0v22a8 8 0 0 1-8 8H20a8 8 0 0 1-8-8Z"
+                    className="fill-rose-200/70"
+                />
+                {/* Label */}
+                <rect x="22" y="48" width="36" height="16" rx="2" stroke="#c4954f" strokeOpacity=".7" strokeWidth="1" />
+                {/* Glass highlight */}
+                <path d="M17 44v26" stroke="white" strokeWidth="3" strokeLinecap="round" strokeOpacity=".8" />
+            </svg>
+
+            {brandName && !isSmall ? (
+                <span className="relative max-w-[85%] truncate px-2 font-display text-sm tracking-[0.18em] text-rose-800/80 uppercase sm:text-base">
+                    {brandName}
+                </span>
+            ) : null}
+        </div>
     )
 }

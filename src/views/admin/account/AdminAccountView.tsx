@@ -143,7 +143,7 @@ function CapabilityList({
                                         className={cn(
                                             'mt-px flex size-5 shrink-0 items-center justify-center rounded-full',
                                             allowed
-                                                ? 'bg-mint-200 text-ink'
+                                                ? 'bg-emerald-100 text-ink'
                                                 : 'bg-line text-ink-soft',
                                         )}
                                     >
@@ -171,7 +171,7 @@ function RoleAccessCard({ user }: { user: AdminSession }) {
                 description={`Tu rol es ${roleLabel}. Solo un administrador puede cambiarlo.`}
             />
             {user.role === 'ADMIN' ? (
-                <p className="flex items-center gap-3 rounded-2xl bg-mint-200/50 px-4 py-3 text-sm text-ink">
+                <p className="flex items-center gap-3 rounded-2xl bg-emerald-100/50 px-4 py-3 text-sm text-ink">
                     <ShieldCheck aria-hidden="true" className="size-5 shrink-0" />
                     Tienes acceso a todo el panel.
                 </p>

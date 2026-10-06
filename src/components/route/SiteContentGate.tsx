@@ -14,7 +14,7 @@ function useDocumentMeta() {
     const { brandName, titleSuffix, metaDescription } = content.general
 
     useEffect(() => {
-        document.title = titleSuffix ? `${brandName} — ${titleSuffix}` : brandName
+        document.title = titleSuffix ? `${brandName} | ${titleSuffix}` : brandName
     }, [brandName, titleSuffix])
 
     useEffect(() => {

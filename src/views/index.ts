@@ -40,6 +40,10 @@ export const OrderLookupView = lazy(() =>
     })),
 )
 
+export const BrandsView = lazy(() =>
+    import('@/views/brands/BrandsView').then((module) => ({ default: module.BrandsView })),
+)
+
 export const AboutView = lazy(() =>
     import('@/views/about/AboutView').then((module) => ({ default: module.AboutView })),
 )
@@ -92,6 +96,12 @@ export const AdminProductEditView = lazy(() =>
 export const AdminCategoriesView = lazy(() =>
     import('@/views/admin/categories/AdminCategoriesView').then((module) => ({
         default: module.AdminCategoriesView,
+    })),
+)
+
+export const AdminBrandsView = lazy(() =>
+    import('@/views/admin/brands/AdminBrandsView').then((module) => ({
+        default: module.AdminBrandsView,
     })),
 )
 

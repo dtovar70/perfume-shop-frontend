@@ -7,15 +7,25 @@ export interface BsApproximationProps {
     /** Total in US dollars. */
     usd: number
     className?: string
+    /** Only the amount, without the rate line (product cards). */
+    compact?: boolean
 }
 
 /**
  * "≈ Bs 32.469,62" plus the rate it used ("Tasa BCV del 24/09/2026: 854,46 Bs/$"). Renders
  * nothing while the rate loads or when it is unavailable (the checkout says so on its own).
  */
-export function BsApproximation({ usd, className }: BsApproximationProps) {
+export function BsApproximation({ usd, className, compact = false }: BsApproximationProps) {
     const { data } = useExchangeRate()
     if (!data?.available) return null
+
+    if (compact) {
+        return (
+            <p className={cn('text-xs text-ink-soft tabular-nums', className)}>
+                ≈ {formatBolivares(usdToBolivares(usd, data.rate))}
+            </p>
+        )
+    }
 
     return (
         <div className={cn('space-y-0.5 text-right', className)}>

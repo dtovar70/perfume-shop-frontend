@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import type { AdminProduct, ProductInput } from '@/@types/admin'
-import type { ProductTag } from '@/@types/product'
+import { CONCENTRATIONS, PRODUCT_GENDERS, type ProductTag } from '@/@types/product'
 import { ADMIN_ROUTES } from '@/constants/route.constant'
 import {
     TEXT_INPUT_MAX_LENGTH as MAX_TEXT,
@@ -13,15 +13,17 @@ export const PRODUCT_TAGS = [
     'nuevo',
     'bestseller',
     'oferta',
-    'personalizable',
 ] as const satisfies readonly ProductTag[]
 
 export const PRODUCT_TAG_LABELS: Record<ProductTag, string> = {
     nuevo: 'Nuevo',
     bestseller: 'Favorito',
     oferta: 'Oferta',
-    personalizable: 'Personalizable',
 }
+
+/** Most olfactory notes per tier (salida, corazón, fondo). */
+export const MAX_NOTES_PER_TIER = 12
+const MAX_VOLUME_ML = 5000
 
 /** Router state the create page hands to the edit page right after saving. */
 export interface ProductCreatedState {
@@ -69,7 +71,18 @@ const MAX_PRICE = 99_999_999.99
 const MAX_STOCK = 1_000_000
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 export const HEX_COLOR_PATTERN = /^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/
-const HEX_MESSAGE = 'Usa un color hexadecimal, por ejemplo #FFB3D1'
+
+function volumeMl() {
+    return z
+        .number({ error: 'Escribe los mililitros' })
+        .int('Usa un número entero de ml')
+        .min(1, 'Debe ser mayor que 0')
+        .max(MAX_VOLUME_ML, 'Revisa los mililitros')
+}
+
+const noteList = z
+    .array(z.string().trim().min(1).max(60, 'Máximo 60 caracteres por nota'))
+    .max(MAX_NOTES_PER_TIER, `Máximo ${MAX_NOTES_PER_TIER} notas`)
 
 /** At most two decimals, checked on the text form to dodge floating-point noise. */
 function hasTwoDecimalsAtMost(value: number): boolean {
@@ -113,7 +126,7 @@ export const productFormSchema = z
             .max(80, 'Máximo 80 caracteres')
             .refine(
                 (value) => value === '' || SLUG_PATTERN.test(value),
-                'Solo minúsculas, números y guiones, por ejemplo taza-cafe-primero',
+                'Solo minúsculas, números y guiones, por ejemplo good-girl-edp',
             ),
         // The options come from the API; the server checks that the category still exists.
         categorySlug: z.string({ error: 'Elige una categoría' }).min(1, 'Elige una categoría'),
@@ -121,12 +134,18 @@ export const productFormSchema = z
         compareAtPrice: money('Escribe el precio anterior').optional(),
         /** Only used (and required) when the product has no variants. */
         stock: stockCount('Escribe el stock disponible').optional(),
-        printText: z.string().max(80, 'Máximo 80 caracteres'),
-        colorHex: z
-            .string()
-            .trim()
-            .max(MAX_TEXT, MAX_TEXT_MESSAGE)
-            .regex(HEX_COLOR_PATTERN, HEX_MESSAGE),
+        /** "" means no brand. */
+        brandSlug: z.string(),
+        gender: z.enum(PRODUCT_GENDERS, { error: 'Elige para quién es' }),
+        /** "" means not set. */
+        concentration: z.union([z.enum(CONCENTRATIONS), z.literal('')]),
+        volumeMl: volumeMl().optional(),
+        notesTop: noteList,
+        notesHeart: noteList,
+        notesBase: noteList,
+        olfactoryFamily: z.string().trim().max(60, 'Máximo 60 caracteres'),
+        isFeatured: z.boolean(),
+        sku: z.string().trim().max(60, 'Máximo 60 caracteres'),
         description: z
             .string()
             .max(
@@ -159,14 +178,7 @@ export const productFormSchema = z
                         .min(1, 'Escribe el nombre de la variante')
                         .max(80, 'Máximo 80 caracteres'),
                     priceDelta: money('Escribe el ajuste de precio (0 si no cambia)', -MAX_PRICE),
-                    colorHex: z
-                        .string()
-                        .trim()
-                        .max(MAX_TEXT, MAX_TEXT_MESSAGE)
-                        .refine(
-                            (value) => value === '' || HEX_COLOR_PATTERN.test(value),
-                            HEX_MESSAGE,
-                        ),
+                    volumeMl: volumeMl().optional(),
                     stock: stockCount('Escribe el stock (0 si está agotada)'),
                 }),
             )
@@ -202,12 +214,19 @@ export function toOptionalNumber(value: unknown): number | undefined {
 export const EMPTY_PRODUCT_FORM: Partial<ProductFormValues> = {
     name: '',
     slug: '',
-    printText: '',
-    colorHex: '#FFB3D1',
+    brandSlug: '',
+    gender: 'unisex',
+    concentration: 'EDP',
+    notesTop: [],
+    notesHeart: [],
+    notesBase: [],
+    olfactoryFamily: '',
+    isFeatured: false,
+    sku: '',
     description: '',
     highlights: [],
     tags: [],
-    variants: [{ label: 'Estándar', priceDelta: 0, colorHex: '', stock: 0 }],
+    variants: [{ label: '100 ml', priceDelta: 0, volumeMl: 100, stock: 0 }],
     isActive: true,
 }
 
@@ -219,8 +238,16 @@ export function toProductFormValues(product: AdminProduct): ProductFormValues {
         price: product.price,
         compareAtPrice: product.compareAtPrice,
         stock: product.stock,
-        printText: product.printText,
-        colorHex: product.colorHex,
+        brandSlug: product.brand?.slug ?? '',
+        gender: product.gender,
+        concentration: product.concentration ?? '',
+        volumeMl: product.volumeMl ?? undefined,
+        notesTop: product.notes.top,
+        notesHeart: product.notes.heart,
+        notesBase: product.notes.base,
+        olfactoryFamily: product.olfactoryFamily ?? '',
+        isFeatured: product.isFeatured,
+        sku: product.sku ?? '',
         description: product.description,
         highlights: product.highlights.map((value) => ({ value })),
         tags: product.tags,
@@ -228,7 +255,7 @@ export function toProductFormValues(product: AdminProduct): ProductFormValues {
             variantId: variant.id,
             label: variant.label,
             priceDelta: variant.priceDelta,
-            colorHex: variant.colorHex ?? '',
+            volumeMl: variant.volumeMl ?? undefined,
             stock: variant.stock,
         })),
         isActive: product.isActive,
@@ -254,8 +281,16 @@ export function toProductInput(values: ProductFormValues, mode: 'create' | 'edit
               : {}),
         // With variants the API stores the sum of theirs.
         ...(values.variants.length === 0 ? { stock: values.stock ?? 0 } : {}),
-        printText: values.printText,
-        colorHex: values.colorHex.trim().toUpperCase(),
+        brandSlug: values.brandSlug || null,
+        gender: values.gender,
+        concentration: values.concentration || null,
+        volumeMl: values.volumeMl ?? null,
+        notesTop: values.notesTop,
+        notesHeart: values.notesHeart,
+        notesBase: values.notesBase,
+        olfactoryFamily: values.olfactoryFamily.trim() || null,
+        isFeatured: values.isFeatured,
+        sku: values.sku.trim() || null,
         description: values.description,
         highlights: values.highlights.map((highlight) => highlight.value.trim()),
         tags: values.tags,
@@ -263,7 +298,7 @@ export function toProductInput(values: ProductFormValues, mode: 'create' | 'edit
             ...(variant.variantId ? { id: variant.variantId } : {}),
             label: variant.label.trim(),
             priceDelta: variant.priceDelta,
-            ...(variant.colorHex.trim() ? { colorHex: variant.colorHex.trim().toUpperCase() } : {}),
+            volumeMl: variant.volumeMl ?? null,
             stock: variant.stock,
         })),
         isActive: values.isActive,

@@ -15,11 +15,11 @@ import {
 } from '@/views/admin/users/utils/password'
 
 const STRENGTH_BAR_CLASS: Record<PasswordStrength, string> = {
-    0: 'bg-blush-500',
-    1: 'bg-blush-400',
-    2: 'bg-butter-400',
-    3: 'bg-mint-400',
-    4: 'bg-mint-400',
+    0: 'bg-rose-500',
+    1: 'bg-rose-400',
+    2: 'bg-gold-400',
+    3: 'bg-emerald-500',
+    4: 'bg-emerald-500',
 }
 
 export interface PasswordFieldProps {
@@ -136,7 +136,7 @@ export function PasswordField({
                                         aria-hidden="true"
                                         className={cn(
                                             'size-3.5',
-                                            ok ? 'text-mint-400' : 'text-blush-400',
+                                            ok ? 'text-emerald-500' : 'text-rose-400',
                                         )}
                                     />
                                     {rule.label}

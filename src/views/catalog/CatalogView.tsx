@@ -1,31 +1,35 @@
 import { useState } from 'react'
-import { PackageOpen, SearchX, SlidersHorizontal, Tags, X } from 'lucide-react'
+import { PackageOpen, SearchX, Tags, X } from 'lucide-react'
 
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ProductGrid } from '@/components/shared/ProductGrid'
-import { Button, ButtonLink, Card, Drawer } from '@/components/ui'
+import { Button, ButtonLink, Drawer } from '@/components/ui'
+import { GENDER_LABELS } from '@/constants/product.constant'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
 import { useMediaQuery } from '@/utils/hooks/useMediaQuery'
 import { CatalogFilters } from '@/views/catalog/components/CatalogFilters'
 import { CatalogPagination } from '@/views/catalog/components/CatalogPagination'
+import { CatalogSearch } from '@/views/catalog/components/CatalogSearch'
 import { CatalogToolbar } from '@/views/catalog/components/CatalogToolbar'
+import { CategoryChips } from '@/views/catalog/components/CategoryChips'
 import { CATALOG_PAGE_SIZE, useCatalogFilters } from '@/views/catalog/hooks/useCatalogFilters'
 import { useCategories } from '@/views/catalog/hooks/useCategories'
+import { useFacets } from '@/views/catalog/hooks/useFacets'
 import { useProducts } from '@/views/catalog/hooks/useProducts'
+
+const eyebrowClass = 'text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs'
+const titleClass = 'font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl'
 
 export function CatalogView() {
     const catalog = useCatalogFilters()
     const { filters } = catalog
     const { data: categories } = useCategories()
-    // Phones and tablets get the filters in a drawer; the side card only fits from `lg`.
+    const { data: facets } = useFacets(filters.category)
+    // Phones and tablets get the filters in a drawer; the sidebar only fits from `lg`.
     const isDesktop = useMediaQuery('(min-width: 64rem)')
     const [filtersOpen, setFiltersOpen] = useState(false)
-    const activeFilterCount =
-        (filters.category !== undefined ? 1 : 0) +
-        (filters.priceBracket !== 'all' ? 1 : 0) +
-        filters.tags.length
 
     const activeCategory = (categories ?? []).find((category) => category.slug === filters.category)
     /** A deleted category, or a mistyped link: known only once the categories have loaded. */
@@ -38,12 +42,20 @@ export function CatalogView() {
     const products = data?.items ?? []
     const closeFilters = () => setFiltersOpen(false)
     const hasNoResults = !isPending && !isError && products.length === 0
+    const brandName =
+        filters.brands.length === 1
+            ? facets?.brands.find((brand) => brand.slug === filters.brands[0])?.name
+            : undefined
 
     const filterPanel = (
         <CatalogFilters
             filters={filters}
+            facets={facets}
             isFiltered={catalog.isFiltered}
-            onCategoryChange={catalog.setCategory}
+            onBrandToggle={catalog.toggleBrand}
+            onGenderChange={catalog.setGender}
+            onConcentrationChange={catalog.setConcentration}
+            onFamilyChange={catalog.setFamily}
             onPriceBracketChange={catalog.setPriceBracket}
             onTagToggle={catalog.toggleTag}
             onClear={catalog.clearFilters}
@@ -54,15 +66,11 @@ export function CatalogView() {
         return (
             <div className={cn(CONTAINER, 'space-y-8 py-12 lg:py-16')}>
                 <header className="space-y-3">
-                    <p className="font-display text-sm font-semibold tracking-[0.2em] text-blush-700 uppercase">
-                        Catálogo
-                    </p>
-                    <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                        Categoría no encontrada
-                    </h1>
+                    <p className={eyebrowClass}>Catálogo</p>
+                    <h1 className={titleClass}>Colección no encontrada</h1>
                 </header>
                 <EmptyState
-                    title="Esta categoría ya no existe"
+                    title="Esta colección ya no existe"
                     description="Puede que la hayamos retirado o que el enlace esté mal escrito. El resto del catálogo sigue aquí."
                     icon={<Tags className="size-6" />}
                     action={<ButtonLink to={ROUTES.catalog}>Ver todo el catálogo</ButtonLink>}
@@ -71,24 +79,57 @@ export function CatalogView() {
         )
     }
 
-    return (
-        <div className={cn(CONTAINER, 'space-y-8 py-12 lg:py-16')}>
-            <header className="space-y-3">
-                <p className="font-display text-sm font-semibold tracking-[0.2em] text-blush-700 uppercase">
-                    Catálogo
-                </p>
-                <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                    {activeCategory?.name ?? 'Todo lo que sublimamos'}
-                </h1>
-                <p className="max-w-2xl text-ink-soft">
-                    {activeCategory?.description ??
-                        'Filtra por categoría, precio o etiqueta. Cada diseño se personaliza con tu texto o tu foto.'}
-                </p>
+    const title =
+        activeCategory?.name ??
+        brandName ??
+        (filters.gender ? `Perfumes para ${GENDER_LABELS[filters.gender].toLowerCase()}` : 'Perfumes')
 
+    return (
+        <div className="pb-12 lg:pb-16">
+            <header className={cn(CONTAINER, 'space-y-3 pt-8 pb-5 sm:pt-12 lg:pt-14')}>
+                <p className={eyebrowClass}>Catálogo</p>
+                <h1 className={titleClass}>{title}</h1>
+                <p className="max-w-2xl text-[15px] text-ink-soft">
+                    {activeCategory?.description ||
+                        'Fragancias originales para cada momento. Filtra por marca, familia olfativa o concentración.'}
+                </p>
+            </header>
+
+            {/* Phones and tablets: the catalog's own search (desktop has the header's). */}
+            <div className={cn(CONTAINER, 'pb-3 xl:hidden')}>
+                <CatalogSearch value={filters.search} onSearch={catalog.setSearch} />
+            </div>
+
+            {/* Sticky toolbar: categories, count, sort and (below lg) filters. */}
+            <div className="sticky top-16 z-30 border-y border-line/80 bg-ivory/90 backdrop-blur-md lg:top-20">
+                <div
+                    className={cn(
+                        CONTAINER,
+                        'flex flex-col gap-2 py-2.5 lg:flex-row lg:items-center lg:gap-6',
+                    )}
+                >
+                    <CategoryChips
+                        categories={categories}
+                        selected={filters.category}
+                        onSelect={catalog.setCategory}
+                        className="-mx-4 scroll-px-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:min-w-0 lg:flex-1 lg:px-0"
+                    />
+                    <CatalogToolbar
+                        total={data?.total ?? 0}
+                        sort={filters.sort}
+                        isRefreshing={isPlaceholderData}
+                        onSortChange={catalog.setSort}
+                        onOpenFilters={isDesktop ? undefined : () => setFiltersOpen(true)}
+                        activeFilterCount={catalog.activeFilterCount}
+                    />
+                </div>
+            </div>
+
+            <div className={cn(CONTAINER, 'pt-6 lg:pt-8')}>
                 {filters.search ? (
-                    <p className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+                    <p className="mb-5 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
                         Resultados para
-                        <span className="inline-flex items-center gap-2 rounded-full bg-blush-100 px-3 py-1 font-semibold text-blush-700">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-rose-100 py-1 pr-2 pl-3 font-semibold text-rose-800">
                             {filters.search}
                             <button
                                 type="button"
@@ -102,97 +143,94 @@ export function CatalogView() {
                         </span>
                     </p>
                 ) : null}
-            </header>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)]">
-                {isDesktop ? (
-                    <aside aria-label="Filtros del catálogo" className="h-fit lg:sticky lg:top-28">
-                        <Card padding="lg">{filterPanel}</Card>
-                    </aside>
-                ) : (
-                    <Drawer
-                        isOpen={filtersOpen}
-                        onClose={closeFilters}
-                        title="Filtros"
-                        side="left"
-                        footer={
-                            <Button fullWidth onClick={closeFilters}>
-                                {data && !isPlaceholderData
-                                    ? `Ver ${data.total} ${data.total === 1 ? 'producto' : 'productos'}`
-                                    : 'Ver productos'}
-                            </Button>
-                        }
-                    >
-                        {filterPanel}
-                    </Drawer>
-                )}
-
-                <section aria-label="Resultados" className="space-y-6">
-                    {isDesktop ? null : (
-                        <Button
-                            variant="secondary"
-                            fullWidth
-                            onClick={() => setFiltersOpen(true)}
-                            aria-haspopup="dialog"
-                            leadingIcon={
-                                <SlidersHorizontal aria-hidden="true" className="size-4" />
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] xl:gap-12">
+                    {isDesktop ? (
+                        <aside
+                            aria-label="Filtros del catálogo"
+                            className="scroll-soft h-fit max-h-[calc(100dvh-11rem)] overflow-y-auto pr-1 lg:sticky lg:top-40"
+                        >
+                            {filterPanel}
+                        </aside>
+                    ) : (
+                        <Drawer
+                            isOpen={filtersOpen}
+                            onClose={closeFilters}
+                            title="Filtros"
+                            side="left"
+                            footer={
+                                <Button fullWidth onClick={closeFilters}>
+                                    {data && !isPlaceholderData
+                                        ? `Ver ${data.total} ${data.total === 1 ? 'perfume' : 'perfumes'}`
+                                        : 'Ver perfumes'}
+                                </Button>
                             }
                         >
-                            Filtros
-                            {activeFilterCount > 0 ? (
-                                <span className="flex min-w-6 items-center justify-center rounded-full bg-blush-700 px-1.5 text-xs font-bold text-white tabular-nums">
-                                    <span className="sr-only">(</span>
-                                    {activeFilterCount}
-                                    <span className="sr-only"> activos)</span>
-                                </span>
-                            ) : null}
-                        </Button>
+                            {filterPanel}
+                        </Drawer>
                     )}
 
-                    <CatalogToolbar
-                        total={data?.total ?? 0}
-                        sort={filters.sort}
-                        isRefreshing={isPlaceholderData}
-                        onSortChange={catalog.setSort}
-                    />
+                    <section aria-label="Resultados" className="min-w-0 space-y-8">
+                        <p aria-hidden="true" className="-mt-2 text-sm text-ink-soft sm:hidden">
+                            <span className="font-bold text-ink tabular-nums">{data?.total ?? 0}</span>{' '}
+                            {data?.total === 1 ? 'perfume' : 'perfumes'}
+                        </p>
 
-                    {isError ? (
-                        <EmptyState
-                            title="No pudimos cargar el catálogo"
-                            description="Hubo un problema al traer los productos. Inténtalo otra vez."
-                            icon={<PackageOpen className="size-6" />}
-                            action={
-                                <Button variant="secondary" onClick={() => void refetch()}>
-                                    Reintentar
-                                </Button>
-                            }
-                        />
-                    ) : hasNoResults ? (
-                        <EmptyState
-                            title="No encontramos nada con esos filtros"
-                            description="Prueba con menos filtros o busca otra palabra."
-                            icon={<SearchX className="size-6" />}
-                            action={
-                                <Button variant="secondary" onClick={catalog.clearFilters}>
-                                    Limpiar filtros
-                                </Button>
-                            }
-                        />
-                    ) : (
-                        <ProductGrid
-                            products={products}
-                            isPending={isPending}
-                            skeletonCount={CATALOG_PAGE_SIZE}
-                            className="xl:grid-cols-3 2xl:grid-cols-4"
-                        />
-                    )}
+                        {isError ? (
+                            <EmptyState
+                                title="No pudimos cargar el catálogo"
+                                description="Hubo un problema al traer los perfumes. Inténtalo otra vez."
+                                icon={<PackageOpen className="size-6" />}
+                                action={
+                                    <Button variant="secondary" onClick={() => void refetch()}>
+                                        Reintentar
+                                    </Button>
+                                }
+                            />
+                        ) : hasNoResults ? (
+                            filters.search ? (
+                                <EmptyState
+                                    title="No encontramos resultados para tu búsqueda"
+                                    description="Intenta con otro nombre o marca."
+                                    icon={<SearchX className="size-6" />}
+                                    action={
+                                        <Button
+                                            variant="secondary"
+                                            onClick={() => catalog.setSearch('')}
+                                        >
+                                            Borrar la búsqueda
+                                        </Button>
+                                    }
+                                />
+                            ) : (
+                                <EmptyState
+                                    title="No encontramos perfumes con esos filtros"
+                                    description="Prueba con menos filtros u otra colección."
+                                    icon={<SearchX className="size-6" />}
+                                    action={
+                                        <Button variant="secondary" onClick={catalog.clearFilters}>
+                                            Limpiar filtros
+                                        </Button>
+                                    }
+                                />
+                            )
+                        ) : (
+                            <ProductGrid
+                                products={products}
+                                isPending={isPending}
+                                skeletonCount={CATALOG_PAGE_SIZE}
+                                priorityCount={4}
+                                className="lg:grid-cols-3"
+                            />
+                        )}
 
-                    <CatalogPagination
-                        page={data?.page ?? 1}
-                        totalPages={data?.totalPages ?? 1}
-                        onPageChange={catalog.setPage}
-                    />
-                </section>
+                        <CatalogPagination
+                            page={data?.page ?? 1}
+                            totalPages={data?.totalPages ?? 1}
+                            onPageChange={catalog.setPage}
+                        />
+                    </section>
+                </div>
             </div>
         </div>
     )

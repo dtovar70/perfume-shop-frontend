@@ -18,12 +18,16 @@ export const queryKeys = {
         featured: (limit?: number) => [...queryKeys.products.all, 'featured', limit] as const,
         related: (slug: string, limit?: number) =>
             [...queryKeys.products.all, 'related', slug, limit] as const,
+        facets: (category?: string) => [...queryKeys.products.all, 'facets', category] as const,
         /** Live stock of the cart lines; `stockKeys` are the sorted "product:variant" keys. */
         availability: (stockKeys: readonly string[]) =>
             [...queryKeys.products.all, 'availability', stockKeys] as const,
     },
     categories: {
         all: ['categories'] as const,
+    },
+    brands: {
+        all: ['brands'] as const,
     },
     /** Editable site content (`GET /content`), loaded once at start-up. */
     content: ['content'] as const,
@@ -54,6 +58,7 @@ export const queryKeys = {
             detail: (id: string) => [...queryKeys.admin.products.all(), 'detail', id] as const,
         },
         categories: () => [...queryKeys.admin.all, 'categories'] as const,
+        brands: () => [...queryKeys.admin.all, 'brands'] as const,
         content: () => [...queryKeys.admin.all, 'content'] as const,
         orders: {
             all: () => [...queryKeys.admin.all, 'orders'] as const,

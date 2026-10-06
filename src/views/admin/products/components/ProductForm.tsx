@@ -4,7 +4,7 @@ import { Plus, Save, Trash2 } from 'lucide-react'
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form'
 
 import type { AdminProduct, ProductInput } from '@/@types/admin'
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
+import { CONCENTRATIONS, PRODUCT_GENDERS } from '@/@types/product'
 import {
     Alert,
     Button,
@@ -16,14 +16,16 @@ import {
     Textarea,
     type SelectOption,
 } from '@/components/ui'
+import { TagInput } from '@/components/ui/TagInput'
+import { CONCENTRATION_LABELS, GENDER_LABELS } from '@/constants/product.constant'
 import { cn } from '@/utils/cn'
 import { formatCurrency } from '@/utils/formatCurrency'
-import { toColorInputValue } from '@/utils/color'
 import { slugify } from '@/utils/slugify'
+import { useAdminBrands } from '@/views/admin/hooks/useAdminBrands'
 import { useAdminCategories } from '@/views/admin/hooks/useAdminCategories'
 import {
-    HEX_COLOR_PATTERN,
     MAX_HIGHLIGHTS,
+    MAX_NOTES_PER_TIER,
     MAX_VARIANTS,
     PRODUCT_DESCRIPTION_MAX_LENGTH,
     PRODUCT_TAG_LABELS,
@@ -36,10 +38,10 @@ import {
 } from '@/views/admin/products/schema/product.schema'
 import { applyServerErrors } from '@/views/admin/products/utils/applyServerErrors'
 
-const sectionTitleClass = 'font-display text-xl text-ink'
+const sectionTitleClass = 'font-display text-2xl font-semibold text-ink'
 
 const iconButtonClass =
-    'flex size-11 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-blush-100 hover:text-blush-700 focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
+    'flex size-11 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
 
 export interface ProductFormProps {
     mode: 'create' | 'edit'
@@ -49,6 +51,7 @@ export interface ProductFormProps {
 
 export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps) {
     const { data: categories } = useAdminCategories()
+    const { data: brands } = useAdminBrands()
     const [serverError, setServerError] = useState<string | null>(null)
     /** Once the slug is typed by hand, the name stops rewriting it. */
     const [isSlugCustom, setIsSlugCustom] = useState(mode === 'edit')
@@ -69,9 +72,9 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
     const isHighlightsFull = highlights.fields.length >= MAX_HIGHLIGHTS
     const highlightsLimitId = useId()
     const variants = useFieldArray({ control, name: 'variants' })
-    const [category, colorHex, printText, variantValues, basePrice] = useWatch({
+    const [variantValues, basePrice] = useWatch({
         control,
-        name: ['categorySlug', 'colorHex', 'printText', 'variants', 'price'],
+        name: ['variants', 'price'],
     })
 
     /** What a variant ends up costing, shown under its price adjustment. */
@@ -86,7 +89,20 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
         value: item.slug,
         label: item.name,
     }))
-    const accentColor = categories?.find((item) => item.slug === category)?.colorHex
+    const brandOptions: SelectOption[] = [
+        { value: '', label: 'Sin marca' },
+        ...(brands ?? []).map((item) => ({
+            value: item.slug,
+            label: item.isActive ? item.name : `${item.name} (oculta)`,
+        })),
+    ]
+    const concentrationOptions: SelectOption[] = [
+        { value: '', label: 'Sin especificar' },
+        ...CONCENTRATIONS.map((value) => ({
+            value,
+            label: `${CONCENTRATION_LABELS[value].long} (${CONCENTRATION_LABELS[value].short})`,
+        })),
+    ]
 
     const submit = handleSubmit(async (values) => {
         setServerError(null)
@@ -132,7 +148,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 ? 'Se genera a partir del nombre; puedes cambiarlo.'
                                 : 'Cambiarlo rompe los enlaces que ya se hayan compartido.'
                         }
-                        placeholder="taza-cafe-primero"
+                        placeholder="good-girl-edp"
                         autoCapitalize="none"
                         spellCheck={false}
                         error={errors.slug?.message}
@@ -197,7 +213,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 readOnly
                                 tabIndex={-1}
                                 hint="Suma de las variantes. Cámbialo en cada una."
-                                className="bg-cream tabular-nums"
+                                className="bg-ivory tabular-nums"
                             />
                         ) : (
                             <Input
@@ -213,41 +229,149 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                     </div>
                 </Card>
 
-                <Card className="space-y-5">
-                    <h2 className={sectionTitleClass}>Ilustración</h2>
-                    <p className="text-sm text-ink-soft">
-                        Se usa cuando el producto todavía no tiene fotos.
-                    </p>
-                    <Input
-                        label="Texto impreso"
-                        optional
-                        error={errors.printText?.message}
-                        {...register('printText')}
-                    />
-                    <div className="flex items-start gap-3">
-                        <label className="mt-6.5 flex shrink-0 flex-col">
-                            <span className="sr-only">Elegir color</span>
-                            <input
-                                type="color"
-                                value={toColorInputValue(colorHex)}
-                                onChange={(event) =>
-                                    setValue('colorHex', event.target.value.toUpperCase(), {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    })
-                                }
-                                className="size-11 cursor-pointer rounded-full border-2 border-line bg-white p-1"
-                            />
-                        </label>
+                <Card className="@container space-y-5">
+                    <h2 className={sectionTitleClass}>Ficha del perfume</h2>
+                    <div className="grid grid-cols-1 items-start gap-5 @md:grid-cols-2">
+                        {/*
+                         * Remounted once the brands arrive: the hidden <select> can only show the
+                         * saved value after its <option> exists.
+                         */}
+                        <Select
+                            key={brands ? 'brands-loaded' : 'brands-loading'}
+                            label="Marca"
+                            disabled={!brands}
+                            options={brandOptions}
+                            error={errors.brandSlug?.message}
+                            {...register('brandSlug')}
+                        />
+                        <Select
+                            label="Concentración"
+                            options={concentrationOptions}
+                            error={errors.concentration?.message}
+                            {...register('concentration')}
+                        />
                         <Input
-                            label="Color (hex)"
-                            placeholder="#FFB3D1"
+                            label="Mililitros"
+                            optional
+                            hint="Tamaño del frasco base; cada variante puede tener el suyo."
+                            type="number"
+                            inputMode="numeric"
+                            step="1"
+                            min={1}
+                            error={errors.volumeMl?.message}
+                            {...register('volumeMl', { setValueAs: toOptionalNumber })}
+                        />
+                        <Input
+                            label="SKU"
+                            optional
                             autoCapitalize="characters"
                             spellCheck={false}
-                            error={errors.colorHex?.message}
-                            {...register('colorHex')}
+                            error={errors.sku?.message}
+                            {...register('sku')}
                         />
                     </div>
+
+                    <Controller
+                        control={control}
+                        name="gender"
+                        render={({ field }) => (
+                            <fieldset className="space-y-2">
+                                <legend className="text-sm font-semibold text-ink">Para</legend>
+                                <div
+                                    role="radiogroup"
+                                    className="inline-flex rounded-xl border border-line bg-ivory p-1"
+                                >
+                                    {PRODUCT_GENDERS.map((gender) => {
+                                        const isOn = field.value === gender
+                                        return (
+                                            <button
+                                                key={gender}
+                                                type="button"
+                                                role="radio"
+                                                aria-checked={isOn}
+                                                onClick={() => field.onChange(gender)}
+                                                className={cn(
+                                                    'h-10 rounded-lg px-4 text-sm font-semibold transition',
+                                                    isOn
+                                                        ? 'bg-white text-rose-800 shadow-soft ring-1 ring-rose-200'
+                                                        : 'text-ink-soft hover:text-ink',
+                                                )}
+                                            >
+                                                {GENDER_LABELS[gender]}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                                {errors.gender?.message ? (
+                                    <p role="alert" className="text-sm font-medium text-rose-700">
+                                        {errors.gender.message}
+                                    </p>
+                                ) : null}
+                            </fieldset>
+                        )}
+                    />
+                </Card>
+
+                <Card className="space-y-5">
+                    <div>
+                        <h2 className={sectionTitleClass}>Pirámide olfativa</h2>
+                        <p className="text-sm text-ink-soft">
+                            Escribe cada nota y pulsa Enter o coma. Máximo {MAX_NOTES_PER_TIER} por
+                            nivel.
+                        </p>
+                    </div>
+                    <Input
+                        label="Familia olfativa"
+                        optional
+                        placeholder="Floral oriental"
+                        error={errors.olfactoryFamily?.message}
+                        {...register('olfactoryFamily')}
+                    />
+                    <Controller
+                        control={control}
+                        name="notesTop"
+                        render={({ field }) => (
+                            <TagInput
+                                label="Notas de salida"
+                                optional
+                                placeholder="Bergamota, Pimienta rosa…"
+                                max={MAX_NOTES_PER_TIER}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.notesTop?.message}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="notesHeart"
+                        render={({ field }) => (
+                            <TagInput
+                                label="Notas de corazón"
+                                optional
+                                placeholder="Rosa, Jazmín…"
+                                max={MAX_NOTES_PER_TIER}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.notesHeart?.message}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="notesBase"
+                        render={({ field }) => (
+                            <TagInput
+                                label="Notas de fondo"
+                                optional
+                                placeholder="Vainilla, Ámbar, Almizcle…"
+                                max={MAX_NOTES_PER_TIER}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.notesBase?.message}
+                            />
+                        )}
+                    />
                 </Card>
 
                 <Card className="space-y-5">
@@ -258,7 +382,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 id={highlightsLimitId}
                                 className={cn(
                                     'text-sm text-ink-soft tabular-nums',
-                                    isHighlightsFull && 'font-semibold text-blush-700',
+                                    isHighlightsFull && 'font-semibold text-rose-700',
                                 )}
                             >
                                 {highlights.fields.length}/{MAX_HIGHLIGHTS} · Máximo{' '}
@@ -288,7 +412,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                     <Input
                                         label={`Detalle ${index + 1}`}
                                         hideLabel
-                                        placeholder="Apta para microondas"
+                                        placeholder="Larga duración en la piel"
                                         error={errors.highlights?.[index]?.value?.message}
                                         {...register(`highlights.${index}.value`)}
                                     />
@@ -305,7 +429,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         </ul>
                     )}
                     {errors.highlights?.message ? (
-                        <p role="alert" className="text-sm font-medium text-blush-700">
+                        <p role="alert" className="text-sm font-medium text-rose-700">
                             {errors.highlights.message}
                         </p>
                     ) : null}
@@ -316,9 +440,9 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         <div>
                             <h2 className={sectionTitleClass}>Variantes</h2>
                             <p className="text-sm text-ink-soft">
-                                La primera con stock es la predeterminada; las que están en 0 se ven
-                                como «Agotada». Sin variantes el producto no se puede agregar al
-                                carrito.
+                                Una por tamaño (ml). La primera con stock es la predeterminada; las
+                                que están en 0 se ven como «Agotado». Sin variantes el producto no
+                                se puede agregar al carrito.
                             </p>
                         </div>
                         <Button
@@ -329,7 +453,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 variants.append({
                                     label: '',
                                     priceDelta: 0,
-                                    colorHex: '',
+                                    volumeMl: undefined,
                                     stock: 0,
                                 })
                             }
@@ -346,17 +470,16 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                     ) : (
                         <ul className="space-y-4">
                             {variants.fields.map((field, index) => {
-                                const swatch = variantValues?.[index]?.colorHex ?? ''
                                 const rowErrors = errors.variants?.[index]
                                 return (
                                     <li
                                         key={field.id}
-                                        className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-cream p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                                        className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-ivory p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
                                     >
                                         <div className="sm:col-span-2">
                                             <Input
                                                 label="Nombre"
-                                                placeholder="Blanca 11oz"
+                                                placeholder="100 ml"
                                                 error={rowErrors?.label?.message}
                                                 {...register(`variants.${index}.label`)}
                                             />
@@ -393,26 +516,16 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                                 })}
                                             />
                                             <Input
-                                                label="Color"
+                                                label="Mililitros"
                                                 optional
-                                                placeholder="#FFFFFF"
-                                                spellCheck={false}
-                                                leadingIcon={
-                                                    <span
-                                                        className={cn(
-                                                            'block size-4 rounded-full border border-ink/15',
-                                                            !HEX_COLOR_PATTERN.test(swatch) &&
-                                                                'bg-[repeating-linear-gradient(45deg,var(--color-line)_0_3px,white_3px_6px)]',
-                                                        )}
-                                                        style={
-                                                            HEX_COLOR_PATTERN.test(swatch)
-                                                                ? { backgroundColor: swatch }
-                                                                : undefined
-                                                        }
-                                                    />
-                                                }
-                                                error={rowErrors?.colorHex?.message}
-                                                {...register(`variants.${index}.colorHex`)}
+                                                type="number"
+                                                inputMode="numeric"
+                                                step="1"
+                                                min={1}
+                                                error={rowErrors?.volumeMl?.message}
+                                                {...register(`variants.${index}.volumeMl`, {
+                                                    setValueAs: toOptionalNumber,
+                                                })}
                                             />
                                         </div>
                                     </li>
@@ -452,6 +565,26 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
 
                     <Controller
                         control={control}
+                        name="isFeatured"
+                        render={({ field }) => (
+                            <div className="flex items-center justify-between gap-4">
+                                <div>
+                                    <p className="text-sm font-semibold text-ink">Destacado</p>
+                                    <p className="text-xs text-ink-soft">
+                                        Aparece en «Fragancias destacadas» del inicio.
+                                    </p>
+                                </div>
+                                <Switch
+                                    checked={field.value}
+                                    onChange={field.onChange}
+                                    label="Destacado en el inicio"
+                                />
+                            </div>
+                        )}
+                    />
+
+                    <Controller
+                        control={control}
                         name="tags"
                         render={({ field }) => (
                             <fieldset className="space-y-2">
@@ -481,10 +614,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                                     )
                                                 }
                                                 className={cn(
-                                                    'rounded-full border-2 px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2',
+                                                    'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2',
                                                     isOn
-                                                        ? 'border-blush-400 bg-blush-100 text-blush-700'
-                                                        : 'border-line bg-white text-ink-soft hover:border-blush-200',
+                                                        ? 'border-rose-700 bg-rose-700 text-white'
+                                                        : 'border-line bg-white text-ink-soft hover:border-gold-400',
                                                 )}
                                             >
                                                 {PRODUCT_TAG_LABELS[tag]}
@@ -495,27 +628,6 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                             </fieldset>
                         )}
                     />
-                </Card>
-
-                <Card tone="cream" className="space-y-3">
-                    <h2 className="text-sm font-semibold text-ink">
-                        Vista previa de la ilustración
-                    </h2>
-                    <div className="flex justify-center rounded-2xl bg-white p-4">
-                        {category ? (
-                            <ProductIllustration
-                                category={category}
-                                color={toColorInputValue(colorHex)}
-                                printText={printText ?? ''}
-                                accentColor={accentColor}
-                                size="md"
-                            />
-                        ) : (
-                            <p className="py-10 text-center text-sm text-ink-soft">
-                                Elige una categoría para ver la ilustración.
-                            </p>
-                        )}
-                    </div>
                 </Card>
 
                 <div className="space-y-3">

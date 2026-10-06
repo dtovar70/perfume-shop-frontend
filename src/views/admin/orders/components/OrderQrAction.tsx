@@ -102,7 +102,7 @@ export function OrderQrAction({ order }: { order: AdminOrder }) {
                     </>
                 }
             >
-                <div className="flex flex-col items-center gap-4 rounded-3xl bg-white p-5 text-center ring-1 ring-ink/5 sm:flex-row sm:text-left">
+                <div className="flex flex-col items-center gap-4 rounded-card bg-white p-5 text-center ring-1 ring-ink/5 sm:flex-row sm:text-left">
                     <div className="shrink-0 rounded-2xl bg-white p-1 ring-1 ring-ink/10">
                         {ready && qr ? (
                             <img

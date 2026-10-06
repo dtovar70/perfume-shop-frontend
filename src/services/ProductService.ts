@@ -1,6 +1,6 @@
 import type { CartAvailability } from '@/@types/cart'
 import type { Paginated, ProductQueryParams } from '@/@types/common'
-import type { Category, Product } from '@/@types/product'
+import type { Brand, Category, CategorySlug, Product, ProductFacets } from '@/@types/product'
 import { apiClient } from '@/services/ApiClient'
 import { isApiError, NotFoundError } from '@/services/errors'
 
@@ -27,6 +27,10 @@ async function getProducts(params: ProductQueryParams = {}): Promise<Paginated<P
             minPrice: params.minPrice,
             maxPrice: params.maxPrice,
             tags: params.tags,
+            brand: params.brands?.length ? { repeat: params.brands } : undefined,
+            gender: params.gender,
+            concentration: params.concentration,
+            family: params.family,
             page: params.page,
             pageSize: params.pageSize,
         },
@@ -48,6 +52,11 @@ function getRelatedProducts(slug: string, limit = 4): Promise<Product[]> {
     )
 }
 
+/** What the catalog filters can offer, optionally scoped to one category. */
+function getFacets(category?: CategorySlug): Promise<ProductFacets> {
+    return apiClient.get<ProductFacets>('/products/facets', { query: { category } })
+}
+
 /** Live stock of cart lines, in the order given (at most 50 lines per call). */
 async function getCartAvailability(
     items: readonly { productId: string; variantId?: string }[],
@@ -65,16 +74,22 @@ function getCategories(): Promise<Category[]> {
     return apiClient.get<Category[]>('/categories')
 }
 
+function getBrands(): Promise<Brand[]> {
+    return apiClient.get<Brand[]>('/brands')
+}
+
 /**
- * Single seam between the views and the products and categories of the API.
+ * Single seam between the views and the products, categories and brands of the API.
  */
 export const ProductService = {
     getProducts,
     getProductBySlug,
     getFeaturedProducts,
     getRelatedProducts,
+    getFacets,
     getCartAvailability,
     getCategories,
+    getBrands,
 } as const
 
 export { NotFoundError } from '@/services/errors'

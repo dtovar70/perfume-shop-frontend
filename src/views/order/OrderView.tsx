@@ -34,7 +34,7 @@ const pageClass = 'space-y-8 py-10 lg:py-14'
 function StepTitle({ number, children }: { number: number; children: string }) {
     return (
         <h2 className="flex items-center gap-3 font-display text-xl text-ink">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-blush-700 text-base text-white">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-rose-700 text-base text-white">
                 {number}
             </span>
             {children}
@@ -219,7 +219,7 @@ export function OrderView() {
                         En este dispositivo también lo encuentras en{' '}
                         <Link
                             to={ROUTES.myOrders}
-                            className="font-semibold text-blush-700 underline underline-offset-2"
+                            className="font-semibold text-rose-700 underline underline-offset-2"
                         >
                             Mis pedidos
                         </Link>{' '}
@@ -317,7 +317,7 @@ export function OrderView() {
                         <h2 className="font-display text-xl text-ink">Seguimiento</h2>
                         <OrderTimeline order={order} />
                     </Card>
-                    <OrderItemsCard order={order} token={token} />
+                    <OrderItemsCard order={order} />
                     <OrderQrCard code={order.code} url={link} />
                 </aside>
             </div>
@@ -330,7 +330,7 @@ function CreatedNoticeItem({ icon, children }: { icon: ReactNode; children: Reac
         <li className="flex items-start gap-3">
             <span
                 aria-hidden="true"
-                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-blush-100 text-blush-600"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600"
             >
                 {icon}
             </span>

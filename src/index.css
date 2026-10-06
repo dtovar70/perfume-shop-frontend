@@ -1,62 +1,57 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-display: 'Fredoka', ui-rounded, system-ui, sans-serif;
-    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Cormorant Garamond', ui-serif, Georgia, 'Times New Roman', serif;
+    --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
 
-    /* pink scale */
-    --color-blush-50: #fff5f9;
-    --color-blush-100: #ffe7f1;
-    --color-blush-200: #ffd1e4;
-    --color-blush-300: #ffb3d1;
-    --color-blush-400: #ff8fb8;
-    --color-blush-500: #fb6fa5;
-    --color-blush-600: #e75f9b;
-    --color-blush-700: #c1427b; /* >= 4.5:1 with white, cream and blush-50 */
-    --color-blush-800: #9c3a66;
-    --color-blush-900: #7a2e50;
+    /* Dusty rose: the brand color. 600+ carry white text at AA (600 = 4.9:1, 700 = 6.8:1). */
+    --color-rose-50: #fdf6f7;
+    --color-rose-100: #fae9ec;
+    --color-rose-200: #f4d3d9;
+    --color-rose-300: #ebb3be;
+    --color-rose-400: #dd8c9c;
+    --color-rose-500: #c96b7e;
+    --color-rose-600: #b05468;
+    --color-rose-700: #8f4254;
+    --color-rose-800: #6e3442;
+    --color-rose-900: #4a2530;
 
-    /* blue scale */
-    --color-sky-50: #f2f9ff;
-    --color-sky-100: #e0f1ff;
-    --color-sky-200: #c4e4ff;
-    --color-sky-300: #a8d8ff;
-    --color-sky-400: #7cc0ff;
-    --color-sky-500: #57a9f5;
-    --color-sky-600: #3e9be0;
-    --color-sky-700: #2f7cb8;
-    --color-sky-800: #255f8d;
-    --color-sky-900: #1c4869;
+    /* Champagne / soft gold. Text in gold uses 700+ (700 = 5.5:1 on ivory). */
+    --color-gold-50: #fbf7ef;
+    --color-gold-100: #f7efe1;
+    --color-gold-200: #eedcbc;
+    --color-gold-300: #e2c494;
+    --color-gold-400: #d4ab6d;
+    --color-gold-500: #c4954f;
+    --color-gold-600: #a77b3b;
+    --color-gold-700: #84602f;
+    --color-gold-800: #654a26;
+    --color-gold-900: #4a361c;
 
-    /* accents */
-    --color-lilac-200: #e4d9ff;
-    --color-lilac-400: #c0aeff;
-    --color-mint-200: #c9f2e0;
-    --color-mint-400: #7fd9b4;
-    --color-butter-200: #ffefc2;
-    --color-butter-400: #ffd979;
+    /* Neutrals */
+    --color-ivory: #fffaf7;
+    --color-ink: #2b1f24;
+    --color-ink-soft: #6d5a61;
+    --color-line: #efe3e5;
+    /* Footer and dark surfaces. */
+    --color-noir: #1c1417;
 
-    /* neutrals */
-    --color-cream: #fff9fb;
-    --color-ink: #2e2438;
-    --color-ink-soft: #6b5f78;
-    --color-line: #f0e4ec;
+    --radius-card: 1.25rem;
 
-    --radius-xl2: 1.5rem;
-    --radius-blob: 2.5rem;
-
-    --shadow-soft: 0 10px 30px -12px rgb(231 95 155 / 0.25);
-    --shadow-lift: 0 18px 40px -16px rgb(46 36 56 / 0.25);
+    /* Warm, low shadows: depth without a colored halo. */
+    --shadow-soft: 0 12px 32px -18px rgb(74 37 48 / 0.22);
+    --shadow-lift: 0 24px 56px -24px rgb(43 31 36 / 0.3);
+    --shadow-glow: 0 10px 30px -12px rgb(196 149 79 / 0.45);
 
     --animate-marquee: marquee 45s linear infinite;
 
     /*
-     * Loader: each paw lands, holds, then fades while the next one lands. The cycle is
-     * longer than the trail so the trail clears before it starts over, which is what makes
-     * it read as an animal walking past rather than a row of blinking icons.
+     * Loader: a gold ring turns slowly while a drop of perfume falls into the bottle and its
+     * ripple fades. Both cycles are long and eased, so it reads as calm rather than busy.
      */
-    --animate-paw-step: paw-step 1.9s ease-in-out infinite;
-    --animate-breathe: breathe 2.6s ease-in-out infinite;
+    --animate-ring-spin: ring-spin 2.4s linear infinite;
+    --animate-drop: drop 2.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+    --animate-shimmer: shimmer 2.8s ease-in-out infinite;
 
     /* The select panel unfolds from the edge it is anchored to, so it reads as attached
      * to the field rather than dropped on top of it. */
@@ -86,23 +81,39 @@
         }
     }
 
-    @keyframes paw-step {
-        0%,
+    @keyframes ring-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes drop {
+        0% {
+            opacity: 0;
+            transform: translateY(-14px) scale(0.6);
+        }
+        20% {
+            opacity: 1;
+            transform: translateY(-14px) scale(1);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(10px) scale(1);
+        }
+        75%,
         100% {
             opacity: 0;
-            transform: translateY(var(--paw-lift)) rotate(var(--paw-tilt)) scale(0.55);
+            transform: translateY(12px) scale(0.4);
         }
-        12% {
-            opacity: 1;
-            transform: translateY(var(--paw-lift)) rotate(var(--paw-tilt)) scale(1);
+    }
+
+    @keyframes shimmer {
+        0%,
+        100% {
+            background-position: 0% 50%;
         }
-        45% {
-            opacity: 1;
-            transform: translateY(var(--paw-lift)) rotate(var(--paw-tilt)) scale(1);
-        }
-        70% {
-            opacity: 0;
-            transform: translateY(var(--paw-lift)) rotate(var(--paw-tilt)) scale(0.9);
+        50% {
+            background-position: 100% 50%;
         }
     }
 
@@ -114,16 +125,6 @@
         to {
             opacity: 1;
             transform: scale(1);
-        }
-    }
-
-    @keyframes breathe {
-        0%,
-        100% {
-            transform: scale(1) rotate(0deg);
-        }
-        50% {
-            transform: scale(1.06) rotate(-3deg);
         }
     }
 
@@ -141,6 +142,69 @@
     }
 }
 
+/* Brand gradients, shared by the utilities below and inline SVG fills. */
+:root {
+    --gradient-blush: linear-gradient(135deg, #fae9ec 0%, #fbf3ef 50%, #f7efe1 100%);
+    --gradient-gold: linear-gradient(135deg, #ecd6ae 0%, #d9b479 45%, #c4954f 100%);
+    --gradient-rose: linear-gradient(135deg, #b05468 0%, #8f4254 60%, #7a3949 100%);
+    --gradient-noir: linear-gradient(160deg, #2b1f24 0%, #1c1417 70%);
+}
+
+/* Soft blush-to-champagne surface (hero, placeholders, banners). */
+@utility gradient-blush {
+    background-image: var(--gradient-blush);
+}
+
+/* Champagne gold for accent CTAs; carries ink text (>= 5.8:1 at its darkest stop). */
+@utility gradient-gold {
+    background-image: var(--gradient-gold);
+}
+
+/* Deep rose for primary CTAs; carries white text (>= 4.9:1 at its lightest stop). */
+@utility gradient-rose {
+    background-image: var(--gradient-rose);
+}
+
+@utility gradient-noir {
+    background-image: var(--gradient-noir);
+}
+
+/* Gold text with a slow sheen, for short display accents only (decorative, large sizes). */
+@utility gold-text {
+    background-image: linear-gradient(110deg, #a77b3b 0%, #d4ab6d 35%, #84602f 70%, #c4954f 100%);
+    background-size: 220% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* A 1px gold hairline: border on light surfaces, decorative rules. */
+@utility hairline-gold {
+    border-color: color-mix(in oklab, var(--color-gold-400) 55%, transparent);
+}
+
+/* A thin, rose-tinted scrollbar for horizontal rows on pointer devices. */
+@utility scrollbar-thin-soft {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-rose-200) transparent;
+    &::-webkit-scrollbar {
+        display: block;
+        height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 9999px;
+        background-color: var(--color-rose-200);
+    }
+}
+
+/* Horizontal scroller without a visible scrollbar (chips, carousels). */
+@utility scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 @layer base {
     html {
         scroll-behavior: smooth;
@@ -148,7 +212,7 @@
     }
 
     body {
-        @apply bg-cream font-sans text-ink antialiased;
+        @apply bg-ivory font-sans text-ink antialiased;
     }
 
     h1,
@@ -157,11 +221,16 @@
     h4,
     h5,
     h6 {
-        @apply font-display font-semibold tracking-tight;
+        @apply font-display font-semibold tracking-normal;
     }
 
+    /*
+     * Every interactive element shows a real outline on keyboard focus (never a global
+     * `outline: none`). Gold-600 reads >= 3:1 against ivory, white and the rose surfaces.
+     */
     :focus-visible {
-        @apply ring-2 ring-blush-400 ring-offset-2 ring-offset-cream outline-none;
+        outline: 2px solid var(--color-gold-600);
+        outline-offset: 2px;
     }
 
     /*
@@ -224,7 +293,7 @@
         border: 4px solid transparent;
         border-radius: 9999px;
         background-clip: padding-box;
-        background-color: var(--color-blush-300);
+        background-color: var(--color-rose-200);
     }
 
     textarea::-webkit-scrollbar-corner,
@@ -236,17 +305,28 @@
         textarea,
         .scroll-soft {
             scrollbar-width: thin;
-            scrollbar-color: var(--color-blush-300) transparent;
+            scrollbar-color: var(--color-rose-200) transparent;
         }
     }
 
     ::selection {
-        @apply bg-blush-200 text-ink;
+        @apply bg-rose-200 text-ink;
     }
 
     @media (prefers-reduced-motion: reduce) {
         html {
             scroll-behavior: auto;
+        }
+
+        /* Cards and buttons stay put: no hover lifts, presses or slides. */
+        a,
+        button,
+        [role='button'],
+        article {
+            transform: none !important;
+            translate: none !important;
+            scale: none !important;
+            transition: none !important;
         }
 
         *,

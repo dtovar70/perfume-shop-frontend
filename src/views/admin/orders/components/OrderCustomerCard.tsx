@@ -6,7 +6,7 @@ import { DELIVERY_METHOD_LABELS } from '@/constants/order.constant'
 import { phoneHref, whatsappUrl } from '@/utils/content'
 
 const linkClass =
-    'inline-flex h-9 items-center gap-1.5 rounded-full border-2 border-ink/10 bg-white px-3 text-sm font-semibold text-ink transition hover:border-ink/20'
+    'inline-flex h-9 items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3 text-sm font-semibold text-ink transition hover:border-ink/20'
 
 /** Who ordered and where it goes, with one-tap contact links. */
 export function OrderCustomerCard({ order }: { order: AdminOrder }) {

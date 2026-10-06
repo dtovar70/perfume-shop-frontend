@@ -21,7 +21,7 @@ import {
 const LOOKUP_SENT_MESSAGE = 'Si los datos coinciden, te enviamos un enlace a tu correo.'
 
 const linkClass =
-    'font-semibold text-blush-700 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-blush-400'
+    'font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-rose-400'
 
 /**
  * "Consultar mi pedido" (`/consultar-pedido`): the order code and the checkout email. When they
@@ -71,11 +71,11 @@ export function OrderLookupView() {
             )}
         >
             <div className="space-y-3 lg:col-start-1">
-                <p className="font-display text-sm font-semibold tracking-[0.2em] text-blush-700 uppercase">
+                <p className="font-display text-sm font-semibold tracking-[0.2em] text-rose-700 uppercase">
                     Tus pedidos
                 </p>
                 <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                    Consulta tu <span className="text-blush-500">pedido</span>
+                    Consulta tu <span className="text-rose-500">pedido</span>
                 </h1>
                 <p className="max-w-2xl text-ink-soft">
                     ¿Perdiste el enlace de tu pedido o lo hiciste desde otro dispositivo? Escribe el
@@ -89,7 +89,7 @@ export function OrderLookupView() {
                     <Card padding="lg" className="space-y-4 text-center">
                         <span
                             aria-hidden="true"
-                            className="mx-auto flex size-14 items-center justify-center rounded-full bg-mint-200 text-ink"
+                            className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-ink"
                         >
                             <MailCheck className="size-6" />
                         </span>
@@ -190,10 +190,10 @@ export function OrderLookupView() {
 
 function HelpItem({ icon, children }: { icon: ReactNode; children: ReactNode }) {
     return (
-        <li className="flex items-start gap-4 rounded-3xl border border-line bg-white/70 p-4">
+        <li className="flex items-start gap-4 rounded-card border border-line bg-white/70 p-4">
             <span
                 aria-hidden="true"
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blush-100 text-blush-600"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600"
             >
                 {icon}
             </span>

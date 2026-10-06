@@ -1,8 +1,9 @@
+import { Benefits } from '@/views/home/components/Benefits'
+import { BrandsStrip } from '@/views/home/components/BrandsStrip'
 import { CategoryStrip } from '@/views/home/components/CategoryStrip'
 import { CtaBanner } from '@/views/home/components/CtaBanner'
-import { FeaturedProducts } from '@/views/home/components/FeaturedProducts'
 import { Hero } from '@/views/home/components/Hero'
-import { HowItWorks } from '@/views/home/components/HowItWorks'
+import { FeaturedProducts, NewArrivals } from '@/views/home/components/HomeRails'
 import { Testimonials } from '@/views/home/components/Testimonials'
 
 export function HomeView() {
@@ -10,8 +11,10 @@ export function HomeView() {
         <>
             <Hero />
             <CategoryStrip />
+            <NewArrivals />
             <FeaturedProducts />
-            <HowItWorks />
+            <BrandsStrip />
+            <Benefits />
             <Testimonials />
             <CtaBanner />
         </>

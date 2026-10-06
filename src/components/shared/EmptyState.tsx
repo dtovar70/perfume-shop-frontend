@@ -14,14 +14,14 @@ export function EmptyState({ title, description, icon, action, className }: Empt
     return (
         <div
             className={cn(
-                'flex flex-col items-center gap-4 rounded-3xl border border-dashed border-blush-200 bg-blush-50/60 px-6 py-14 text-center',
+                'flex flex-col items-center gap-4 rounded-card border border-dashed border-rose-200 bg-rose-50/60 px-6 py-14 text-center',
                 className,
             )}
         >
             {icon ? (
                 <span
                     aria-hidden="true"
-                    className="flex size-14 items-center justify-center rounded-full bg-white text-blush-500 shadow-soft"
+                    className="flex size-14 items-center justify-center rounded-full bg-white text-rose-500 shadow-soft"
                 >
                     {icon}
                 </span>

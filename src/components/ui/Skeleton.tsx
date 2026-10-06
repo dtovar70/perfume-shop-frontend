@@ -3,11 +3,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/utils/cn'
 
-const skeletonVariants = cva('animate-pulse bg-line motion-reduce:animate-none', {
+const skeletonVariants = cva('animate-pulse bg-rose-100/70 motion-reduce:animate-none', {
     variants: {
         shape: {
             line: 'h-4 rounded-full',
-            block: 'rounded-3xl',
+            block: 'rounded-card',
             circle: 'rounded-full',
         },
     },

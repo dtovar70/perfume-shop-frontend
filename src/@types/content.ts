@@ -64,7 +64,7 @@ export interface GeneralContent {
     tagline: string
     /** Short description shown in the footer. */
     description: string
-    /** document.title is "<brandName> — <titleSuffix>" (just the brand when empty). */
+    /** document.title is "<brandName> | <titleSuffix>" (just the brand when empty). */
     titleSuffix: string
     /** `<meta name="description">`. Accepts {envioGratis}. */
     metaDescription: string

@@ -1,69 +1,96 @@
-import { Check, Sparkles } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { motion } from 'motion/react'
 
 import { HighlightedText } from '@/components/shared/HighlightedText'
-import { ProductIllustration } from '@/components/shared/ProductIllustration'
-import { ButtonLink, Sticker } from '@/components/ui'
+import { PerfumeArt } from '@/components/shared/PerfumeArt'
+import { SocialIcon } from '@/components/shared/SocialIcon'
+import { ButtonLink } from '@/components/ui'
+import { buttonVariants } from '@/components/ui/Button.variants'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
-import { PALETTE } from '@/constants/theme.constant'
 import { cn } from '@/utils/cn'
+import { whatsappUrl } from '@/utils/content'
 import { usePrefersReducedMotion } from '@/utils/hooks/useMediaQuery'
 import { useSiteContent } from '@/utils/hooks/useSiteContent'
 
+const WHATSAPP_MESSAGE = 'Hola, quiero asesoría para elegir un perfume.'
+
 export function Hero() {
-    const { home } = useSiteContent()
+    const { home, contact } = useSiteContent()
     const prefersReducedMotion = usePrefersReducedMotion()
     const entrance = prefersReducedMotion ? false : { opacity: 0, y: 24 }
 
     return (
-        <section className="relative isolate overflow-hidden pt-12 pb-16 sm:pt-16 lg:pt-20 lg:pb-24">
-            <div
-                aria-hidden="true"
-                className="absolute -top-24 -left-32 -z-10 size-96 rounded-full bg-blush-200 opacity-60 blur-3xl"
-            />
-            <div
-                aria-hidden="true"
-                className="absolute top-32 -right-24 -z-10 size-96 rounded-full bg-sky-200 opacity-60 blur-3xl"
-            />
+        <section
+            aria-labelledby="hero-heading"
+            className="gradient-blush relative isolate overflow-hidden"
+        >
+            {/* Soft decorative shapes; text never sits on top of them at low contrast. */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+                <span className="absolute -top-32 -left-24 size-[28rem] rounded-full bg-rose-200/50 blur-3xl" />
+                <span className="absolute -right-20 -bottom-40 size-[32rem] rounded-full bg-gold-200/60 blur-3xl" />
+                <span className="absolute top-10 right-[8%] size-40 rounded-full border border-gold-300/50" />
+                <span className="absolute bottom-16 left-[45%] size-16 rounded-full border border-rose-300/50" />
+            </div>
 
-            <div className={cn(CONTAINER, 'grid items-center gap-12 lg:grid-cols-2 lg:gap-8')}>
+            <div
+                className={cn(
+                    CONTAINER,
+                    'grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:py-24',
+                )}
+            >
                 <motion.div
                     initial={entrance}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: 'easeOut' }}
-                    className="space-y-7"
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    className="space-y-7 text-center lg:text-left"
                 >
-                    <Sticker tone="butter" rotation="right" className="inline-flex gap-1.5">
-                        <Sparkles aria-hidden="true" className="size-4" />
+                    <p className="inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.3em] text-gold-700 uppercase sm:text-xs">
+                        <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
                         {home.heroBadge}
-                    </Sticker>
+                        <span aria-hidden="true" className="h-px w-8 bg-gold-500 lg:hidden" />
+                    </p>
 
-                    <h1 className="font-display text-5xl leading-[0.95] tracking-tight text-balance text-ink uppercase sm:text-6xl lg:text-7xl">
+                    <h1
+                        id="hero-heading"
+                        className="font-display text-[2.9rem] leading-[0.98] font-semibold text-balance text-ink sm:text-6xl lg:text-7xl xl:text-[5.25rem]"
+                    >
                         <HighlightedText text={home.heroTitle} />
                     </h1>
 
-                    <p className="max-w-lg text-lg text-ink-soft">{home.heroSubtitle}</p>
+                    <p className="mx-auto max-w-lg text-base leading-relaxed text-ink-soft sm:text-lg lg:mx-0">
+                        {home.heroSubtitle}
+                    </p>
 
-                    <div className="flex flex-wrap gap-3">
-                        <ButtonLink to={ROUTES.catalog} size="lg">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                        <ButtonLink
+                            to={ROUTES.catalog}
+                            size="lg"
+                            trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
+                        >
                             {home.heroPrimaryCta}
                         </ButtonLink>
-                        <ButtonLink to={ROUTES.contact} size="lg" variant="secondary">
-                            {home.heroSecondaryCta}
-                        </ButtonLink>
+                        {contact.whatsapp ? (
+                            <a
+                                href={whatsappUrl(contact.whatsapp, WHATSAPP_MESSAGE)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={buttonVariants({ variant: 'secondary', size: 'lg' })}
+                            >
+                                <SocialIcon network="WhatsApp" className="size-4.5" />
+                                {home.heroSecondaryCta}
+                            </a>
+                        ) : null}
                     </div>
 
                     {home.heroFeatures.length > 0 ? (
-                        <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 lg:justify-start">
                             {home.heroFeatures.map((feature, index) => (
                                 <li
                                     key={`${index}-${feature}`}
                                     className="flex items-center gap-2 text-sm font-semibold text-ink-soft"
                                 >
-                                    <span className="flex size-5 items-center justify-center rounded-full bg-mint-200 text-ink">
-                                        <Check aria-hidden="true" className="size-3" />
-                                    </span>
+                                    <Check aria-hidden="true" className="size-4 text-gold-700" />
                                     {feature}
                                 </li>
                             ))}
@@ -74,46 +101,10 @@ export function Hero() {
                 <motion.div
                     initial={entrance}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-                    className="relative mx-auto w-full max-w-md lg:max-w-lg"
+                    transition={{ duration: 0.7, delay: 0.12, ease: 'easeOut' }}
+                    className="px-6 sm:px-10"
                 >
-                    <div className="rounded-blob border border-line bg-white/70 p-6 shadow-lift backdrop-blur-sm">
-                        <ProductIllustration
-                            category="mugs"
-                            color={PALETTE.blush300}
-                            printText="Café primero"
-                            size="lg"
-                        />
-                    </div>
-
-                    <div className="absolute -bottom-8 -left-4 w-36 rounded-3xl border border-line bg-white p-3 shadow-soft sm:w-44">
-                        <ProductIllustration
-                            category="tees"
-                            color={PALETTE.sky300}
-                            printText="Modo finde"
-                            size="lg"
-                        />
-                    </div>
-
-                    <div className="absolute -top-6 -right-2 w-28 rounded-3xl border border-line bg-white p-3 shadow-soft sm:w-32">
-                        <ProductIllustration
-                            category="keychains"
-                            color={PALETTE.lilac400}
-                            printText="Mi gente"
-                            size="lg"
-                        />
-                    </div>
-
-                    <Sticker tone="blush" size="lg" className="absolute -top-4 left-4 shadow-lift">
-                        ¡Nuevo!
-                    </Sticker>
-                    <Sticker
-                        tone="sky"
-                        rotation="right"
-                        className="absolute right-2 -bottom-4 shadow-lift"
-                    >
-                        Hecho a mano
-                    </Sticker>
+                    <PerfumeArt />
                 </motion.div>
             </div>
         </section>

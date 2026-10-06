@@ -40,7 +40,7 @@ const cellClass = 'px-4 py-3 align-middle'
  * Pinned to the right edge of the scroll area, so edit/delete stay on screen even if the
  * table ever has to scroll sideways. It needs its own background to cover what slides under.
  */
-const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-cream'
+const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-ivory'
 
 /** "S: 3 · M: 0" on hover; the stock shown is their sum. */
 function stockBreakdown(product: AdminProduct): string | undefined {
@@ -50,15 +50,8 @@ function stockBreakdown(product: AdminProduct): string | undefined {
 
 function Thumbnail({ product }: { product: AdminProduct }) {
     return (
-        <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-blush-50 p-1">
-            <ProductMedia
-                category={product.category}
-                color={product.colorHex}
-                printText={product.printText}
-                image={product.images.at(0)}
-                fallbackAlt=""
-                size="sm"
-            />
+        <div className="aspect-[4/5] w-12 shrink-0 overflow-hidden rounded-xl bg-rose-50">
+            <ProductMedia image={product.images.at(0)} fallbackAlt="" size="sm" />
         </div>
     )
 }
@@ -181,7 +174,7 @@ export function AdminProductsView() {
                                     type="button"
                                     onClick={() => setSearchInput('')}
                                     aria-label="Limpiar búsqueda"
-                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-blush-100"
+                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-rose-100"
                                 >
                                     <X aria-hidden="true" className="size-4" />
                                 </button>
@@ -190,7 +183,7 @@ export function AdminProductsView() {
                     />
                 </div>
                 {products.isFetching && !products.isPending ? (
-                    <Spinner size="sm" className="text-blush-500" label="Actualizando la lista" />
+                    <Spinner size="sm" className="text-rose-500" label="Actualizando la lista" />
                 ) : null}
             </div>
 
@@ -273,7 +266,7 @@ export function AdminProductsView() {
                                     <col className="w-24" />
                                     <col className="w-26" />
                                 </colgroup>
-                                <thead className="border-b border-line bg-blush-50/60">
+                                <thead className="border-b border-line bg-rose-50/60">
                                     <tr>
                                         <th scope="col" className={headerCellClass}>
                                             Producto
@@ -305,7 +298,7 @@ export function AdminProductsView() {
                                                 headerCellClass,
                                                 actionsCellClass,
                                                 // Same tint as the translucent header row, but opaque.
-                                                'bg-linear-to-r from-blush-50/60 to-blush-50/60 text-center',
+                                                'bg-linear-to-r from-rose-50/60 to-rose-50/60 text-center',
                                             )}
                                         >
                                             Acciones
@@ -316,7 +309,7 @@ export function AdminProductsView() {
                                     {items.map((product) => (
                                         <tr
                                             key={product.id}
-                                            className="group transition hover:bg-cream"
+                                            className="group transition hover:bg-ivory"
                                         >
                                             <td className={cellClass}>
                                                 <div className="flex items-center gap-3">
@@ -325,7 +318,7 @@ export function AdminProductsView() {
                                                         <Link
                                                             to={adminProductPath(product.id)}
                                                             state={editState}
-                                                            className="line-clamp-2 font-display text-base leading-snug break-words text-ink hover:text-blush-700"
+                                                            className="line-clamp-2 font-display text-base leading-snug break-words text-ink hover:text-rose-700"
                                                         >
                                                             {product.name}
                                                         </Link>
@@ -333,6 +326,9 @@ export function AdminProductsView() {
                                                             className="truncate text-xs text-ink-soft"
                                                             title={`/${product.slug}`}
                                                         >
+                                                            {product.brand
+                                                                ? `${product.brand.name} · `
+                                                                : ''}
                                                             /{product.slug}
                                                         </p>
                                                     </div>
@@ -345,7 +341,7 @@ export function AdminProductsView() {
                                                 <AdminPriceCell product={product} align="center" />
                                             </td>
                                             <td
-                                                className={`${cellClass} text-center tabular-nums ${product.stock === 0 ? 'font-semibold text-blush-700' : ''}`}
+                                                className={`${cellClass} text-center tabular-nums ${product.stock === 0 ? 'font-semibold text-rose-700' : ''}`}
                                                 title={stockBreakdown(product)}
                                             >
                                                 {product.stock}
@@ -396,6 +392,7 @@ export function AdminProductsView() {
                                                 className="text-xs text-ink-soft"
                                                 title={stockBreakdown(product)}
                                             >
+                                                {product.brand ? `${product.brand.name} · ` : ''}
                                                 {categoryName(product.category)} · Stock{' '}
                                                 {product.stock}
                                             </p>

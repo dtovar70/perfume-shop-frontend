@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router'
 
+import { AnnouncementBar } from '@/components/layouts/AnnouncementBar'
 import { CartDrawer } from '@/components/layouts/CartDrawer'
 import { Footer } from '@/components/layouts/Footer'
 import { Header } from '@/components/layouts/Header'
 import { MobileMenu } from '@/components/layouts/MobileMenu'
-import { Marquee } from '@/components/shared/Marquee'
 import { ScrollToTop } from '@/components/route/ScrollToTop'
 import { useFillPlaceholders, useSiteContent } from '@/utils/hooks/useSiteContent'
 
@@ -16,7 +16,7 @@ export function StoreLayout() {
     return (
         <div className="flex min-h-screen flex-col overflow-x-clip">
             <ScrollToTop />
-            <Marquee items={messages} />
+            <AnnouncementBar items={messages} />
             <Header />
 
             <main className="flex-1">

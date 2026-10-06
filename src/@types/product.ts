@@ -4,13 +4,20 @@
  */
 export type CategorySlug = string
 
-export type ProductTag = 'nuevo' | 'bestseller' | 'oferta' | 'personalizable'
+export type ProductTag = 'nuevo' | 'bestseller' | 'oferta'
+
+export const PRODUCT_GENDERS = ['mujer', 'hombre', 'unisex'] as const
+export type ProductGender = (typeof PRODUCT_GENDERS)[number]
+
+export const CONCENTRATIONS = ['EDC', 'EDT', 'EDP', 'PARFUM', 'EXTRAIT'] as const
+export type Concentration = (typeof CONCENTRATIONS)[number]
 
 export interface ProductVariant {
     id: string
     label: string
     priceDelta: number
-    colorHex?: string
+    /** Bottle size of this version; null when the variant is not a size. */
+    volumeMl: number | null
     /** Units of this version in stock; 0 means it is sold out ("Agotada"). */
     stock: number
 }
@@ -21,15 +28,36 @@ export interface ProductImage {
     alt: string | null
 }
 
+/** The brand as embedded in a product. */
+export interface ProductBrand {
+    slug: string
+    name: string
+    logoUrl: string | null
+}
+
+/** Olfactory pyramid: top (salida), heart (corazón) and base (fondo) notes. */
+export interface OlfactoryNotes {
+    top: string[]
+    heart: string[]
+    base: string[]
+}
+
 export interface Product {
     id: string
     slug: string
     name: string
     category: CategorySlug
+    brand: ProductBrand | null
+    gender: ProductGender
+    concentration: Concentration | null
+    /** Bottle size of the base product; variants may override it. */
+    volumeMl: number | null
+    notes: OlfactoryNotes
+    olfactoryFamily: string | null
+    isFeatured: boolean
+    sku: string | null
     price: number
     compareAtPrice?: number
-    printText: string
-    colorHex: string
     description: string
     highlights: string[]
     variants: ProductVariant[]
@@ -37,38 +65,8 @@ export interface Product {
     /** Units in stock: the sum of the variants' stock when the product has variants. */
     stock: number
     createdAt: string
-    /** Uploaded photos in display order; empty means the generated illustration is shown. */
+    /** Uploaded photos in display order; empty means the placeholder card is shown. */
     images: ProductImage[]
-}
-
-/** A rectangle relative to a photo: (0, 0) is its top-left corner, 1 its full width/height. */
-export interface DesignPrintArea {
-    x: number
-    y: number
-    width: number
-    height: number
-}
-
-/** "Plantilla para diseñar": the photo of the blank product in one garment color. */
-export interface DesignTemplateColor {
-    id: string
-    /** "Negro", as the customer reads it. */
-    name: string
-    /** `#RRGGBB`: the swatch. */
-    hex: string
-    imageUrl: string
-    /** Pixel size of the photo. */
-    width: number
-    height: number
-    printArea: DesignPrintArea
-}
-
-/** The template photos the design editor draws on: one per garment color, same print size. */
-export interface CategoryDesignTemplate {
-    printWidthCm: number
-    printHeightCm: number
-    /** In the admin's order; the first one is the default. Never empty. */
-    colors: DesignTemplateColor[]
 }
 
 export interface Category {
@@ -78,12 +76,30 @@ export interface Category {
     description: string
     colorHex: string
     productCount: number
-    /** Personalizable products of this category offer "Diseñar con mi imagen". */
-    designEnabled: boolean
-    /** The template photos; null means the generated illustration (when `designEnabled`). */
-    designTemplate: CategoryDesignTemplate | null
-    /** Effective print size in cm; null when the category is not designable. */
-    designPrintSize: { widthCm: number; heightCm: number } | null
+}
+
+/** `GET /brands`. */
+export interface Brand {
+    slug: string
+    name: string
+    logoUrl: string | null
+    description: string
+    productCount: number
+}
+
+export interface FacetCount<T extends string = string> {
+    value: T
+    count: number
+}
+
+/** `GET /products/facets?category=`: what the filter panel can offer. */
+export interface ProductFacets {
+    priceMin: number
+    priceMax: number
+    brands: { slug: string; name: string; count: number }[]
+    genders: FacetCount<ProductGender>[]
+    families: FacetCount[]
+    concentrations: FacetCount<Concentration>[]
 }
 
 export interface Review {

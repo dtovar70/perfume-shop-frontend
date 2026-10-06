@@ -342,7 +342,7 @@ export function AdminExchangeRateView() {
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full min-w-[32rem] text-sm">
-                                    <thead className="border-y border-line bg-blush-50/60">
+                                    <thead className="border-y border-line bg-rose-50/60">
                                         <tr>
                                             <th scope="col" className={headerCellClass}>
                                                 Fecha valor
@@ -365,7 +365,7 @@ export function AdminExchangeRateView() {
                                         {data.history.map((entry, index) => (
                                             <tr
                                                 key={entry.id}
-                                                className={cn(index === 0 && 'bg-mint-200/20')}
+                                                className={cn(index === 0 && 'bg-emerald-100/20')}
                                             >
                                                 <td className={cellClass}>
                                                     {formatDay(entry.effectiveDate)}
