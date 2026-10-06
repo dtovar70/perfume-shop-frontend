@@ -16,12 +16,20 @@ export interface CheckoutCtaProps {
 }
 
 /** The cart's main CTA: [qty] Label …… total ›. Rendered as a link, or inert when disabled. */
-export function CheckoutCta({ to, label, count, total, disabled, onClick, className }: CheckoutCtaProps) {
+export function CheckoutCta({
+    to,
+    label,
+    count,
+    total,
+    disabled,
+    onClick,
+    className,
+}: CheckoutCtaProps) {
     const content = (
         <>
             <span
                 aria-hidden="true"
-                className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-white/20 px-1.5 text-xs font-bold tabular-nums"
+                className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-on-cherry/15 px-1.5 text-xs font-bold tabular-nums"
             >
                 {count}
             </span>

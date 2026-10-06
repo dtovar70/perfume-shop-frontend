@@ -48,7 +48,7 @@ export function UserStatusDialog({ user, onClose, onDone }: UserStatusDialogProp
                     deactivating ? (
                         <div className="space-y-2">
                             <p>
-                                <strong className="text-ink">{user.name}</strong> no podrá entrar al
+                                <strong className="text-fg">{user.name}</strong> no podrá entrar al
                                 panel y sus sesiones abiertas se cierran ahora mismo.
                                 {user.activeTelegramChatCount > 0
                                     ? ` También dejarán de llegarle los pagos a los ${chats(user.activeTelegramChatCount)} que vinculó.`
@@ -62,7 +62,7 @@ export function UserStatusDialog({ user, onClose, onDone }: UserStatusDialogProp
                         </div>
                     ) : (
                         <p>
-                            <strong className="text-ink">{user.name}</strong> podrá entrar otra vez
+                            <strong className="text-fg">{user.name}</strong> podrá entrar otra vez
                             con su contraseña de siempre.
                             {user.telegramChatCount > 0
                                 ? ' Sus chats de Telegram siguen apagados hasta que escriban al bot o se vinculen de nuevo.'

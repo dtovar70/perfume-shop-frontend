@@ -1,57 +1,200 @@
 @import 'tailwindcss';
 
-@theme {
-    --font-display: 'Cormorant Garamond', ui-serif, Georgia, 'Times New Roman', serif;
-    --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
-
-    /* Dusty rose: the brand color. 600+ carry white text at AA (600 = 4.9:1, 700 = 6.8:1). */
-    --color-rose-50: #fdf6f7;
-    --color-rose-100: #fae9ec;
-    --color-rose-200: #f4d3d9;
-    --color-rose-300: #ebb3be;
-    --color-rose-400: #dd8c9c;
-    --color-rose-500: #c96b7e;
-    --color-rose-600: #b05468;
-    --color-rose-700: #8f4254;
-    --color-rose-800: #6e3442;
-    --color-rose-900: #4a2530;
-
-    /* Champagne / soft gold. Text in gold uses 700+ (700 = 5.5:1 on ivory). */
-    --color-gold-50: #fbf7ef;
-    --color-gold-100: #f7efe1;
-    --color-gold-200: #eedcbc;
-    --color-gold-300: #e2c494;
-    --color-gold-400: #d4ab6d;
-    --color-gold-500: #c4954f;
-    --color-gold-600: #a77b3b;
-    --color-gold-700: #84602f;
-    --color-gold-800: #654a26;
-    --color-gold-900: #4a361c;
-
-    /* Neutrals */
-    --color-ivory: #fffaf7;
-    --color-ink: #2b1f24;
-    --color-ink-soft: #6d5a61;
-    --color-line: #efe3e5;
-    /* Footer and dark surfaces. */
-    --color-noir: #1c1417;
-
-    --radius-card: 1.25rem;
-
-    /* Warm, low shadows: depth without a colored halo. */
-    --shadow-soft: 0 12px 32px -18px rgb(74 37 48 / 0.22);
-    --shadow-lift: 0 24px 56px -24px rgb(43 31 36 / 0.3);
-    --shadow-glow: 0 10px 30px -12px rgb(196 149 79 / 0.45);
-
-    --animate-marquee: marquee 45s linear infinite;
+/*
+ * Theme palettes. Every color, shadow and scrim is a raw `--theme-*` custom property that
+ * `data-theme` on <html> swaps (an inline script in index.html sets it before first paint);
+ * `@theme inline` below maps them to Tailwind's `--color-*` / `--shadow-*` namespaces so
+ * `bg-canvas`, `text-fg`, `border-line`, `shadow-soft`… follow the active theme on their own.
+ * Keep `src/constants/theme.constant.ts` in sync with these values.
+ */
+:root,
+:root[data-theme='dark'] {
+    color-scheme: dark;
 
     /*
-     * Loader: a gold ring turns slowly while a drop of perfume falls into the bottle and its
-     * ripple fades. Both cycles are long and eased, so it reads as calm rather than busy.
+     * Dark surfaces, from the page canvas up. Text on `surface`: fg 16.9:1, fg-soft 7.2:1,
+     * fg-muted 5.4:1 (muted is still 5:1 on `elevated`).
      */
-    --animate-ring-spin: ring-spin 2.4s linear infinite;
-    --animate-drop: drop 2.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
-    --animate-shimmer: shimmer 2.8s ease-in-out infinite;
+    --theme-canvas: #0b0b0d;
+    --theme-surface: #141417;
+    --theme-elevated: #1c1c21;
+    --theme-line: #2a2a31;
+    --theme-line-strong: #3a3a43;
+    /* Text-entry fields sit one step above the surface they are on. */
+    --theme-field: #1c1c21;
+    --theme-field-line: #2a2a31;
+    --theme-field-line-hover: #3a3a43;
+    /* Switch: the knob and the track when off. */
+    --theme-thumb: #f5f5f7;
+    --theme-switch-off: #1c1c21;
+
+    --theme-fg: #f5f5f7;
+    --theme-fg-soft: #a1a1aa;
+    --theme-fg-muted: #8b8b94;
+
+    /*
+     * Cherry blossom (rosa cerezo), the one accent. `accent` is the text/icon/link shade
+     * (7.0:1 on surface), `accent-strong` its hover/emphasis (9.4:1). `cherry-500` is the
+     * fill, ring and border shade: a deep cherry so white `on-cherry` text reads 4.6:1
+     * (5.6:1 on the cherry-600 hover/press). Same fill in both themes.
+     */
+    --theme-accent: #ff6fa0;
+    --theme-accent-strong: #ff9cbf;
+    --theme-cherry-500: #d6336c;
+    --theme-cherry-600: #c42a60;
+    --theme-on-cherry: #ffffff;
+    /* Chips, selected states and glows. `accent` text on it reads 6.1:1. */
+    --theme-cherry-tint: rgb(255 79 139 / 0.12);
+
+    --theme-success: #34d399;
+    --theme-warning: #fbbf24;
+    --theme-danger: #f87171;
+    --theme-danger-hover: #fb8c8c;
+
+    /* Modal backdrops and drawer overlays. */
+    --theme-scrim: rgb(0 0 0 / 0.6);
+
+    /* Soft cherry light behind the bottle art and banners. */
+    --theme-glow-strong: rgb(255 79 139 / 0.22);
+    --theme-glow-weak: rgb(255 79 139 / 0.06);
+    --theme-selection: rgb(255 79 139 / 0.35);
+
+    /* On black a shadow reads as depth only when it is deep and soft. */
+    --theme-shadow-soft: 0 12px 32px -16px rgb(0 0 0 / 0.7);
+    --theme-shadow-lift: 0 24px 56px -20px rgb(0 0 0 / 0.85);
+    --theme-shadow-glow: 0 12px 36px -12px rgb(255 79 139 / 0.5);
+    /* Bars pinned to the bottom edge cast their shadow upwards. */
+    --theme-shadow-up: 0 -12px 32px -18px rgb(0 0 0 / 0.6);
+    --theme-shadow-thumb: 0 2px 6px rgb(0 0 0 / 0.6);
+    --theme-shadow-hairline: 0 1px 0 rgb(0 0 0 / 0.2);
+
+    /*
+     * The "plate" under product photos: near-white in both themes, because product shots come
+     * on white. In dark it is a touch dimmer so a full card of white does not glare.
+     */
+    --theme-plate-from: #f7f7f8;
+    --theme-plate-to: #e9e9ec;
+    --theme-plate-edge: rgb(255 255 255 / 0.06);
+}
+
+/*
+ * Light: clean neutral greys (no beige), the same cherry brand. Text on `surface`: fg 17.7:1,
+ * fg-soft 7.7:1, fg-muted 5.3:1 (4.8:1 on `elevated`, so muted stays off elevated body text).
+ * The accent text drops to a deep cherry (5.5:1 on surface). The fill is the same deep cherry
+ * as in dark (white text 4.6:1), and as a ring/border it keeps 4.4:1 against the canvas.
+ */
+:root[data-theme='light'] {
+    color-scheme: light;
+
+    --theme-canvas: #fafafa;
+    --theme-surface: #ffffff;
+    --theme-elevated: #f4f4f5;
+    --theme-line: #e4e4e7;
+    --theme-line-strong: #d4d4d8;
+    /* On light, fields are white wells with a firmer edge, so they read on the grey canvas. */
+    --theme-field: #ffffff;
+    --theme-field-line: #d4d4d8;
+    --theme-field-line-hover: #a1a1aa;
+    --theme-thumb: #ffffff;
+    --theme-switch-off: #d4d4d8;
+
+    --theme-fg: #18181b;
+    --theme-fg-soft: #52525b;
+    --theme-fg-muted: #6b6b75;
+
+    --theme-accent: #c42a60;
+    --theme-accent-strong: #a3214f;
+    --theme-cherry-500: #d6336c;
+    --theme-cherry-600: #c42a60;
+    --theme-on-cherry: #ffffff;
+    --theme-cherry-tint: rgb(244 63 127 / 0.1);
+
+    --theme-success: #047857;
+    --theme-warning: #9a4a06;
+    --theme-danger: #b91c1c;
+    --theme-danger-hover: #991b1b;
+
+    --theme-scrim: rgb(24 24 27 / 0.32);
+
+    --theme-glow-strong: rgb(244 63 127 / 0.16);
+    --theme-glow-weak: rgb(244 63 127 / 0.04);
+    --theme-selection: rgb(244 63 127 / 0.22);
+
+    --theme-shadow-soft: 0 10px 28px -16px rgb(24 24 27 / 0.18);
+    --theme-shadow-lift: 0 22px 48px -22px rgb(24 24 27 / 0.24);
+    --theme-shadow-glow: 0 10px 28px -12px rgb(244 63 127 / 0.45);
+    --theme-shadow-up: 0 -10px 28px -20px rgb(24 24 27 / 0.22);
+    --theme-shadow-thumb: 0 1px 4px rgb(24 24 27 / 0.25);
+    --theme-shadow-hairline: 0 1px 0 rgb(24 24 27 / 0.06);
+
+    --theme-plate-from: #ffffff;
+    --theme-plate-to: #f1f1f3;
+    --theme-plate-edge: rgb(24 24 27 / 0.06);
+}
+
+@theme inline {
+    --color-canvas: var(--theme-canvas);
+    --color-surface: var(--theme-surface);
+    --color-elevated: var(--theme-elevated);
+    --color-line: var(--theme-line);
+    --color-line-strong: var(--theme-line-strong);
+    --color-field: var(--theme-field);
+    --color-field-line: var(--theme-field-line);
+    --color-field-line-hover: var(--theme-field-line-hover);
+    --color-thumb: var(--theme-thumb);
+    --color-switch-off: var(--theme-switch-off);
+
+    --color-fg: var(--theme-fg);
+    --color-fg-soft: var(--theme-fg-soft);
+    --color-fg-muted: var(--theme-fg-muted);
+
+    --color-accent: var(--theme-accent);
+    --color-accent-strong: var(--theme-accent-strong);
+    --color-on-cherry: var(--theme-on-cherry);
+    --color-cherry-tint: var(--theme-cherry-tint);
+
+    /* Fixed brand scale; 500 and 600 shift per theme to keep text and rings legible. */
+    --color-cherry-50: #fff0f5;
+    --color-cherry-100: #ffe0eb;
+    --color-cherry-200: #ffc2d7;
+    --color-cherry-300: #ff9cbf;
+    --color-cherry-400: #ff6fa0;
+    --color-cherry-500: var(--theme-cherry-500);
+    --color-cherry-600: var(--theme-cherry-600);
+    --color-cherry-700: #c42a60;
+    --color-cherry-800: #5c1a35;
+    --color-cherry-900: #2a0f1b;
+
+    --color-success: var(--theme-success);
+    --color-warning: var(--theme-warning);
+    --color-danger: var(--theme-danger);
+    --color-danger-hover: var(--theme-danger-hover);
+    --color-scrim: var(--theme-scrim);
+
+    /* WhatsApp's teal, deepened so white text on it reads 5.2:1 in both themes. */
+    --color-whatsapp: #0e7a6d;
+    --color-whatsapp-hover: #0b6157;
+
+    --shadow-soft: var(--theme-shadow-soft);
+    --shadow-lift: var(--theme-shadow-lift);
+    --shadow-glow: var(--theme-shadow-glow);
+    --shadow-up: var(--theme-shadow-up);
+    --shadow-thumb: var(--theme-shadow-thumb);
+    --shadow-hairline: var(--theme-shadow-hairline);
+}
+
+@theme {
+    --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* The original store's rounded language. */
+    --radius-card: 1.5rem;
+    --radius-xl2: 1.5rem;
+    --radius-blob: 2.5rem;
+
+    /* Loader: three blossom petals breathe in turn around a slowly turning ring. */
+    --animate-ring-spin: ring-spin 1.6s linear infinite;
+    --animate-petal: petal 1.5s ease-in-out infinite;
 
     /* The select panel unfolds from the edge it is anchored to, so it reads as attached
      * to the field rather than dropped on top of it. */
@@ -87,33 +230,15 @@
         }
     }
 
-    @keyframes drop {
-        0% {
-            opacity: 0;
-            transform: translateY(-14px) scale(0.6);
-        }
-        20% {
-            opacity: 1;
-            transform: translateY(-14px) scale(1);
-        }
-        60% {
-            opacity: 1;
-            transform: translateY(10px) scale(1);
-        }
-        75%,
-        100% {
-            opacity: 0;
-            transform: translateY(12px) scale(0.4);
-        }
-    }
-
-    @keyframes shimmer {
+    @keyframes petal {
         0%,
         100% {
-            background-position: 0% 50%;
+            opacity: 0.35;
+            transform: scale(0.85);
         }
         50% {
-            background-position: 100% 50%;
+            opacity: 1;
+            transform: scale(1);
         }
     }
 
@@ -127,74 +252,56 @@
             transform: scale(1);
         }
     }
-
-    /*
-     * Each track slides by its own full width, not half the wrapper's: the next identical
-     * track is already in place behind it, so the restart is invisible at any viewport.
-     */
-    @keyframes marquee {
-        from {
-            transform: translateX(0);
-        }
-        to {
-            transform: translateX(-100%);
-        }
-    }
 }
 
-/* Brand gradients, shared by the utilities below and inline SVG fills. */
-:root {
-    --gradient-blush: linear-gradient(135deg, #fae9ec 0%, #fbf3ef 50%, #f7efe1 100%);
-    --gradient-gold: linear-gradient(135deg, #ecd6ae 0%, #d9b479 45%, #c4954f 100%);
-    --gradient-rose: linear-gradient(135deg, #b05468 0%, #8f4254 60%, #7a3949 100%);
-    --gradient-noir: linear-gradient(160deg, #2b1f24 0%, #1c1417 70%);
+/* A soft cherry glow from the top corner (hero, banners, placeholders). */
+@utility glow-cherry {
+    background-image: radial-gradient(
+        120% 90% at 85% 0%,
+        var(--theme-glow-strong) 0%,
+        var(--theme-glow-weak) 40%,
+        transparent 70%
+    );
 }
 
-/* Soft blush-to-champagne surface (hero, placeholders, banners). */
-@utility gradient-blush {
-    background-image: var(--gradient-blush);
+/* A centered cherry halo behind product and category art (placeholders, category cards). */
+@utility glow-spot {
+    background-image: radial-gradient(
+        60% 55% at 50% 48%,
+        var(--theme-glow-strong) 0%,
+        var(--theme-glow-weak) 55%,
+        transparent 80%
+    );
 }
 
-/* Champagne gold for accent CTAs; carries ink text (>= 5.8:1 at its darkest stop). */
-@utility gradient-gold {
-    background-image: var(--gradient-gold);
-}
-
-/* Deep rose for primary CTAs; carries white text (>= 4.9:1 at its lightest stop). */
-@utility gradient-rose {
-    background-image: var(--gradient-rose);
-}
-
-@utility gradient-noir {
-    background-image: var(--gradient-noir);
-}
-
-/* Gold text with a slow sheen, for short display accents only (decorative, large sizes). */
-@utility gold-text {
-    background-image: linear-gradient(110deg, #a77b3b 0%, #d4ab6d 35%, #84602f 70%, #c4954f 100%);
-    background-size: 220% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-/* A 1px gold hairline: border on light surfaces, decorative rules. */
-@utility hairline-gold {
-    border-color: color-mix(in oklab, var(--color-gold-400) 55%, transparent);
-}
-
-/* A thin, rose-tinted scrollbar for horizontal rows on pointer devices. */
+/* A thin, cherry-tinted scrollbar for horizontal rows on pointer devices. */
 @utility scrollbar-thin-soft {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-rose-200) transparent;
+    scrollbar-color: var(--theme-line-strong) transparent;
     &::-webkit-scrollbar {
         display: block;
         height: 6px;
     }
     &::-webkit-scrollbar-thumb {
         border-radius: 9999px;
-        background-color: var(--color-rose-200);
+        background-color: var(--theme-line-strong);
     }
+}
+
+/*
+ * The soft light surface product photos sit on. Photos are drawn with `mix-blend-mode:
+ * multiply` over it, so their white background takes the plate's gradient and no hard
+ * rectangle edge shows, in either theme.
+ */
+@utility product-plate {
+    isolation: isolate;
+    background-color: var(--theme-plate-to);
+    background-image: linear-gradient(
+        160deg,
+        var(--theme-plate-from) 0%,
+        var(--theme-plate-to) 100%
+    );
+    box-shadow: inset 0 0 0 1px var(--theme-plate-edge);
 }
 
 /* Horizontal scroller without a visible scrollbar (chips, carousels). */
@@ -206,13 +313,21 @@
 }
 
 @layer base {
+    /* Tailwind's ring offset defaults to white; it must match the page in either theme. */
+    *,
+    ::before,
+    ::after {
+        --tw-ring-offset-color: var(--theme-canvas);
+    }
+
     html {
         scroll-behavior: smooth;
         -webkit-tap-highlight-color: transparent;
+        background-color: var(--theme-canvas);
     }
 
     body {
-        @apply bg-ivory font-sans text-ink antialiased;
+        @apply bg-canvas font-sans text-fg antialiased;
     }
 
     h1,
@@ -221,15 +336,16 @@
     h4,
     h5,
     h6 {
-        @apply font-display font-semibold tracking-normal;
+        @apply font-display font-semibold tracking-tight;
     }
 
     /*
      * Every interactive element shows a real outline on keyboard focus (never a global
-     * `outline: none`). Gold-600 reads >= 3:1 against ivory, white and the rose surfaces.
+     * `outline: none`). Cherry-500 reads >= 5.9:1 on the dark surfaces and >= 3.4:1 on the
+     * light ones (the 3:1 bar for focus indicators).
      */
     :focus-visible {
-        outline: 2px solid var(--color-gold-600);
+        outline: 2px solid var(--theme-cherry-500);
         outline-offset: 2px;
     }
 
@@ -293,7 +409,7 @@
         border: 4px solid transparent;
         border-radius: 9999px;
         background-clip: padding-box;
-        background-color: var(--color-rose-200);
+        background-color: var(--theme-line-strong);
     }
 
     textarea::-webkit-scrollbar-corner,
@@ -305,12 +421,35 @@
         textarea,
         .scroll-soft {
             scrollbar-width: thin;
-            scrollbar-color: var(--color-rose-200) transparent;
+            scrollbar-color: var(--theme-line-strong) transparent;
         }
     }
 
+    /* Browser autofill paints its own (light blue / yellow) background; keep the field's. */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    select:-webkit-autofill {
+        -webkit-text-fill-color: var(--theme-fg);
+        caret-color: var(--theme-fg);
+        box-shadow: 0 0 0 1000px var(--theme-field) inset;
+        transition: background-color 9999s ease-out 0s;
+    }
+
+    /*
+     * While the theme flips, nothing tweens: otherwise every element with `transition` would
+     * fade its colors at its own speed and the page would change in uneven patches.
+     */
+    :root[data-theme-switching] *,
+    :root[data-theme-switching] *::before,
+    :root[data-theme-switching] *::after {
+        transition: none !important;
+    }
+
     ::selection {
-        @apply bg-rose-200 text-ink;
+        background-color: var(--theme-selection);
+        color: var(--theme-fg);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -342,4 +481,14 @@
             animation-duration: var(--countdown-duration) !important;
         }
     }
+}
+
+/*
+ * Circular theme reveal (View Transitions API): the new theme grows from the toggle. The
+ * script animates the clip-path; the default cross-fade is turned off so only the circle moves.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }

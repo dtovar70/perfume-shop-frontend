@@ -28,13 +28,14 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         ],
     },
     home: {
-        heroBadge: 'Perfumería de autor',
+        heroBadge: '',
         heroTitle: 'Tu esencia, *en cada gota*',
         heroSubtitle:
             'Fragancias originales de las casas que amas, elegidas una a una. Encuentra el aroma que te define y recíbelo en la puerta de tu casa.',
         heroPrimaryCta: 'Ver catálogo',
         heroSecondaryCta: 'Pedir por WhatsApp',
         heroFeatures: ['100% originales', 'Envíos a todo el país', 'Asesoría personalizada'],
+        heroMedia: null,
         categoriesEyebrow: 'Colecciones',
         categoriesTitle: 'Encuentra tu *próxima firma*',
         categoriesDescription:
@@ -123,7 +124,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         email: 'hola@kaizenperfumeria.com',
         phone: '0414-5086536',
         whatsapp: '0414-5086536',
-        city: 'Quíbor, estado Lara',
+        city: 'Caracas',
         schedule: 'Lunes a sábado, 9:00 a.m. – 6:00 p.m.',
         instagram: 'kaizen.perfumeria',
         tiktok: 'kaizen.perfumeria',

@@ -145,12 +145,12 @@ export function CategoryForm(props: CategoryFormProps) {
                 <div className="flex items-center gap-3">
                     <span
                         aria-hidden="true"
-                        className="size-10 shrink-0 rounded-2xl border border-ink/10"
+                        className="size-10 shrink-0 rounded-2xl border border-line"
                         style={{ backgroundColor: toColorInputValue(colorHex) }}
                     />
                     <div className="min-w-0">
-                        <h2 className="font-display text-xl break-words text-ink">{title}</h2>
-                        <p className="text-xs break-words text-ink-soft">
+                        <h2 className="font-display text-xl break-words text-fg">{title}</h2>
+                        <p className="text-xs break-words text-fg-soft">
                             Se añade al final del menú y del catálogo.
                         </p>
                     </div>
@@ -207,7 +207,7 @@ export function CategoryForm(props: CategoryFormProps) {
                                 shouldValidate: true,
                             })
                         }
-                        className="size-11 cursor-pointer rounded-full border border-line bg-white p-1"
+                        className="size-11 cursor-pointer rounded-full border border-line bg-surface p-1"
                     />
                 </label>
                 <div className="w-full max-w-48">

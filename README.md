@@ -1,7 +1,10 @@
-# Manada Russo Creativa — Storefront and admin
+# KaiZen Perfumería — Storefront and admin
 
-React + Vite + TanStack Query + zustand. Talks to the `backend-cups` API (`VITE_API_URL`,
-default `http://localhost:3000/api`).
+Online store and admin panel for KaiZen, a perfume shop selling original designer and Arabic
+fragrances across Venezuela (USD prices with a BCV bolívar reference, Pago Móvil payments).
+
+React 19 + Vite + Tailwind CSS v4 + TanStack Query + zustand. Talks to the `backend-perfume-shop`
+API (`VITE_API_URL`, default `http://localhost:3000/api`).
 
 ```bash
 npm install
@@ -27,20 +30,13 @@ npm run lint
   the proof form ("El plazo venció, pero si ya hiciste el pago súbelo aquí y lo verificaremos")
   with a WhatsApp link; the API flags the payment as late. A cancelled order shows a WhatsApp
   notice instead ("Si hiciste un pago, escríbenos").
-- **Personalization**: products tagged `personalizable` show an optional "Personalización" field
-  (140 characters, counter, the product's print text as the example) and a WhatsApp link
-  pre-filled with the product name. The text is part of the cart line identity (same product and
-  variant with two texts are two lines), shows in the cart, drawer, checkout summary and order
-  page, and is edited from the cart page. The persisted cart is version 2 (`migrate` keeps v1
-  lines, without personalization). The order page links to WhatsApp with the order code for
-  more details.
 - **Mis pedidos** (`/mis-pedidos`, linked in the footer): the links of the orders placed from this
-  browser, kept in `localStorage` (`manada-russo-recent-orders`; every access is guarded).
+  browser, kept in `localStorage` (`kaizen-recent-orders`; every access is guarded).
 - **Admin**: `/admin/pedidos` (status chips with counts, a "Reembolsos pendientes" chip, search,
   dates, table or cards by width, flags per order: late payment, missing stock, pending refund,
   duplicate reference, amount off), `/admin/pedidos/:code` (alerts for late payments, stock
   conflicts and pending refunds; payments with the private screenshot viewer and their flags;
-  each item's personalization with a copy button; actions through `ConfirmDialog`: confirming a
+  actions through `ConfirmDialog`: confirming a
   payment with missing stock needs "Entiendo que falta stock", cancelling an order with a
   payment asks "¿Hay que devolver dinero al cliente?", "Reactivar pedido" (can be forced when
   stock is missing), "Registrar pago manualmente" (same form as the customer's) and "Marcar
@@ -59,7 +55,7 @@ npm run lint
 
 - **Order QR** (`qrcode`, `utils/orderQr.ts`, `useOrderQr`; error correction M, quiet zone,
   black on white). The order page shows "Abre tu pedido desde tu teléfono" with the QR of the page's
-  own link and "Descargar QR" (`pedido-MR-000012.png`); below 1024px it starts collapsed ("Ver
+  own link and "Descargar QR" (`pedido-KZ-000012.png`); below 1024px it starts collapsed ("Ver
   QR"). The admin detail has "QR del pedido": a fresh customer link as a QR, "Descargar PNG" and
   "Imprimir etiqueta" (a new window with a 6×4 cm label: QR, code, customer, brand;
   `views/admin/orders/utils/printOrderLabel.ts`). The receipt PDF carries the QR too (API).

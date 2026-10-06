@@ -44,7 +44,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
 
     if (failed) {
         return (
-            <span className="flex size-24 flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-line bg-white p-2 text-center text-[11px] text-ink-soft">
+            <span className="flex size-24 flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-line bg-surface p-2 text-center text-[11px] text-fg-soft">
                 <ImageOff aria-hidden="true" className="size-5" />
                 No se pudo cargar
             </span>
@@ -56,7 +56,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="group relative size-24 shrink-0 overflow-hidden rounded-2xl border border-line bg-white focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+                className="group relative size-24 shrink-0 overflow-hidden rounded-2xl border border-line bg-surface focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2"
                 aria-label={`Ver ${title.toLowerCase()}`}
             >
                 <img
@@ -66,7 +66,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
                     onError={() => setFailed(true)}
                     className="size-full object-cover transition group-hover:scale-105"
                 />
-                <span className="absolute inset-x-0 bottom-0 bg-ink/60 py-0.5 text-[11px] font-semibold text-white">
+                <span className="absolute inset-x-0 bottom-0 bg-black/60 py-0.5 text-[11px] font-semibold text-white">
                     {thumbLabel}
                 </span>
             </button>
@@ -91,7 +91,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
                     event.stopPropagation()
                     if (event.target === event.currentTarget) close()
                 }}
-                className="fixed inset-0 m-auto h-[min(90vh,56rem)] w-[calc(100%-2rem)] max-w-3xl overflow-hidden rounded-card bg-ivory p-0 text-ink shadow-lift backdrop:bg-ink/60 backdrop:backdrop-blur-sm"
+                className="fixed inset-0 m-auto h-[min(90vh,56rem)] w-[calc(100%-2rem)] max-w-3xl overflow-hidden rounded-card border border-line bg-surface p-0 text-fg shadow-lift backdrop:bg-scrim backdrop:backdrop-blur-sm"
             >
                 {isOpen ? (
                     <div className="flex h-full flex-col">
@@ -102,7 +102,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
                                     type="button"
                                     onClick={() => setZoomed((value) => !value)}
                                     aria-label={zoomed ? 'Alejar' : 'Acercar'}
-                                    className="flex size-9 items-center justify-center rounded-full hover:bg-rose-100"
+                                    className="flex size-9 items-center justify-center rounded-full hover:bg-cherry-tint"
                                 >
                                     {zoomed ? (
                                         <ZoomOut aria-hidden="true" className="size-5" />
@@ -115,7 +115,7 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
                                     target="_blank"
                                     rel="noreferrer"
                                     aria-label="Abrir en una pestaña nueva"
-                                    className="flex size-9 items-center justify-center rounded-full hover:bg-rose-100"
+                                    className="flex size-9 items-center justify-center rounded-full hover:bg-cherry-tint"
                                 >
                                     <ExternalLink aria-hidden="true" className="size-5" />
                                 </a>
@@ -123,13 +123,13 @@ export function ProofViewer({ src, title, thumbLabel = 'Ver captura' }: ProofVie
                                     type="button"
                                     onClick={close}
                                     aria-label="Cerrar"
-                                    className="flex size-9 items-center justify-center rounded-full hover:bg-rose-100"
+                                    className="flex size-9 items-center justify-center rounded-full hover:bg-cherry-tint"
                                 >
                                     <X aria-hidden="true" className="size-5" />
                                 </button>
                             </div>
                         </div>
-                        <div className="scroll-soft min-h-0 flex-1 overflow-auto bg-ink/5">
+                        <div className="scroll-soft min-h-0 flex-1 overflow-auto bg-elevated">
                             <img
                                 src={src}
                                 alt={title}

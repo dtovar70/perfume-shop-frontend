@@ -6,7 +6,7 @@ import type { AdminProduct } from '@/@types/admin'
 import type { CategorySlug } from '@/@types/product'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { ProductMedia } from '@/components/shared/ProductMedia'
+import { ProductThumbnail } from '@/components/shared/ProductThumbnail'
 import { Alert, Button, ButtonLink, Card, Input, Skeleton, Spinner, Switch } from '@/components/ui'
 import { ADMIN_ROUTES, adminProductPath } from '@/constants/route.constant'
 import { NOTICE_DISMISS_MS } from '@/constants/ui.constant'
@@ -33,14 +33,13 @@ const PAGE_SIZE = 10
 const SEARCH_DEBOUNCE_MS = 350
 const SKELETON_ROWS = 6
 
-const headerCellClass =
-    'px-4 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase'
+const headerCellClass = 'px-4 py-3 text-left text-xs font-bold tracking-wide text-fg-soft uppercase'
 const cellClass = 'px-4 py-3 align-middle'
 /**
  * Pinned to the right edge of the scroll area, so edit/delete stay on screen even if the
  * table ever has to scroll sideways. It needs its own background to cover what slides under.
  */
-const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-ivory'
+const actionsCellClass = 'sticky right-0 bg-surface px-3 transition group-hover:bg-elevated'
 
 /** "S: 3 · M: 0" on hover; the stock shown is their sum. */
 function stockBreakdown(product: AdminProduct): string | undefined {
@@ -49,11 +48,7 @@ function stockBreakdown(product: AdminProduct): string | undefined {
 }
 
 function Thumbnail({ product }: { product: AdminProduct }) {
-    return (
-        <div className="aspect-[4/5] w-12 shrink-0 overflow-hidden rounded-xl bg-rose-50">
-            <ProductMedia image={product.images.at(0)} fallbackAlt="" size="sm" />
-        </div>
-    )
+    return <ProductThumbnail imageUrl={product.images.at(0)?.url} className="w-12" />
 }
 
 export function AdminProductsView() {
@@ -174,7 +169,7 @@ export function AdminProductsView() {
                                     type="button"
                                     onClick={() => setSearchInput('')}
                                     aria-label="Limpiar búsqueda"
-                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-rose-100"
+                                    className="flex size-8 items-center justify-center rounded-full text-fg-soft hover:bg-cherry-tint"
                                 >
                                     <X aria-hidden="true" className="size-4" />
                                 </button>
@@ -183,7 +178,7 @@ export function AdminProductsView() {
                     />
                 </div>
                 {products.isFetching && !products.isPending ? (
-                    <Spinner size="sm" className="text-rose-500" label="Actualizando la lista" />
+                    <Spinner size="sm" className="text-accent" label="Actualizando la lista" />
                 ) : null}
             </div>
 
@@ -266,7 +261,7 @@ export function AdminProductsView() {
                                     <col className="w-24" />
                                     <col className="w-26" />
                                 </colgroup>
-                                <thead className="border-b border-line bg-rose-50/60">
+                                <thead className="border-b border-line bg-elevated/60">
                                     <tr>
                                         <th scope="col" className={headerCellClass}>
                                             Producto
@@ -298,7 +293,7 @@ export function AdminProductsView() {
                                                 headerCellClass,
                                                 actionsCellClass,
                                                 // Same tint as the translucent header row, but opaque.
-                                                'bg-linear-to-r from-rose-50/60 to-rose-50/60 text-center',
+                                                'bg-elevated text-center',
                                             )}
                                         >
                                             Acciones
@@ -309,7 +304,7 @@ export function AdminProductsView() {
                                     {items.map((product) => (
                                         <tr
                                             key={product.id}
-                                            className="group transition hover:bg-ivory"
+                                            className="group transition hover:bg-elevated"
                                         >
                                             <td className={cellClass}>
                                                 <div className="flex items-center gap-3">
@@ -318,12 +313,12 @@ export function AdminProductsView() {
                                                         <Link
                                                             to={adminProductPath(product.id)}
                                                             state={editState}
-                                                            className="line-clamp-2 font-display text-base leading-snug break-words text-ink hover:text-rose-700"
+                                                            className="line-clamp-2 font-display text-base leading-snug break-words text-fg hover:text-accent"
                                                         >
                                                             {product.name}
                                                         </Link>
                                                         <p
-                                                            className="truncate text-xs text-ink-soft"
+                                                            className="truncate text-xs text-fg-soft"
                                                             title={`/${product.slug}`}
                                                         >
                                                             {product.brand
@@ -334,14 +329,14 @@ export function AdminProductsView() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className={`${cellClass} truncate text-ink-soft`}>
+                                            <td className={`${cellClass} truncate text-fg-soft`}>
                                                 {categoryName(product.category)}
                                             </td>
                                             <td className={cellClass}>
                                                 <AdminPriceCell product={product} align="center" />
                                             </td>
                                             <td
-                                                className={`${cellClass} text-center tabular-nums ${product.stock === 0 ? 'font-semibold text-rose-700' : ''}`}
+                                                className={`${cellClass} text-center tabular-nums ${product.stock === 0 ? 'font-semibold text-accent' : ''}`}
                                                 title={stockBreakdown(product)}
                                             >
                                                 {product.stock}
@@ -384,12 +379,12 @@ export function AdminProductsView() {
                                             <Link
                                                 to={adminProductPath(product.id)}
                                                 state={editState}
-                                                className="font-display text-base leading-snug break-words text-ink"
+                                                className="font-display text-base leading-snug break-words text-fg"
                                             >
                                                 {product.name}
                                             </Link>
                                             <p
-                                                className="text-xs text-ink-soft"
+                                                className="text-xs text-fg-soft"
                                                 title={stockBreakdown(product)}
                                             >
                                                 {product.brand ? `${product.brand.name} · ` : ''}
@@ -407,7 +402,7 @@ export function AdminProductsView() {
                                         />
                                     </div>
                                     <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-3">
-                                        <span className="text-sm text-ink-soft">
+                                        <span className="text-sm text-fg-soft">
                                             {product.isActive ? 'Visible en la tienda' : 'Oculto'}
                                         </span>
                                         <Switch
@@ -437,7 +432,7 @@ export function AdminProductsView() {
                 title="¿Eliminar este producto?"
                 description={
                     <>
-                        Vas a eliminar <strong className="text-ink">{pendingDelete?.name}</strong>{' '}
+                        Vas a eliminar <strong className="text-fg">{pendingDelete?.name}</strong>{' '}
                         con sus variantes y fotos. No se puede deshacer. Si solo quieres quitarlo de
                         la tienda, ocúltalo.
                     </>

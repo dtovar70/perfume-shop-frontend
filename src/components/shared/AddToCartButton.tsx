@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Check, ShoppingBag } from 'lucide-react'
 
 import type { Product } from '@/@types/product'
@@ -6,6 +6,7 @@ import { Button, type ButtonProps } from '@/components/ui'
 import { useCartActions, useCartItems } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/uiStore'
 import { cartUnitsOf } from '@/utils/cartAvailability'
+import { useFlyToCart } from '@/utils/hooks/useFlyToCart'
 import { stockOf } from '@/utils/productStock'
 
 const CONFIRMATION_MS = 1600
@@ -15,6 +16,7 @@ export interface AddToCartButtonProps extends Pick<
     'size' | 'variant' | 'fullWidth' | 'className'
 > {
     product: Product
+    /** "" for a product without variants. */
     variantId: string
     quantity?: number
     label?: string
@@ -39,19 +41,26 @@ export function AddToCartButton({
     const { addItem } = useCartActions()
     const cartItems = useCartItems()
     const { open } = useCartDrawer()
+    const flyToCart = useFlyToCart()
     const [isConfirming, setIsConfirming] = useState(false)
     const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
     useEffect(() => () => clearTimeout(timeoutRef.current), [])
 
-    const handleClick = () => {
+    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+        // Measured before the cart changes; the drawer (when it opens) waits for the landing,
+        // otherwise it would cover the flight.
+        flyToCart({
+            trigger: event.currentTarget,
+            productId: product.id,
+            productName: product.name,
+            onLand: openDrawerOnAdd ? open : undefined,
+        })
         addItem(product, variantId, quantity)
         onAdded?.()
         setIsConfirming(true)
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => setIsConfirming(false), CONFIRMATION_MS)
-
-        if (openDrawerOnAdd) open()
     }
 
     const variant = product.variants.find((candidate) => candidate.id === variantId)

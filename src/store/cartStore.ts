@@ -8,6 +8,7 @@ import { stockOf } from '@/utils/productStock'
 
 interface CartState {
     items: CartItem[]
+    /** `variantId` is "" for a product without variants. */
     addItem: (product: Product, variantId: string, quantity?: number) => void
     removeItem: (lineId: string) => void
     /**
@@ -50,27 +51,39 @@ function clampQuantity(quantity: number, stock: number): number {
     return Math.max(1, Math.min(Math.trunc(quantity), ceiling))
 }
 
+/**
+ * `variantId` is "" for a product without variants (one size): its stock is the product's own.
+ * A sold-out version cannot be added (the server would refuse it at checkout anyway).
+ */
 function createLine(product: Product, variantId: string, quantity: number): CartItem | null {
     const variant = product.variants.find((candidate) => candidate.id === variantId)
-    // A sold-out version cannot be added (the server would refuse it at checkout anyway).
-    if (!variant || stockOf(product, variant) <= 0) return null
+    if (product.variants.length > 0 ? !variant : variantId !== '') return null
+    if (stockOf(product, variant) <= 0) return null
+    const volumeMl = variant?.volumeMl ?? product.volumeMl
+    const variantLabel = variant
+        ? variant.volumeMl
+            ? `${variant.volumeMl} ml`
+            : variant.label
+        : volumeMl
+          ? `${volumeMl} ml`
+          : 'Unidad'
 
     return {
-        lineId: buildLineId(product.id, variant.id),
+        lineId: buildLineId(product.id, variantId),
         productId: product.id,
         slug: product.slug,
         name: product.name,
         category: product.category,
-        variantId: variant.id,
-        variantLabel: variant.label,
+        variantId,
+        variantLabel,
         brandName: product.brand?.name,
         imageUrl: product.images.at(0)?.url,
-        unitPrice: product.price + variant.priceDelta,
+        unitPrice: product.price + (variant?.priceDelta ?? 0),
         quantity: clampQuantity(quantity, stockOf(product, variant)),
     }
 }
 
-/** Old line fields that no longer exist (sublimation era) and are stripped on migration. */
+/** Old line fields that no longer exist (pre-perfume store) and are stripped on migration. */
 const LEGACY_LINE_FIELDS = [
     'personalization',
     'personalizable',
@@ -153,8 +166,8 @@ export const useCartStore = create<CartState>()(
             clear: () => set({ items: [] }),
         }),
         {
-            // The storage key is kept so carts saved before the rebrand are migrated, not lost.
-            name: 'manada-russo-cart',
+            // Older versions under this key are upgraded by `migrateCart`.
+            name: 'kaizen-cart',
             version: CART_VERSION,
             partialize: (state) => ({ items: state.items }),
             migrate: migrateCart,

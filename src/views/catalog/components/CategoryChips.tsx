@@ -9,8 +9,8 @@ const chipVariants = cva(
     {
         variants: {
             isSelected: {
-                true: 'border-transparent bg-rose-700 font-bold text-white shadow-soft',
-                false: 'border-line bg-white font-semibold text-ink-soft hover:border-gold-400 hover:text-ink',
+                true: 'border-transparent bg-cherry-500 font-bold text-on-cherry shadow-soft',
+                false: 'border-line bg-surface font-semibold text-fg-soft hover:border-cherry-500/50 hover:text-fg',
             },
         },
         defaultVariants: { isSelected: false },
@@ -50,7 +50,7 @@ export function CategoryChips({ categories, selected, onSelect, className }: Cat
             ref={listRef}
             aria-label="Categorías"
             className={cn(
-                'flex snap-x snap-mandatory scrollbar-none gap-2 overflow-x-auto overscroll-x-contain py-1 pointer-fine:scrollbar-thin-soft pointer-fine:snap-proximity',
+                'scrollbar-none flex snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain py-1 pointer-fine:scrollbar-thin-soft pointer-fine:snap-proximity',
                 className,
             )}
         >

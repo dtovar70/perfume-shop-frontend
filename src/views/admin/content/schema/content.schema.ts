@@ -4,6 +4,7 @@ import {
     CONTENT_PLACEHOLDERS,
     type AboutValueIcon,
     type ContentPlaceholder,
+    HERO_MEDIA_TYPES,
     type ContentSection,
     type SiteContent,
 } from '@/@types/content'
@@ -44,6 +45,8 @@ export const CONTENT_LIMITS = {
     testimonialQuote: 400,
     testimonialName: 60,
     testimonialProduct: 80,
+    mediaAlt: 140,
+    mediaUrl: 500,
 } as const
 
 export const CONTENT_LIST_SIZES = {
@@ -205,8 +208,17 @@ export type AnnouncementsFormValues = z.infer<typeof announcementsSchema>
 
 const title = () => text(L.title, { highlights: true })
 
+/** Set by the upload in the form; the API checks the URL is one of its uploads or https. */
+export const heroMediaSchema = z.object({
+    type: z.enum(HERO_MEDIA_TYPES),
+    url: z.string().min(1, 'Sube una imagen o un video').max(L.mediaUrl),
+    posterUrl: z.string().max(L.mediaUrl).nullable(),
+    alt: text(L.mediaAlt, { optional: true }),
+})
+export type HeroMediaFormValue = z.infer<typeof heroMediaSchema>
+
 export const homeSchema = z.object({
-    heroBadge: text(L.label),
+    heroBadge: text(L.label, { optional: true }),
     heroTitle: title(),
     heroSubtitle: text(L.text),
     heroPrimaryCta: text(L.label),
@@ -215,6 +227,7 @@ export const homeSchema = z.object({
         one: 'una ventaja',
         the: 'la ventaja',
     }),
+    heroMedia: heroMediaSchema.nullable(),
     categoriesEyebrow: text(L.label),
     categoriesTitle: title(),
     categoriesDescription: text(L.text, { placeholders: ['categorias'] }),
@@ -382,7 +395,11 @@ const announcementsForm: SectionFormConfig<'announcements', AnnouncementsFormVal
 const homeForm: SectionFormConfig<'home', HomeFormValues> = {
     section: 'home',
     schema: homeSchema,
-    toForm: (value) => ({ ...value, heroFeatures: toItems(value.heroFeatures) }),
+    toForm: (value) => ({
+        ...value,
+        heroFeatures: toItems(value.heroFeatures),
+        heroMedia: value.heroMedia ?? null,
+    }),
     toValue: (form) => ({ ...form, heroFeatures: fromItems(form.heroFeatures) }),
 }
 

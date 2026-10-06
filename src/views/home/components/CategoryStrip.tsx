@@ -1,10 +1,9 @@
-import { ArrowRight, PackageOpen } from 'lucide-react'
-import { Link } from 'react-router'
+import { PackageOpen } from 'lucide-react'
 
 import { CategoryCard } from '@/components/shared/CategoryCard'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { SectionHeading } from '@/components/shared/SectionHeading'
-import { Button, Skeleton } from '@/components/ui'
+import { Button, ButtonLink, Skeleton } from '@/components/ui'
 import { appConfig } from '@/configs/app.config'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
@@ -16,8 +15,8 @@ import { useCategories } from '@/views/catalog/hooks/useCategories'
 const LIMIT = appConfig.categoryLinkLimits.home
 
 /**
- * Image-feature category cards. Phones get a horizontal, snapping row (one card and a peek of
- * the next); from `md` they sit in a three-column grid.
+ * The original store's category band. Phones get a horizontal, snapping row (one card and a
+ * peek of the next); from `md` the cards sit in a three-column grid.
  */
 export function CategoryStrip() {
     const { data: categories, isPending, isError, refetch } = useCategories()
@@ -34,7 +33,10 @@ export function CategoryStrip() {
     const itemClass = 'w-[78%] shrink-0 snap-start sm:w-[45%] md:w-auto'
 
     return (
-        <section aria-labelledby="categories-heading" className="py-16 lg:py-24">
+        <section
+            aria-labelledby="categories-heading"
+            className="border-y border-line bg-surface py-16 lg:py-24"
+        >
             <div className={cn(CONTAINER, 'space-y-10')}>
                 <SectionHeading
                     headingId="categories-heading"
@@ -42,16 +44,9 @@ export function CategoryStrip() {
                     title={home.categoriesTitle}
                     description={description}
                     action={
-                        <Link
-                            to={ROUTES.catalog}
-                            className="group inline-flex min-h-11 items-center gap-2 text-sm font-bold text-rose-700 transition hover:text-rose-800"
-                        >
+                        <ButtonLink to={ROUTES.catalog} variant="secondary">
                             Ver todo el catálogo
-                            <ArrowRight
-                                aria-hidden="true"
-                                className="size-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Link>
+                        </ButtonLink>
                     }
                 />
 
@@ -71,7 +66,7 @@ export function CategoryStrip() {
                         {isPending
                             ? Array.from({ length: LIMIT }, (_, index) => (
                                   <li key={index} className={itemClass}>
-                                      <Skeleton shape="block" className="aspect-[4/5] h-auto w-full" />
+                                      <Skeleton shape="block" className="h-96 w-full" />
                                   </li>
                               ))
                             : featured.map((category, index) => (

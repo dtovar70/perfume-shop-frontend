@@ -8,17 +8,23 @@ export interface StockStateProps {
     className?: string
 }
 
-/** "Disponible" (green), "Últimas unidades" (gold) or "Agotado" (rose), with a dot. */
+/** "Disponible" (green), "Últimas unidades" (amber) or "Agotado" (red), with a dot. */
 export function StockState({ stock, className }: StockStateProps) {
     const state =
         stock <= 0
-            ? { label: 'Agotado', dot: 'bg-rose-600', text: 'text-rose-800' }
+            ? { label: 'Agotado', dot: 'bg-danger', text: 'text-danger' }
             : stock <= LOW_STOCK_THRESHOLD
-              ? { label: 'Últimas unidades', dot: 'bg-gold-500', text: 'text-gold-800' }
-              : { label: 'Disponible', dot: 'bg-emerald-600', text: 'text-emerald-800' }
+              ? { label: 'Últimas unidades', dot: 'bg-warning', text: 'text-warning' }
+              : { label: 'Disponible', dot: 'bg-success', text: 'text-success' }
 
     return (
-        <p className={cn('inline-flex items-center gap-2 text-sm font-bold', state.text, className)}>
+        <p
+            className={cn(
+                'inline-flex items-center gap-2 text-sm font-bold',
+                state.text,
+                className,
+            )}
+        >
             <span className="relative flex size-2.5">
                 {stock > 0 ? (
                     <span
@@ -29,7 +35,10 @@ export function StockState({ stock, className }: StockStateProps) {
                         )}
                     />
                 ) : null}
-                <span aria-hidden="true" className={cn('relative size-2.5 rounded-full', state.dot)} />
+                <span
+                    aria-hidden="true"
+                    className={cn('relative size-2.5 rounded-full', state.dot)}
+                />
             </span>
             {state.label}
         </p>

@@ -46,7 +46,6 @@ export function FeaturedProducts() {
             moreTo={ROUTES.catalog}
             moreLabel={home.featuredCta}
             skeletonCount={FEATURED_LIMIT}
-            className="bg-white/60"
         />
     )
 }

@@ -21,7 +21,7 @@ export function BsApproximation({ usd, className, compact = false }: BsApproxima
 
     if (compact) {
         return (
-            <p className={cn('text-xs text-ink-soft tabular-nums', className)}>
+            <p className={cn('text-xs text-fg-soft tabular-nums', className)}>
                 ≈ {formatBolivares(usdToBolivares(usd, data.rate))}
             </p>
         )
@@ -29,10 +29,10 @@ export function BsApproximation({ usd, className, compact = false }: BsApproxima
 
     return (
         <div className={cn('space-y-0.5 text-right', className)}>
-            <p className="text-sm font-semibold text-ink">
+            <p className="text-sm font-semibold text-fg">
                 ≈ {formatBolivares(usdToBolivares(usd, data.rate))}
             </p>
-            <p className="text-xs text-ink-soft">
+            <p className="text-xs text-fg-soft">
                 Tasa BCV del {formatDay(data.effectiveDate)}: {formatRate(data.rate)} Bs/$
             </p>
         </div>

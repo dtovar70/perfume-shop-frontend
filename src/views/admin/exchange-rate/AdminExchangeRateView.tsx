@@ -35,8 +35,7 @@ function withPeriod(text: string): string {
     return text.endsWith('.') ? text : `${text}.`
 }
 
-const headerCellClass =
-    'px-4 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase'
+const headerCellClass = 'px-4 py-3 text-left text-xs font-bold tracking-wide text-fg-soft uppercase'
 const cellClass = 'px-4 py-3 align-middle'
 
 function syncMessage(sync: RateSyncResult): { tone: 'success' | 'error' | 'info'; text: string } {
@@ -225,20 +224,20 @@ export function AdminExchangeRateView() {
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <Card padding="md" className="space-y-3">
-                            <h2 className="font-display text-xl text-ink">Tasa vigente</h2>
+                            <h2 className="font-display text-xl text-fg">Tasa vigente</h2>
                             {current ? (
                                 <>
-                                    <p className="font-display text-4xl text-ink">
+                                    <p className="font-display text-4xl text-fg">
                                         {formatRate(current.rate)}{' '}
-                                        <span className="text-lg text-ink-soft">Bs/$</span>
+                                        <span className="text-lg text-fg-soft">Bs/$</span>
                                     </p>
-                                    <div className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+                                    <div className="flex flex-wrap items-center gap-2 text-sm text-fg-soft">
                                         <Badge tone={current.isManual ? 'butter' : 'sky'} size="sm">
                                             {current.sourceLabel}
                                         </Badge>
                                         <span>Fecha valor {formatDay(current.effectiveDate)}</span>
                                     </div>
-                                    <p className="text-sm text-ink-soft">
+                                    <p className="text-sm text-fg-soft">
                                         Exacta:{' '}
                                         {current.rate.toLocaleString('es-VE', {
                                             maximumFractionDigits: 4,
@@ -254,7 +253,7 @@ export function AdminExchangeRateView() {
                                             reciente.
                                         </Alert>
                                     ) : (
-                                        <p className="text-xs text-ink-soft">
+                                        <p className="text-xs text-fg-soft">
                                             Se reemplaza sola cuando el BCV publique una nueva. Si
                                             no llega ninguna, los pedidos se pausan el{' '}
                                             {withPeriod(formatDateTime(current.usableUntil))}
@@ -267,7 +266,7 @@ export function AdminExchangeRateView() {
                                     pedidos. Usa “Actualizar ahora” o fija una tasa manual.
                                 </Alert>
                             )}
-                            <p className="text-xs text-ink-soft">
+                            <p className="text-xs text-fg-soft">
                                 Se consulta sola cada{' '}
                                 {Math.round(data.syncIntervalMinutes / 60) || 1} h (primero
                                 bcv.org.ve y, si no responde, DolarApi).
@@ -278,8 +277,8 @@ export function AdminExchangeRateView() {
                         </Card>
 
                         <Card padding="md" className="space-y-3">
-                            <h2 className="font-display text-xl text-ink">Tasa manual</h2>
-                            <p className="text-sm text-ink-soft">
+                            <h2 className="font-display text-xl text-fg">Tasa manual</h2>
+                            <p className="text-sm text-fg-soft">
                                 Úsala si el BCV no responde. Se aplica de inmediato y se mantiene
                                 hasta que el BCV publique una tasa distinta, que la reemplaza sola.
                             </p>
@@ -324,7 +323,7 @@ export function AdminExchangeRateView() {
                                     </Button>
                                 </form>
                             ) : (
-                                <p className="text-sm font-semibold text-ink-soft">
+                                <p className="text-sm font-semibold text-fg-soft">
                                     Solo un administrador puede fijar una tasa manual.
                                 </p>
                             )}
@@ -332,17 +331,15 @@ export function AdminExchangeRateView() {
                     </div>
 
                     <Card padding="none" className="overflow-hidden">
-                        <h2 className="px-4 pt-4 pb-2 font-display text-xl text-ink">
+                        <h2 className="px-4 pt-4 pb-2 font-display text-xl text-fg">
                             Últimas tasas
                         </h2>
                         {data.history.length === 0 ? (
-                            <p className="px-4 pb-4 text-sm text-ink-soft">
-                                Sin registros todavía.
-                            </p>
+                            <p className="px-4 pb-4 text-sm text-fg-soft">Sin registros todavía.</p>
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full min-w-[32rem] text-sm">
-                                    <thead className="border-y border-line bg-rose-50/60">
+                                    <thead className="border-y border-line bg-elevated/60">
                                         <tr>
                                             <th scope="col" className={headerCellClass}>
                                                 Fecha valor
@@ -365,7 +362,7 @@ export function AdminExchangeRateView() {
                                         {data.history.map((entry, index) => (
                                             <tr
                                                 key={entry.id}
-                                                className={cn(index === 0 && 'bg-emerald-100/20')}
+                                                className={cn(index === 0 && 'bg-success/10')}
                                             >
                                                 <td className={cellClass}>
                                                     {formatDay(entry.effectiveDate)}
@@ -384,7 +381,7 @@ export function AdminExchangeRateView() {
                                                         ? ` · ${entry.createdBy.name}`
                                                         : ''}
                                                 </td>
-                                                <td className={`${cellClass} text-ink-soft`}>
+                                                <td className={`${cellClass} text-fg-soft`}>
                                                     {formatDateTime(entry.fetchedAt)}
                                                 </td>
                                             </tr>

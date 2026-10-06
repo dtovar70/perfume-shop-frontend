@@ -22,8 +22,8 @@ export function OrderNotes({ order }: { order: AdminOrder }) {
     return (
         <Card padding="md" className="space-y-4">
             <div>
-                <h2 className="font-display text-xl text-ink">Notas internas</h2>
-                <p className="text-xs text-ink-soft">Solo las ve el equipo, nunca el cliente.</p>
+                <h2 className="font-display text-xl text-fg">Notas internas</h2>
+                <p className="text-xs text-fg-soft">Solo las ve el equipo, nunca el cliente.</p>
             </div>
             <form onSubmit={submit} className="space-y-3">
                 <Textarea
@@ -31,7 +31,7 @@ export function OrderNotes({ order }: { order: AdminOrder }) {
                     hideLabel
                     rows={3}
                     maxLength={MAX_NOTE}
-                    placeholder="Ej. Pidió cambiar el color de la taza"
+                    placeholder="Ej. Pidió envolverlo para regalo"
                     value={body}
                     onChange={(event) => setBody(event.target.value)}
                 />
@@ -49,9 +49,9 @@ export function OrderNotes({ order }: { order: AdminOrder }) {
             {order.notes.length ? (
                 <ul className="space-y-2">
                     {order.notes.map((note) => (
-                        <li key={note.id} className="rounded-2xl bg-ivory px-4 py-3 text-sm">
-                            <p className="break-words whitespace-pre-line text-ink">{note.body}</p>
-                            <p className="mt-1 text-xs text-ink-soft">
+                        <li key={note.id} className="rounded-2xl bg-canvas px-4 py-3 text-sm">
+                            <p className="break-words whitespace-pre-line text-fg">{note.body}</p>
+                            <p className="mt-1 text-xs text-fg-soft">
                                 {note.author?.name ?? 'Usuario eliminado'} ·{' '}
                                 {formatDateTime(note.createdAt)}
                             </p>

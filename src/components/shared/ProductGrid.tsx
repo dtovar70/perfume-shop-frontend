@@ -22,7 +22,7 @@ export function ProductGrid({
     className,
 }: ProductGridProps) {
     const gridClassName = cn(
-        'grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:grid-cols-3 xl:grid-cols-4',
+        'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:gap-6 xl:grid-cols-4',
         className,
     )
 

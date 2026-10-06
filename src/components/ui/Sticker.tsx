@@ -4,15 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 
 const stickerVariants = cva(
-    'inline-flex items-center justify-center rounded-full border border-white/70 font-sans font-bold tracking-[0.08em] uppercase shadow-soft',
+    'inline-flex items-center justify-center rounded-full border border-fg/10 font-display font-semibold shadow-soft',
     {
         variants: {
             tone: {
-                blush: 'gradient-rose text-white',
-                sky: 'bg-ink text-ivory',
-                butter: 'gradient-gold text-ink',
-                mint: 'bg-emerald-700 text-white',
-                lilac: 'bg-rose-100 text-rose-800',
+                blush: 'bg-cherry-500 text-on-cherry',
+                sky: 'bg-fg text-canvas',
+                butter: 'bg-elevated text-accent-strong',
+                mint: 'bg-success text-canvas',
+                lilac: 'bg-cherry-tint text-accent-strong',
             },
             size: {
                 sm: 'px-2.5 py-1 text-[10px]',
@@ -20,8 +20,8 @@ const stickerVariants = cva(
                 lg: 'px-4 py-1.5 text-xs',
             },
             rotation: {
-                left: '-rotate-2',
-                right: 'rotate-2',
+                left: '-rotate-6',
+                right: 'rotate-6',
                 none: 'rotate-0',
             },
         },

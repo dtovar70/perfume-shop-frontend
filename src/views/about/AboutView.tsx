@@ -23,16 +23,16 @@ export function AboutView() {
             >
                 <div
                     aria-hidden="true"
-                    className="absolute -top-16 right-0 -z-10 size-80 rounded-full bg-gold-100 opacity-80 blur-3xl"
+                    className="absolute -top-16 right-0 -z-10 size-80 rounded-full bg-elevated opacity-80 blur-3xl"
                 />
 
                 <div className="space-y-6">
-                    <p className="flex items-center gap-3 text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
-                        <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
+                    <p className="flex items-center gap-3 text-[11px] font-bold tracking-[0.28em] text-accent uppercase sm:text-xs">
+                        <span aria-hidden="true" className="h-px w-8 bg-cherry-500" />
                         {about.badge}
                     </p>
 
-                    <h1 className="font-display text-[2.6rem] leading-[1.02] font-semibold text-balance text-ink sm:text-5xl lg:text-6xl">
+                    <h1 className="font-display text-[2.6rem] leading-[1.02] font-semibold text-balance text-fg sm:text-5xl lg:text-6xl">
                         <HighlightedText text={about.title} />
                     </h1>
 
@@ -41,8 +41,8 @@ export function AboutView() {
                             key={index}
                             className={
                                 index === 0
-                                    ? 'font-display text-2xl leading-snug text-ink'
-                                    : 'leading-relaxed text-ink-soft'
+                                    ? 'font-display text-2xl leading-snug text-fg'
+                                    : 'leading-relaxed text-fg-soft'
                             }
                         >
                             {fill(paragraph)}
@@ -56,7 +56,11 @@ export function AboutView() {
 
                 <div className="relative mx-auto w-full max-w-sm px-4">
                     <PerfumeArt notes={false} />
-                    <Sticker tone="butter" size="lg" className="absolute bottom-6 left-0 shadow-lift">
+                    <Sticker
+                        tone="butter"
+                        size="lg"
+                        className="absolute bottom-6 left-0 shadow-lift"
+                    >
                         {about.imageBadge}
                     </Sticker>
                 </div>

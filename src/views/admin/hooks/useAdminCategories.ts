@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 
-import type {
-    AdminCategory,
-    CategoryCreateInput,
-    CategoryInput,
-} from '@/@types/admin'
+import type { AdminCategory, CategoryCreateInput, CategoryInput } from '@/@types/admin'
 import type { CategorySlug } from '@/@types/product'
 import { queryKeys } from '@/constants/query-keys.constant'
 import { AdminService } from '@/services/AdminService'

@@ -54,14 +54,14 @@ export function StickyAddToCartBar({
             aria-hidden={!isVisible}
             inert={!isVisible}
             className={cn(
-                'fixed inset-x-0 bottom-0 z-30 border-t border-gold-200/70 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-12px_32px_-18px_rgb(43_31_36/0.3)] backdrop-blur transition-transform duration-300 motion-reduce:transition-none lg:hidden',
+                'fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-up backdrop-blur transition-transform duration-300 motion-reduce:transition-none lg:hidden',
                 isVisible ? 'translate-y-0' : 'translate-y-full',
             )}
         >
             <div className="mx-auto flex max-w-xl items-center gap-3">
                 {title ? (
                     <div className="min-w-0 shrink">
-                        <p className="truncate font-display text-base leading-tight font-semibold text-ink">
+                        <p className="truncate font-display text-base leading-tight font-semibold text-fg">
                             {title}
                         </p>
                         <PriceTag price={price} compareAtPrice={compareAtPrice} size="sm" />
@@ -73,7 +73,7 @@ export function StickyAddToCartBar({
                     size="md"
                     className={cn('min-w-0 shrink-0 flex-col items-start gap-0', title && 'hidden')}
                 />
-                <div className="ml-auto max-w-56 min-w-0 flex-1 [&>button]:w-full">{children}</div>
+                <div className="ml-auto max-w-56 min-w-36 flex-1 [&>button]:w-full">{children}</div>
             </div>
         </div>
     )

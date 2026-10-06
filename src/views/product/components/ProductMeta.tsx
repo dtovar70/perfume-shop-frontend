@@ -40,11 +40,11 @@ export function ProductMeta({ product }: ProductMetaProps) {
                 <section aria-labelledby="description-heading" className="space-y-3">
                     <h2
                         id="description-heading"
-                        className="font-display text-3xl font-semibold text-ink"
+                        className="font-display text-3xl font-semibold text-fg"
                     >
                         Descripción
                     </h2>
-                    <p className="text-[15px] leading-relaxed whitespace-pre-line text-ink-soft">
+                    <p className="text-[15px] leading-relaxed whitespace-pre-line text-fg-soft">
                         {product.description}
                     </p>
                 </section>
@@ -54,7 +54,7 @@ export function ProductMeta({ product }: ProductMetaProps) {
                 <section aria-labelledby="highlights-heading" className="space-y-3">
                     <h2
                         id="highlights-heading"
-                        className="font-display text-2xl font-semibold text-ink"
+                        className="font-display text-2xl font-semibold text-fg"
                     >
                         Por qué te va a encantar
                     </h2>
@@ -62,9 +62,9 @@ export function ProductMeta({ product }: ProductMetaProps) {
                         {product.highlights.map((highlight) => (
                             <li
                                 key={highlight}
-                                className="flex items-start gap-3 text-[15px] text-ink"
+                                className="flex items-start gap-3 text-[15px] text-fg"
                             >
-                                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-800">
+                                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-elevated text-accent">
                                     <Check aria-hidden="true" className="size-3" strokeWidth={3} />
                                 </span>
                                 {highlight}
@@ -75,7 +75,7 @@ export function ProductMeta({ product }: ProductMetaProps) {
             ) : null}
 
             <section aria-labelledby="faq-heading" className="space-y-3">
-                <h2 id="faq-heading" className="font-display text-2xl font-semibold text-ink">
+                <h2 id="faq-heading" className="font-display text-2xl font-semibold text-fg">
                     Preguntas frecuentes
                 </h2>
                 <Accordion items={faqItems} />

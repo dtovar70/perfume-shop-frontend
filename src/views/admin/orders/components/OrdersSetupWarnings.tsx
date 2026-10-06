@@ -4,7 +4,7 @@ import type { AdminOrdersSummary } from '@/@types/order'
 import { Alert } from '@/components/ui'
 import { ADMIN_ROUTES } from '@/constants/route.constant'
 
-const linkClass = 'font-semibold underline underline-offset-2 hover:text-rose-900'
+const linkClass = 'font-semibold underline underline-offset-2 hover:text-accent-strong'
 
 /** What keeps the store from taking orders right now, with a link to fix it. */
 export function OrdersSetupWarnings({ summary }: { summary: AdminOrdersSummary | undefined }) {

@@ -14,14 +14,14 @@ export interface AdminAuthCardProps {
 /** The centered card of the admin's signed-out pages (login, password recovery). */
 export function AdminAuthCard({ title, subtitle, children, footer }: AdminAuthCardProps) {
     return (
-        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ivory px-4 py-12">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-4 py-12">
             <span
                 aria-hidden="true"
-                className="absolute top-1/4 -left-24 size-80 rounded-full bg-gold-200 opacity-50 blur-3xl"
+                className="absolute top-1/4 -left-24 size-80 rounded-full bg-cherry-tint opacity-50 blur-3xl"
             />
             <span
                 aria-hidden="true"
-                className="absolute -right-24 bottom-1/4 size-80 rounded-full bg-rose-200 opacity-50 blur-3xl"
+                className="absolute -right-24 bottom-1/4 size-80 rounded-full bg-cherry-500/20 opacity-50 blur-3xl"
             />
 
             <div className="relative w-full max-w-md space-y-4">
@@ -29,14 +29,14 @@ export function AdminAuthCard({ title, subtitle, children, footer }: AdminAuthCa
                     <div className="flex flex-col items-center gap-3 text-center">
                         <Monogram className="size-14 rounded-2xl" />
                         <div className="space-y-1">
-                            <h1 className="font-display text-3xl text-ink">{title}</h1>
-                            {subtitle ? <p className="text-sm text-ink-soft">{subtitle}</p> : null}
+                            <h1 className="font-display text-3xl text-fg">{title}</h1>
+                            {subtitle ? <p className="text-sm text-fg-soft">{subtitle}</p> : null}
                         </div>
                     </div>
                     {children}
                 </Card>
                 {footer ? (
-                    <div className="px-2 text-center text-sm text-ink-soft">{footer}</div>
+                    <div className="px-2 text-center text-sm text-fg-soft">{footer}</div>
                 ) : null}
             </div>
         </main>

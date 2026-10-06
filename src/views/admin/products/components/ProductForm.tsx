@@ -38,10 +38,10 @@ import {
 } from '@/views/admin/products/schema/product.schema'
 import { applyServerErrors } from '@/views/admin/products/utils/applyServerErrors'
 
-const sectionTitleClass = 'font-display text-2xl font-semibold text-ink'
+const sectionTitleClass = 'font-display text-2xl font-semibold text-fg'
 
 const iconButtonClass =
-    'flex size-11 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
+    'flex size-11 shrink-0 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
 
 export interface ProductFormProps {
     mode: 'create' | 'edit'
@@ -213,7 +213,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 readOnly
                                 tabIndex={-1}
                                 hint="Suma de las variantes. Cámbialo en cada una."
-                                className="bg-ivory tabular-nums"
+                                className="bg-canvas tabular-nums"
                             />
                         ) : (
                             <Input
@@ -276,10 +276,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         name="gender"
                         render={({ field }) => (
                             <fieldset className="space-y-2">
-                                <legend className="text-sm font-semibold text-ink">Para</legend>
+                                <legend className="text-sm font-semibold text-fg">Para</legend>
                                 <div
                                     role="radiogroup"
-                                    className="inline-flex rounded-xl border border-line bg-ivory p-1"
+                                    className="inline-flex rounded-xl border border-line bg-canvas p-1"
                                 >
                                     {PRODUCT_GENDERS.map((gender) => {
                                         const isOn = field.value === gender
@@ -293,8 +293,8 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                                 className={cn(
                                                     'h-10 rounded-lg px-4 text-sm font-semibold transition',
                                                     isOn
-                                                        ? 'bg-white text-rose-800 shadow-soft ring-1 ring-rose-200'
-                                                        : 'text-ink-soft hover:text-ink',
+                                                        ? 'bg-surface text-accent-strong shadow-soft ring-1 ring-cherry-500/30'
+                                                        : 'text-fg-soft hover:text-fg',
                                                 )}
                                             >
                                                 {GENDER_LABELS[gender]}
@@ -303,7 +303,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                     })}
                                 </div>
                                 {errors.gender?.message ? (
-                                    <p role="alert" className="text-sm font-medium text-rose-700">
+                                    <p role="alert" className="text-sm font-medium text-accent">
                                         {errors.gender.message}
                                     </p>
                                 ) : null}
@@ -315,7 +315,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                 <Card className="space-y-5">
                     <div>
                         <h2 className={sectionTitleClass}>Pirámide olfativa</h2>
-                        <p className="text-sm text-ink-soft">
+                        <p className="text-sm text-fg-soft">
                             Escribe cada nota y pulsa Enter o coma. Máximo {MAX_NOTES_PER_TIER} por
                             nivel.
                         </p>
@@ -381,8 +381,8 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                             <p
                                 id={highlightsLimitId}
                                 className={cn(
-                                    'text-sm text-ink-soft tabular-nums',
-                                    isHighlightsFull && 'font-semibold text-rose-700',
+                                    'text-sm text-fg-soft tabular-nums',
+                                    isHighlightsFull && 'font-semibold text-accent',
                                 )}
                             >
                                 {highlights.fields.length}/{MAX_HIGHLIGHTS} · Máximo{' '}
@@ -402,7 +402,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                     </div>
 
                     {highlights.fields.length === 0 ? (
-                        <p className="text-sm text-ink-soft">
+                        <p className="text-sm text-fg-soft">
                             Sin detalles. Aparecen como lista en la página del producto.
                         </p>
                     ) : (
@@ -429,7 +429,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         </ul>
                     )}
                     {errors.highlights?.message ? (
-                        <p role="alert" className="text-sm font-medium text-rose-700">
+                        <p role="alert" className="text-sm font-medium text-accent">
                             {errors.highlights.message}
                         </p>
                     ) : null}
@@ -439,10 +439,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h2 className={sectionTitleClass}>Variantes</h2>
-                            <p className="text-sm text-ink-soft">
-                                Una por tamaño (ml). La primera con stock es la predeterminada; las
-                                que están en 0 se ven como «Agotado». Sin variantes el producto no
-                                se puede agregar al carrito.
+                            <p className="text-sm text-fg-soft">
+                                Opcional: una por tamaño (ml). La primera con stock es la
+                                predeterminada; las que están en 0 se ven como «Agotado». Sin
+                                variantes se vende un solo tamaño con el stock del producto.
                             </p>
                         </div>
                         <Button
@@ -464,9 +464,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                     </div>
 
                     {variants.fields.length === 0 ? (
-                        <Alert>
-                            Este producto no tiene variantes, así que no se podrá comprar.
-                        </Alert>
+                        <p className="text-sm text-fg-soft">
+                            Sin variantes: se vende un solo tamaño con el stock y los mililitros del
+                            producto.
+                        </p>
                     ) : (
                         <ul className="space-y-4">
                             {variants.fields.map((field, index) => {
@@ -474,7 +475,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                 return (
                                     <li
                                         key={field.id}
-                                        className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-ivory p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                                        className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-canvas p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
                                     >
                                         <div className="sm:col-span-2">
                                             <Input
@@ -545,10 +546,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         render={({ field }) => (
                             <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-sm font-semibold text-ink">
+                                    <p className="text-sm font-semibold text-fg">
                                         Visible en la tienda
                                     </p>
-                                    <p className="text-xs text-ink-soft">
+                                    <p className="text-xs text-fg-soft">
                                         {field.value
                                             ? 'Los clientes pueden verlo y comprarlo.'
                                             : 'Oculto: solo se ve en el panel.'}
@@ -569,8 +570,8 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         render={({ field }) => (
                             <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-sm font-semibold text-ink">Destacado</p>
-                                    <p className="text-xs text-ink-soft">
+                                    <p className="text-sm font-semibold text-fg">Destacado</p>
+                                    <p className="text-xs text-fg-soft">
                                         Aparece en «Fragancias destacadas» del inicio.
                                     </p>
                                 </div>
@@ -588,7 +589,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                         name="tags"
                         render={({ field }) => (
                             <fieldset className="space-y-2">
-                                <legend className="text-sm font-semibold text-ink">
+                                <legend className="text-sm font-semibold text-fg">
                                     Etiquetas
                                     <OptionalMark />
                                 </legend>
@@ -614,10 +615,10 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
                                                     )
                                                 }
                                                 className={cn(
-                                                    'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2',
+                                                    'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2',
                                                     isOn
-                                                        ? 'border-rose-700 bg-rose-700 text-white'
-                                                        : 'border-line bg-white text-ink-soft hover:border-gold-400',
+                                                        ? 'border-cherry-500 bg-cherry-500 text-on-cherry'
+                                                        : 'border-line bg-surface text-fg-soft hover:border-cherry-500/50',
                                                 )}
                                             >
                                                 {PRODUCT_TAG_LABELS[tag]}

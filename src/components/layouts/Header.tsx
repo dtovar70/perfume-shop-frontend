@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cva } from 'class-variance-authority'
 import { Menu, Package, Search, ShoppingBag, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
@@ -8,36 +8,112 @@ import { BrandLogo } from '@/components/layouts/BrandLogo'
 import { HeaderIconButton } from '@/components/layouts/HeaderIconButton'
 import { PerfumesMenu } from '@/components/layouts/PerfumesMenu'
 import { SearchField } from '@/components/layouts/SearchField'
+import { ThemeToggle } from '@/components/layouts/ThemeToggle'
 import { Tooltip } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { useCartCount } from '@/store/cartStore'
-import { useCartDrawer, useMobileMenu } from '@/store/uiStore'
+import { themeToggleLabel, useTheme } from '@/store/themeStore'
+import { useCartDrawer, useCartPulse, useMobileMenu } from '@/store/uiStore'
 import { cn } from '@/utils/cn'
+import { prefersReducedMotion } from '@/utils/flyToCart'
 import { useNavLinks } from '@/utils/hooks/useNavLinks'
 
-/** Text links with a gold hairline that draws in under the active/hovered one. */
+/** Pill links, as in the original store: the active one sits on a cherry tint. */
 const navLinkVariants = cva(
-    "relative px-3 py-2 text-[13px] font-bold tracking-[0.14em] whitespace-nowrap uppercase transition-colors duration-200 after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:bg-gold-500 after:transition-transform after:duration-300 after:content-[''] hover:text-rose-700 hover:after:scale-x-100 data-active:text-rose-700 data-active:after:scale-x-100",
+    'rounded-full px-3.5 py-2 text-sm font-semibold whitespace-nowrap transition duration-200',
     {
         variants: {
             isActive: {
-                true: 'text-rose-700 after:scale-x-100',
-                false: 'text-ink after:scale-x-0',
+                true: 'bg-cherry-tint text-accent-strong',
+                false: 'text-fg-soft hover:bg-elevated hover:text-fg data-active:bg-cherry-tint data-active:text-accent-strong',
             },
         },
         defaultVariants: { isActive: false },
     },
 )
 
+/** The cart button's landing feedback: icon bounce, badge pop and a cherry ripple. */
+function useCartLanding() {
+    const cartPulse = useCartPulse()
+    const iconRef = useRef<HTMLSpanElement>(null)
+    const badgeRef = useRef<HTMLSpanElement>(null)
+    const rippleRef = useRef<HTMLSpanElement>(null)
+
+    useEffect(() => {
+        if (cartPulse === 0) return
+        const animations: Animation[] = []
+        const play = (
+            element: HTMLElement | null,
+            keyframes: Keyframe[],
+            options: KeyframeAnimationOptions,
+        ) => {
+            if (element && typeof element.animate === 'function') {
+                animations.push(element.animate(keyframes, options))
+            }
+        }
+
+        if (prefersReducedMotion()) {
+            // Only a subtle pop of the count.
+            play(
+                badgeRef.current,
+                [
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.15)' },
+                    { transform: 'scale(1)' },
+                ],
+                { duration: 200, easing: 'ease-out' },
+            )
+            return () => animations.forEach((animation) => animation.cancel())
+        }
+
+        play(
+            badgeRef.current,
+            [
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.35)', offset: 0.4 },
+                { transform: 'scale(1)' },
+            ],
+            { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' },
+        )
+        play(
+            iconRef.current,
+            [
+                { transform: 'translateY(0) scale(1)' },
+                { transform: 'translateY(-3px) scale(1.18)', offset: 0.35 },
+                { transform: 'translateY(1px) scale(0.94)', offset: 0.7 },
+                { transform: 'translateY(0) scale(1)' },
+            ],
+            { duration: 460, easing: 'ease-out' },
+        )
+        play(
+            rippleRef.current,
+            [
+                { transform: 'scale(0.7)', opacity: 0.6 },
+                { transform: 'scale(1.6)', opacity: 0 },
+            ],
+            { duration: 600, easing: 'cubic-bezier(.2,.7,.3,1)' },
+        )
+        return () => animations.forEach((animation) => animation.cancel())
+    }, [cartPulse])
+
+    return { iconRef, badgeRef, rippleRef }
+}
+
 export function Header() {
     const cartCount = useCartCount()
+    const {
+        iconRef: cartIconRef,
+        badgeRef: cartBadgeRef,
+        rippleRef: cartRippleRef,
+    } = useCartLanding()
     const cartDrawer = useCartDrawer()
     const mobileMenu = useMobileMenu()
     const navigate = useNavigate()
     const { before, after } = useNavLinks()
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const reduceMotion = useReducedMotion()
+    const { isDark } = useTheme()
 
     const renderLink = (link: { label: string; to: string }) => (
         <NavLink
@@ -50,45 +126,40 @@ export function Header() {
         </NavLink>
     )
 
-    const cartBadge =
-        cartCount > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-700 px-1 text-[10px] font-bold text-white tabular-nums ring-2 ring-ivory">
-                {cartCount > 99 ? '99+' : cartCount}
-            </span>
-        ) : null
+    const cartBadge = (
+        <>
+            <span
+                ref={cartRippleRef}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-full border-2 border-cherry-500 opacity-0"
+            />
+            {cartCount > 0 ? (
+                <span
+                    ref={cartBadgeRef}
+                    className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-cherry-500 px-1 text-[11px] font-bold text-on-cherry tabular-nums ring-2 ring-canvas"
+                >
+                    {cartCount > 99 ? '99+' : cartCount}
+                </span>
+            ) : null}
+        </>
+    )
 
     return (
-        <header className="sticky top-0 z-40 border-b border-line/80 bg-ivory/85 backdrop-blur-md supports-[backdrop-filter]:bg-ivory/75">
-            <div
-                className={cn(
-                    CONTAINER,
-                    'grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 lg:flex lg:h-20 lg:gap-6',
-                )}
-            >
-                {/* Phones: menu on the left, logo centered, search + cart on the right. */}
-                <div className="flex items-center lg:hidden">
-                    <HeaderIconButton
-                        onClick={mobileMenu.toggle}
-                        aria-expanded={mobileMenu.isOpen}
-                        label="Abrir el menú"
-                        icon={<Menu aria-hidden="true" className="size-5" />}
-                        className="-ml-2.5"
-                    />
-                </div>
-
-                <BrandLogo className="items-center lg:items-start" />
+        <header className="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur-md">
+            <div className={cn(CONTAINER, 'flex h-16 items-center gap-3 lg:h-20 lg:gap-6')}>
+                <BrandLogo />
 
                 <nav
                     aria-label="Navegación principal"
-                    className="hidden flex-1 items-center justify-center gap-1 lg:flex"
+                    className="hidden flex-1 items-center justify-center gap-0.5 lg:flex"
                 >
                     {before.map(renderLink)}
                     <PerfumesMenu triggerClassName={navLinkVariants({ isActive: false })} />
                     {after.map(renderLink)}
                 </nav>
 
-                <div className="flex items-center justify-end gap-0.5 sm:gap-1">
-                    <SearchField className="hidden w-60 xl:block" />
+                <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
+                    <SearchField className="hidden w-64 xl:block" />
 
                     <HeaderIconButton
                         onClick={() => setIsSearchOpen((open) => !open)}
@@ -105,7 +176,7 @@ export function Header() {
                         className="xl:hidden"
                     />
 
-                    {/* Phones reach it from the menu drawer, keeping the bar to two buttons. */}
+                    {/* Phones reach it from the menu drawer, keeping the bar to three buttons. */}
                     <Tooltip label="Mis pedidos" className="hidden sm:inline-flex">
                         <HeaderIconButton
                             onClick={() => navigate(ROUTES.myOrders)}
@@ -114,12 +185,29 @@ export function Header() {
                         />
                     </Tooltip>
 
+                    {/* On phones the theme switch lives in the menu drawer, like "Mis pedidos". */}
+                    <Tooltip label={themeToggleLabel(isDark)} className="hidden sm:inline-flex">
+                        <ThemeToggle />
+                    </Tooltip>
+
                     <HeaderIconButton
                         onClick={cartDrawer.toggle}
                         label={`Abrir el carrito (${cartCount} artículos)`}
-                        icon={<ShoppingBag aria-hidden="true" className="size-5" />}
+                        data-cart-target=""
+                        icon={
+                            <span ref={cartIconRef} className="flex">
+                                <ShoppingBag aria-hidden="true" className="size-5" />
+                            </span>
+                        }
                         badge={cartBadge}
-                        className="-mr-2.5 sm:mr-0"
+                    />
+
+                    <HeaderIconButton
+                        onClick={mobileMenu.toggle}
+                        aria-expanded={mobileMenu.isOpen}
+                        label="Abrir el menú"
+                        icon={<Menu aria-hidden="true" className="size-5" />}
+                        className="-mr-1.5 lg:hidden"
                     />
                 </div>
             </div>
@@ -132,7 +220,7 @@ export function Header() {
                         animate={reduceMotion ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
                         exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
                         transition={{ duration: 0.25, ease: 'easeOut' }}
-                        className="overflow-hidden border-t border-line/80 xl:hidden"
+                        className="overflow-hidden border-t border-line xl:hidden"
                     >
                         <div className={cn(CONTAINER, 'py-3')}>
                             <SearchField autoFocus onSubmitted={() => setIsSearchOpen(false)} />

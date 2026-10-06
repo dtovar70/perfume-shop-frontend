@@ -16,14 +16,14 @@ export function HighlightPreview({ text, size = 'heading', className }: Highligh
     return (
         <div
             className={cn(
-                'rounded-2xl border border-dashed border-line bg-ivory px-4 py-3',
+                'rounded-2xl border border-dashed border-line bg-canvas px-4 py-3',
                 className,
             )}
         >
-            <p className="text-xs font-semibold text-ink-soft">Vista previa</p>
+            <p className="text-xs font-semibold text-fg-soft">Vista previa</p>
             <p
                 className={cn(
-                    'font-display tracking-tight break-words text-ink uppercase',
+                    'font-display font-semibold break-words text-fg',
                     size === 'hero' ? 'text-3xl leading-[0.95] sm:text-4xl' : 'text-2xl',
                 )}
             >

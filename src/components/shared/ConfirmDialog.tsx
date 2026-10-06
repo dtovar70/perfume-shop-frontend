@@ -95,7 +95,7 @@ export function ConfirmDialog({
                 if (event.target === event.currentTarget) requestClose()
             }}
             className={cn(
-                'fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-hidden rounded-card bg-ivory p-0 text-ink shadow-lift backdrop:bg-ink/40 backdrop:backdrop-blur-sm',
+                'fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-hidden rounded-card border border-line bg-surface p-0 text-fg shadow-lift backdrop:bg-scrim backdrop:backdrop-blur-sm',
                 size === 'lg' ? 'max-w-2xl' : 'max-w-md',
             )}
         >
@@ -107,7 +107,7 @@ export function ConfirmDialog({
 
                     <div className="scroll-soft min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-6 pt-2 pb-5">
                         {description ? (
-                            <div id={descriptionId} className="text-sm text-ink-soft">
+                            <div id={descriptionId} className="text-sm text-fg-soft">
                                 {description}
                             </div>
                         ) : null}

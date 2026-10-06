@@ -7,13 +7,7 @@ export interface RepeatedQueryValue {
 }
 
 type QueryValue =
-    | string
-    | number
-    | boolean
-    | undefined
-    | null
-    | readonly (string | number)[]
-    | RepeatedQueryValue
+    string | number | boolean | undefined | null | readonly (string | number)[] | RepeatedQueryValue
 
 export type QueryParams = Record<string, QueryValue>
 
@@ -190,6 +184,52 @@ async function requestBlob(
     }
 }
 
+/**
+ * POST of a multipart `form` that reports upload progress (0–1). `fetch` cannot observe the
+ * request body, so this one call uses XMLHttpRequest; errors map exactly like `request`.
+ */
+function uploadWithProgress<T>(
+    path: string,
+    form: FormData,
+    onProgress: (fraction: number) => void,
+    options: { signal?: AbortSignal; timeoutMs?: number } = {},
+): Promise<T> {
+    const requestSignal = withTimeout(options.signal, options.timeoutMs ?? UPLOAD_TIMEOUT_MS)
+    return new Promise<T>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        const fail = (error: unknown) =>
+            reject(toNetworkError(error, options.signal, requestSignal))
+        const abort = () => xhr.abort()
+
+        xhr.open('POST', buildUrl(path))
+        xhr.withCredentials = true
+        xhr.setRequestHeader('Accept', 'application/json')
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable && event.total > 0) onProgress(event.loaded / event.total)
+        }
+        xhr.onload = () => {
+            requestSignal.removeEventListener('abort', abort)
+            const response = new Response(xhr.status === 204 ? null : xhr.responseText, {
+                status: xhr.status,
+            })
+            if (!response.ok) {
+                void toApiError(response).then(reject, fail)
+                return
+            }
+            resolve((xhr.responseText ? JSON.parse(xhr.responseText) : undefined) as T)
+        }
+        xhr.onerror = () => fail(new TypeError('Network request failed'))
+        xhr.onabort = () => fail(requestSignal.reason ?? new DOMException('Aborted', 'AbortError'))
+
+        if (requestSignal.aborted) {
+            fail(requestSignal.reason)
+            return
+        }
+        requestSignal.addEventListener('abort', abort, { once: true })
+        xhr.send(form)
+    })
+}
+
 /** Thin typed wrapper over `fetch`: JSON in/out, cookies included, errors as `ApiError`. */
 export const apiClient = {
     get: <T>(path: string, options?: Omit<RequestOptions, 'body'>) =>
@@ -203,4 +243,5 @@ export const apiClient = {
         request<T>('PATCH', path, { ...options, body }),
     delete: <T = void>(path: string, options?: RequestOptions) =>
         request<T>('DELETE', path, options),
+    upload: uploadWithProgress,
 } as const

@@ -18,7 +18,7 @@ import { useUpdateOrderStatusGroup } from '@/views/admin/hooks/useAdminCatalogs'
 
 /** `aria-disabled` instead of `disabled` keeps keyboard focus on the button while saving. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 export interface OrderStatusGroupRowProps {
     group: OrderStatusGroupInfo
@@ -45,16 +45,16 @@ export function OrderStatusGroupRow({
     const isLast = index === total - 1
 
     return (
-        <li className="rounded-card border border-line bg-white shadow-soft">
+        <li className="rounded-card border border-line bg-surface shadow-soft">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:p-4">
                 <div className="flex min-w-0 flex-1 basis-60 items-center gap-3">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-bold text-ink">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-canvas text-sm font-bold text-fg">
                         <span className="sr-only">Posición </span>
                         {index + 1}
                     </span>
                     <div className="min-w-0 space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-display text-lg break-words text-ink">
+                            <h3 className="font-display text-lg break-words text-fg">
                                 {group.label}
                             </h3>
                             {group.highlight ? (
@@ -114,7 +114,7 @@ export function OrderStatusGroupRow({
                             aria-expanded={isExpanded}
                             aria-controls={panelId}
                             aria-label={`Editar ${group.label}`}
-                            className={cn(actionClass, isExpanded && 'bg-rose-100 text-rose-700')}
+                            className={cn(actionClass, isExpanded && 'bg-cherry-tint text-accent')}
                         >
                             <Pencil aria-hidden="true" className="size-4" />
                         </button>

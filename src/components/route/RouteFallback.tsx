@@ -52,17 +52,17 @@ export function RouteFallback({ message = 'Preparando todo…' }: RouteFallbackP
     return (
         <div
             className={cn(
-                'fixed inset-0 z-60 flex items-center justify-center bg-ivory px-4 transition-opacity duration-200 motion-reduce:transition-none',
+                'fixed inset-0 z-60 flex items-center justify-center bg-canvas px-4 transition-opacity duration-200 motion-reduce:transition-none',
                 isVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
             )}
         >
             <span
                 aria-hidden="true"
-                className="absolute top-1/4 -left-24 size-80 rounded-full bg-gold-100 opacity-70 blur-3xl"
+                className="absolute top-1/4 -left-24 size-80 rounded-full bg-cherry-500/10 blur-3xl"
             />
             <span
                 aria-hidden="true"
-                className="absolute -right-24 bottom-1/4 size-80 rounded-full bg-rose-100 opacity-70 blur-3xl"
+                className="absolute -right-24 bottom-1/4 size-80 rounded-full bg-cherry-500/10 blur-3xl"
             />
 
             <PerfumeLoader message={message} className="relative" />

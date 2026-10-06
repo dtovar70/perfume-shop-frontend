@@ -21,7 +21,7 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024
 const MAX_FILES_PER_UPLOAD = 8
 
 const iconButtonClass =
-    'flex size-9 items-center justify-center rounded-full bg-white/95 text-ink shadow-soft transition hover:bg-rose-100 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
+    'flex size-9 items-center justify-center rounded-full bg-surface/95 text-fg shadow-soft transition hover:bg-cherry-tint focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40'
 
 /** Client-side check so a bad batch fails fast, with a message that names the file. */
 function validateFiles(files: File[]): string | null {
@@ -113,14 +113,14 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
         <Card className="space-y-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <h2 className="font-display text-xl text-ink">Fotos</h2>
-                    <p className="text-sm text-ink-soft">
+                    <h2 className="font-display text-xl text-fg">Fotos</h2>
+                    <p className="text-sm text-fg-soft">
                         La primera foto es la portada del producto en la tienda. Sin fotos se
                         muestra la ilustración.
                     </p>
                 </div>
                 {reorder.isPending ? (
-                    <span className="flex items-center gap-2 text-sm text-ink-soft">
+                    <span className="flex items-center gap-2 text-sm text-fg-soft">
                         <Spinner size="sm" label="Guardando el orden" />
                         Guardando orden…
                     </span>
@@ -137,13 +137,13 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                 onDrop={handleDropZoneDrop}
                 className={cn(
                     'flex flex-col items-center gap-3 rounded-card border border-dashed px-6 py-8 text-center transition',
-                    isDragOver ? 'border-rose-400 bg-rose-50' : 'border-rose-200 bg-ivory',
+                    isDragOver ? 'border-accent/60 bg-elevated' : 'border-cherry-500/30 bg-canvas',
                 )}
             >
                 {upload.isPending ? (
                     <>
-                        <Spinner size="lg" className="text-rose-500" label="Subiendo imágenes" />
-                        <p className="font-semibold text-ink">
+                        <Spinner size="lg" className="text-accent" label="Subiendo imágenes" />
+                        <p className="font-semibold text-fg">
                             Subiendo {uploadCount} {uploadCount === 1 ? 'imagen' : 'imágenes'}…
                         </p>
                     </>
@@ -151,12 +151,12 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                     <>
                         <span
                             aria-hidden="true"
-                            className="flex size-12 items-center justify-center rounded-full bg-white text-rose-500 shadow-soft"
+                            className="flex size-12 items-center justify-center rounded-full bg-surface text-accent shadow-soft"
                         >
                             <UploadCloud className="size-6" />
                         </span>
-                        <p className="font-semibold text-ink">Arrastra tus fotos aquí</p>
-                        <p className="text-sm text-ink-soft">
+                        <p className="font-semibold text-fg">Arrastra tus fotos aquí</p>
+                        <p className="text-sm text-fg-soft">
                             JPG, PNG o WEBP · hasta 5 MB cada una · máximo {MAX_FILES_PER_UPLOAD}{' '}
                             por vez
                         </p>
@@ -187,7 +187,7 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
             {errorMessage ? <Alert>{errorMessage}</Alert> : null}
 
             {images.length === 0 ? (
-                <p className="text-sm text-ink-soft">Este producto todavía no tiene fotos.</p>
+                <p className="text-sm text-fg-soft">Este producto todavía no tiene fotos.</p>
             ) : (
                 <ol className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                     {images.map((image, index) => (
@@ -211,28 +211,32 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                                 handleThumbDrop(image.id)
                             }}
                             className={cn(
-                                'group relative overflow-hidden rounded-2xl border bg-white transition',
+                                'group relative overflow-hidden rounded-2xl border bg-surface transition',
                                 draggedId === image.id
-                                    ? 'border-rose-400 opacity-50'
+                                    ? 'border-accent/60 opacity-50'
                                     : 'border-line',
                                 !isBusy && 'cursor-grab active:cursor-grabbing',
                             )}
                         >
-                            <img
-                                src={cldUrl(image.url, 480)}
-                                srcSet={cldSrcSet(image.url, [160, 320, 480])}
-                                sizes="(min-width: 640px) 10rem, 45vw"
-                                alt={image.alt ?? `Foto ${index + 1} de ${product.name}`}
-                                loading="lazy"
-                                decoding="async"
-                                draggable={false}
-                                className="aspect-square w-full object-cover"
-                            />
+                            <div className="product-plate aspect-square w-full p-[8%]">
+                                <img
+                                    src={cldUrl(image.url, 480)}
+                                    srcSet={cldSrcSet(image.url, [160, 320, 480])}
+                                    sizes="(min-width: 640px) 10rem, 45vw"
+                                    alt={image.alt ?? `Foto ${index + 1} de ${product.name}`}
+                                    width={480}
+                                    height={480}
+                                    loading="lazy"
+                                    decoding="async"
+                                    draggable={false}
+                                    className="size-full object-contain mix-blend-multiply"
+                                />
+                            </div>
 
-                            <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-xs font-bold text-ink shadow-soft">
+                            <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-surface/95 px-2 py-0.5 text-xs font-bold text-fg shadow-soft">
                                 <GripVertical
                                     aria-hidden="true"
-                                    className="size-3.5 text-ink-soft"
+                                    className="size-3.5 text-fg-soft"
                                 />
                                 {index === 0 ? 'Portada' : index + 1}
                             </span>
@@ -266,7 +270,7 @@ export function ProductImagesManager({ product }: ProductImagesManagerProps) {
                                     }}
                                     disabled={isBusy}
                                     aria-label={`Eliminar la foto ${index + 1}`}
-                                    className={cn(iconButtonClass, 'text-rose-700')}
+                                    className={cn(iconButtonClass, 'text-accent')}
                                 >
                                     <Trash2 aria-hidden="true" className="size-4" />
                                 </button>

@@ -49,15 +49,15 @@ export function SectionFormLayout<F extends FieldValues>({
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="font-display text-2xl text-ink">{label}</h2>
+                        <h2 className="font-display text-2xl text-fg">{label}</h2>
                         {isDirty ? (
                             <Badge tone="butter" size="sm">
                                 Cambios sin guardar
                             </Badge>
                         ) : null}
                     </div>
-                    <p className="text-sm text-ink-soft">{description}</p>
-                    <p className="text-xs text-ink-soft">{lastEdit(state.saved)}</p>
+                    <p className="text-sm text-fg-soft">{description}</p>
+                    <p className="text-xs text-fg-soft">{lastEdit(state.saved)}</p>
                 </div>
                 {state.canRestore && !state.saved.isDefault ? (
                     <Button
@@ -83,7 +83,7 @@ export function SectionFormLayout<F extends FieldValues>({
                 <Card
                     padding="sm"
                     elevation="lift"
-                    className="space-y-3 bg-white/95 backdrop-blur-sm"
+                    className="space-y-3 bg-surface/95 backdrop-blur-sm"
                 >
                     {state.serverError ? <Alert>{state.serverError}</Alert> : null}
                     {!state.serverError && hasErrors ? (
@@ -100,7 +100,7 @@ export function SectionFormLayout<F extends FieldValues>({
                         </Alert>
                     ) : null}
                     <div className="flex items-center justify-between gap-3">
-                        <p className="hidden text-sm text-ink-soft sm:block" aria-live="polite">
+                        <p className="hidden text-sm text-fg-soft sm:block" aria-live="polite">
                             {isDirty ? 'Tienes cambios sin guardar.' : 'Todo guardado.'}
                         </p>
                         <div className="grid flex-1 grid-cols-2 gap-2 sm:flex sm:flex-none">

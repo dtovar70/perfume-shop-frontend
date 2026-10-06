@@ -26,7 +26,7 @@ export function CatalogPagination({ page, totalPages, onPageChange }: CatalogPag
                 Anterior
             </Button>
 
-            <p className="text-sm font-semibold text-ink-soft" aria-live="polite">
+            <p className="text-sm font-semibold text-fg-soft" aria-live="polite">
                 Página {page} de {totalPages}
             </p>
 

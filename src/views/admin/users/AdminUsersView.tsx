@@ -25,11 +25,10 @@ const PAGE_SIZE = 10
 const SEARCH_DEBOUNCE_MS = 350
 const SKELETON_ROWS = 4
 
-const headerCellClass =
-    'px-4 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase'
+const headerCellClass = 'px-4 py-3 text-left text-xs font-bold tracking-wide text-fg-soft uppercase'
 const cellClass = 'px-4 py-3 align-middle'
 /** Pinned right, like the products table, with its own background for what slides under. */
-const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-ivory'
+const actionsCellClass = 'sticky right-0 bg-surface px-3 transition group-hover:bg-elevated'
 
 function initialOf(name: string): string {
     return name.trim().charAt(0).toUpperCase() || '?'
@@ -55,22 +54,22 @@ function UserIdentity({ user, isSelf }: { user: AdminUser; isSelf: boolean }) {
                 className={cn(
                     'flex size-10 shrink-0 items-center justify-center rounded-full font-display font-semibold ring-1',
                     user.isActive
-                        ? 'bg-rose-100 text-rose-700 ring-rose-200'
-                        : 'bg-line/60 text-ink-soft ring-line',
+                        ? 'bg-cherry-tint text-accent ring-cherry-500/30'
+                        : 'bg-line/60 text-fg-soft ring-line',
                 )}
             >
                 {initialOf(user.name)}
             </span>
             <div className="min-w-0">
-                <p className="font-display text-base leading-snug break-words text-ink">
+                <p className="font-display text-base leading-snug break-words text-fg">
                     {user.name}
                     {isSelf ? (
-                        <span className="ml-1.5 font-sans text-xs font-semibold text-rose-700">
+                        <span className="ml-1.5 font-sans text-xs font-semibold text-accent">
                             (tú)
                         </span>
                     ) : null}
                 </p>
-                <p className="truncate text-xs text-ink-soft" title={user.email}>
+                <p className="truncate text-xs text-fg-soft" title={user.email}>
                     {user.email}
                 </p>
             </div>
@@ -183,7 +182,7 @@ export function AdminUsersView() {
                                     type="button"
                                     onClick={() => setSearchInput('')}
                                     aria-label="Limpiar búsqueda"
-                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-rose-100"
+                                    className="flex size-8 items-center justify-center rounded-full text-fg-soft hover:bg-cherry-tint"
                                 >
                                     <X aria-hidden="true" className="size-4" />
                                 </button>
@@ -192,7 +191,7 @@ export function AdminUsersView() {
                     />
                 </div>
                 {users.isFetching && !users.isPending ? (
-                    <Spinner size="sm" className="text-rose-500" label="Actualizando la lista" />
+                    <Spinner size="sm" className="text-accent" label="Actualizando la lista" />
                 ) : null}
             </div>
 
@@ -256,7 +255,7 @@ export function AdminUsersView() {
                                     <col className="w-28" />
                                     <col className="w-36" />
                                 </colgroup>
-                                <thead className="border-b border-line bg-rose-50/60">
+                                <thead className="border-b border-line bg-elevated/60">
                                     <tr>
                                         <th scope="col" className={headerCellClass}>
                                             Usuario
@@ -278,7 +277,7 @@ export function AdminUsersView() {
                                             className={cn(
                                                 headerCellClass,
                                                 actionsCellClass,
-                                                'bg-linear-to-r from-rose-50/60 to-rose-50/60 text-center',
+                                                'bg-elevated text-center',
                                             )}
                                         >
                                             Acciones
@@ -291,7 +290,7 @@ export function AdminUsersView() {
                                         return (
                                             <tr
                                                 key={user.id}
-                                                className="group transition hover:bg-ivory"
+                                                className="group transition hover:bg-elevated"
                                             >
                                                 <td className={cellClass}>
                                                     <UserIdentity user={user} isSelf={isSelf} />
@@ -305,12 +304,12 @@ export function AdminUsersView() {
                                                 <td
                                                     className={cn(
                                                         cellClass,
-                                                        'whitespace-nowrap text-ink-soft tabular-nums',
+                                                        'whitespace-nowrap text-fg-soft tabular-nums',
                                                     )}
                                                 >
                                                     {lastAccess(user)}
                                                 </td>
-                                                <td className={cn(cellClass, 'text-ink-soft')}>
+                                                <td className={cn(cellClass, 'text-fg-soft')}>
                                                     {telegramSummary(user)}
                                                 </td>
                                                 <td className={cn(cellClass, actionsCellClass)}>
@@ -344,12 +343,12 @@ export function AdminUsersView() {
                                             <StatusBadge isActive={user.isActive} />
                                         </div>
                                         <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-xs">
-                                            <dt className="text-ink-soft">Último acceso</dt>
-                                            <dd className="text-ink tabular-nums">
+                                            <dt className="text-fg-soft">Último acceso</dt>
+                                            <dd className="text-fg tabular-nums">
                                                 {lastAccess(user)}
                                             </dd>
-                                            <dt className="text-ink-soft">Telegram</dt>
-                                            <dd className="text-ink">{telegramSummary(user)}</dd>
+                                            <dt className="text-fg-soft">Telegram</dt>
+                                            <dd className="text-fg">{telegramSummary(user)}</dd>
                                         </dl>
                                         <div className="mt-auto flex justify-end border-t border-line pt-2">
                                             <UserRowActions

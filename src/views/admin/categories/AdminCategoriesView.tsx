@@ -122,7 +122,7 @@ export function AdminCategoriesView() {
                 description={
                     pendingDelete ? (
                         <>
-                            <strong className="font-semibold text-ink">{pendingDelete.name}</strong>{' '}
+                            <strong className="font-semibold text-fg">{pendingDelete.name}</strong>{' '}
                             dejará de aparecer en el menú y en el catálogo, y su enlace (/catalogo/
                             {pendingDelete.slug}) dejará de funcionar. No se puede deshacer.
                         </>

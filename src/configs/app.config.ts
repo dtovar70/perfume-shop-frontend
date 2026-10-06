@@ -10,7 +10,7 @@ export interface NavLink {
  * shipping values live in the site content (`useSiteContent`), edited from /admin/contenido.
  */
 export const appConfig = {
-    /** The wordmark is set in type ("Kai" + gold "Zen"), not loaded as an image. */
+    /** The wordmark is set in type ("Kai" + cherry "Zen"), not loaded as an image. */
     wordmark: { lead: 'Kai', accent: 'Zen' },
     /**
      * Main navigation. "Perfumes" opens the live categories (see `useCategoryLinks`), so a

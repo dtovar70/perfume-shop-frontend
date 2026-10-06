@@ -15,11 +15,11 @@ import {
 } from '@/views/admin/users/utils/password'
 
 const STRENGTH_BAR_CLASS: Record<PasswordStrength, string> = {
-    0: 'bg-rose-500',
-    1: 'bg-rose-400',
-    2: 'bg-gold-400',
-    3: 'bg-emerald-500',
-    4: 'bg-emerald-500',
+    0: 'bg-danger',
+    1: 'bg-danger',
+    2: 'bg-warning',
+    3: 'bg-success',
+    4: 'bg-success',
 }
 
 export interface PasswordFieldProps {
@@ -116,7 +116,7 @@ export function PasswordField({
                                 />
                             ))}
                         </div>
-                        <span className="shrink-0 text-xs font-semibold text-ink-soft">
+                        <span className="shrink-0 text-xs font-semibold text-fg-soft">
                             Seguridad: {STRENGTH_LABEL[strength]}
                         </span>
                     </div>
@@ -129,14 +129,14 @@ export function PasswordField({
                                     key={rule.label}
                                     className={cn(
                                         'inline-flex items-center gap-1',
-                                        ok ? 'text-ink' : 'text-ink-soft',
+                                        ok ? 'text-fg' : 'text-fg-soft',
                                     )}
                                 >
                                     <Icon
                                         aria-hidden="true"
                                         className={cn(
                                             'size-3.5',
-                                            ok ? 'text-emerald-500' : 'text-rose-400',
+                                            ok ? 'text-success' : 'text-accent',
                                         )}
                                     />
                                     {rule.label}

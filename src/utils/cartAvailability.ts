@@ -8,8 +8,7 @@ export const CART_STOCK_BLOCKED_MESSAGE =
 export const AVAILABILITY_MAX_LINES = 50
 
 /**
- * Where a line's stock is counted: its variant, or the product without variants. Lines that only
- * differ by personalization share it.
+ * Where a line's stock is counted: its variant, or the product without variants.
  */
 export function stockKey(productId: string, variantId: string | null | undefined): string {
     return `${productId}:${variantId ?? ''}`

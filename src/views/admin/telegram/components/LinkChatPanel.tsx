@@ -84,7 +84,7 @@ export function LinkChatPanel({ connected, botUsername }: LinkChatPanelProps) {
                         {link ? 'Generar otro código' : 'Vincular un chat'}
                     </Button>
                     {connected ? null : (
-                        <p className="text-xs text-ink-soft">
+                        <p className="text-xs text-fg-soft">
                             Disponible cuando el bot esté conectado.
                         </p>
                     )}
@@ -96,7 +96,7 @@ export function LinkChatPanel({ connected, botUsername }: LinkChatPanelProps) {
             {link && linkedChat ? (
                 <Alert tone="success" onDismiss={() => setLink(null)}>
                     <p className="font-semibold">¡Listo! Chat vinculado 🎉</p>
-                    <p className="mt-1 font-normal text-ink-soft">
+                    <p className="mt-1 font-normal text-fg-soft">
                         {chatDisplayName(linkedChat)} ya recibe los pagos por verificar.
                     </p>
                 </Alert>
@@ -119,22 +119,22 @@ export function LinkChatPanel({ connected, botUsername }: LinkChatPanelProps) {
                 <Alert tone="info" onDismiss={() => setLink(null)}>
                     <div className="space-y-4">
                         <div>
-                            <p className="text-xs font-bold tracking-wide text-gold-800 uppercase">
+                            <p className="text-xs font-bold tracking-wide text-accent uppercase">
                                 Tu código
                             </p>
                             <div className="mt-1 flex items-center gap-2">
-                                <span className="font-display text-4xl tracking-[0.2em] text-ink tabular-nums sm:text-5xl">
+                                <span className="font-display text-4xl tracking-[0.2em] text-fg tabular-nums sm:text-5xl">
                                     {link.code.code}
                                 </span>
                                 <CopyButton value={link.code.code} label="Copiar código" />
                             </div>
                         </div>
 
-                        <p className="font-normal text-ink">
+                        <p className="font-normal text-fg">
                             Abre <strong className="font-semibold">@{bot}</strong> en Telegram y
                             envía{' '}
                             <span className="inline-flex items-center gap-1 align-middle">
-                                <code className="rounded-lg bg-white px-2 py-0.5 font-mono text-sm font-semibold break-all text-ink">
+                                <code className="rounded-lg bg-surface px-2 py-0.5 font-mono text-sm font-semibold break-all text-fg">
                                     {command}
                                 </code>
                                 <CopyButton
@@ -156,7 +156,7 @@ export function LinkChatPanel({ connected, botUsername }: LinkChatPanelProps) {
                                 Abrir en Telegram
                                 <span className="sr-only"> (se abre en una pestaña nueva)</span>
                             </a>
-                            <p className="text-sm font-normal text-gold-900">
+                            <p className="text-sm font-normal text-accent">
                                 <span aria-hidden="true">
                                     El código vence en{' '}
                                     <span className="font-semibold tabular-nums">
@@ -171,7 +171,7 @@ export function LinkChatPanel({ connected, botUsername }: LinkChatPanelProps) {
                         </div>
 
                         {isPolling ? (
-                            <p className="text-xs font-normal text-ink-soft">
+                            <p className="text-xs font-normal text-fg-soft">
                                 Esperando tu mensaje en Telegram… esta página se actualiza sola.
                             </p>
                         ) : null}

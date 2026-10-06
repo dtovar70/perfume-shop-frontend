@@ -23,7 +23,7 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
         <Card padding="none" className="space-y-5 p-5 sm:p-6">
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 space-y-2">
-                    <h2 className="font-display text-xl text-ink">Bot de Telegram</h2>
+                    <h2 className="font-display text-xl text-fg">Bot de Telegram</h2>
                     <div className="flex flex-wrap items-center gap-2">
                         <Badge tone={bot.connected ? 'mint' : 'neutral'} size="sm">
                             <span
@@ -31,8 +31,8 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
                                 className={cn(
                                     'size-2 rounded-full',
                                     bot.connected
-                                        ? 'bg-emerald-500 ring-2 ring-white'
-                                        : 'bg-ink-soft/60',
+                                        ? 'bg-success ring-2 ring-canvas'
+                                        : 'bg-fg-muted/60',
                                 )}
                             />
                             {bot.connected ? 'Conectado' : 'Desconectado'}
@@ -70,13 +70,13 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
                 <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                     {bot.username ? (
                         <div className="min-w-0">
-                            <dt className="text-xs text-ink-soft">Usuario</dt>
+                            <dt className="text-xs text-fg-soft">Usuario</dt>
                             <dd className="font-semibold break-all">
                                 <a
                                     href={telegramUserUrl(bot.username)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-gold-700 hover:underline"
+                                    className="text-accent hover:underline"
                                 >
                                     @{bot.username}
                                 </a>
@@ -85,8 +85,8 @@ export function BotStatusCard({ bot, isRefreshing, onRefresh }: BotStatusCardPro
                     ) : null}
                     {bot.name ? (
                         <div className="min-w-0">
-                            <dt className="text-xs text-ink-soft">Nombre</dt>
-                            <dd className="font-semibold break-words text-ink">{bot.name}</dd>
+                            <dt className="text-xs text-fg-soft">Nombre</dt>
+                            <dd className="font-semibold break-words text-fg">{bot.name}</dd>
                         </div>
                     ) : null}
                 </dl>

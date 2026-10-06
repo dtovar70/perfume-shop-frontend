@@ -1,7 +1,6 @@
 import { Headset, ShieldCheck, Truck, Wallet } from 'lucide-react'
 
 import { CONTAINER } from '@/constants/layout.constant'
-import { cn } from '@/utils/cn'
 import { useShippingContent } from '@/utils/hooks/useSiteContent'
 
 /** Four reassurance blocks between the product rails and the testimonials. */
@@ -32,31 +31,27 @@ export function Benefits() {
     ]
 
     return (
-        <section aria-label="Por qué comprar en KaiZen" className="py-12 lg:py-16">
+        <section aria-label="Por qué comprar en KaiZen" className="pb-16 lg:pb-20">
             <div className={CONTAINER}>
-                <ul className="grid overflow-hidden rounded-card border border-gold-200/70 bg-white sm:grid-cols-2 lg:grid-cols-4">
-                    {items.map(({ icon: Icon, title, description }, index) => (
+                <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-xl2 border border-line bg-line shadow-soft xl:grid-cols-4">
+                    {items.map(({ icon: Icon, title, description }) => (
                         <li
                             key={title}
-                            className={cn(
-                                'flex gap-4 p-6 sm:p-7',
-                                index > 0 && 'border-t border-gold-200/70',
-                                index === 1 && 'sm:border-t-0 sm:border-l',
-                                index === 2 && 'lg:border-t-0 lg:border-l',
-                                index === 3 && 'sm:border-l lg:border-t-0',
-                            )}
+                            className="flex flex-col gap-3 bg-surface p-4 sm:flex-row sm:gap-4 sm:p-6"
                         >
                             <span
                                 aria-hidden="true"
-                                className="gradient-blush flex size-12 shrink-0 items-center justify-center rounded-full text-rose-700 ring-1 ring-gold-200"
+                                className="flex size-11 shrink-0 items-center justify-center rounded-full bg-cherry-tint text-accent-strong ring-1 ring-cherry-500/25"
                             >
                                 <Icon className="size-5" strokeWidth={1.6} />
                             </span>
                             <div className="space-y-1">
-                                <h3 className="font-display text-xl leading-tight font-semibold text-ink">
+                                <h3 className="font-display text-base leading-tight font-semibold text-fg">
                                     {title}
                                 </h3>
-                                <p className="text-sm leading-relaxed text-ink-soft">{description}</p>
+                                <p className="text-xs leading-relaxed text-fg-soft sm:text-sm">
+                                    {description}
+                                </p>
                             </div>
                         </li>
                     ))}

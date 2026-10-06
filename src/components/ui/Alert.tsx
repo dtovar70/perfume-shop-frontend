@@ -9,9 +9,9 @@ const alertVariants = cva(
     {
         variants: {
             tone: {
-                success: 'border-emerald-500/60 bg-emerald-100/50 text-ink',
-                error: 'border-rose-300 bg-rose-50 text-rose-800',
-                info: 'border-gold-300 bg-gold-50 text-gold-900',
+                success: 'border-success/40 bg-success/10 text-fg',
+                error: 'border-danger/40 bg-danger/10 text-fg',
+                info: 'border-line bg-elevated text-fg',
             },
         },
         defaultVariants: {
@@ -23,9 +23,9 @@ const alertVariants = cva(
 type AlertTone = NonNullable<VariantProps<typeof alertVariants>['tone']>
 
 const TONE_DETAILS: Record<AlertTone, { icon: LucideIcon; iconClass: string; barClass: string }> = {
-    success: { icon: CircleCheck, iconClass: 'text-emerald-500', barClass: 'bg-emerald-500' },
-    error: { icon: CircleAlert, iconClass: 'text-rose-600', barClass: 'bg-rose-400' },
-    info: { icon: Info, iconClass: 'text-gold-600', barClass: 'bg-gold-400' },
+    success: { icon: CircleCheck, iconClass: 'text-success', barClass: 'bg-success' },
+    error: { icon: CircleAlert, iconClass: 'text-danger', barClass: 'bg-danger' },
+    info: { icon: Info, iconClass: 'text-accent', barClass: 'bg-cherry-500' },
 }
 
 export interface AlertProps extends VariantProps<typeof alertVariants> {
@@ -61,7 +61,7 @@ export function Alert({
                     type="button"
                     onClick={onDismiss}
                     aria-label="Cerrar mensaje"
-                    className="-my-1 -mr-2 grid size-7 shrink-0 place-items-center rounded-full text-ink-soft transition hover:bg-white/70 hover:text-ink focus-visible:outline-2 focus-visible:outline-rose-400"
+                    className="-my-1 -mr-2 grid size-7 shrink-0 place-items-center rounded-full text-fg-soft transition hover:bg-surface/70 hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
                 >
                     <X aria-hidden="true" className="size-4" />
                 </button>

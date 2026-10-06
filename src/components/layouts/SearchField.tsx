@@ -87,7 +87,7 @@ export function SearchField({
                                 inputRef.current?.focus()
                             }}
                             // 32px inside the field; the pseudo-element makes the hit area 44px.
-                            className="relative flex size-8 items-center justify-center rounded-full text-ink-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-rose-50 hover:text-ink"
+                            className="relative flex size-8 items-center justify-center rounded-full text-fg-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-elevated hover:text-fg"
                         >
                             <X aria-hidden="true" className="size-4" />
                         </button>

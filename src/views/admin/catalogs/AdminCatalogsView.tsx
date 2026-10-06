@@ -82,7 +82,7 @@ export function AdminCatalogsView() {
                 aria-label="Catálogos"
                 onKeyDown={onKeyDown}
                 // Phones: three equal cells (icon over a short name), so no tab hides off-screen.
-                className="mb-8 grid grid-cols-3 gap-1 rounded-card border border-line bg-white p-1 sm:flex sm:w-max sm:max-w-full sm:rounded-full"
+                className="mb-8 grid grid-cols-3 gap-1 rounded-card border border-line bg-surface p-1 sm:flex sm:w-max sm:max-w-full sm:rounded-full"
             >
                 {SECTIONS.map(({ id, label, shortLabel, icon: Icon }) => {
                     const isActive = id === active
@@ -100,8 +100,8 @@ export function AdminCatalogsView() {
                                 'flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-xs font-semibold whitespace-nowrap transition',
                                 'sm:flex-row sm:gap-2 sm:rounded-full sm:px-4 sm:text-sm',
                                 isActive
-                                    ? 'bg-rose-100 text-rose-800'
-                                    : 'text-ink-soft hover:bg-rose-50 hover:text-ink',
+                                    ? 'bg-cherry-tint text-accent-strong'
+                                    : 'text-fg-soft hover:bg-elevated hover:text-fg',
                             )}
                         >
                             <Icon aria-hidden="true" className="size-4" />

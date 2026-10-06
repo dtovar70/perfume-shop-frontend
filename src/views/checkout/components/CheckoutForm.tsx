@@ -86,7 +86,9 @@ export function CheckoutForm({
     return (
         <form onSubmit={handleSubmit(submit)} noValidate className="space-y-6">
             <fieldset className="grid gap-5 sm:grid-cols-2" disabled={isSubmitting}>
-                <legend className="mb-3 font-display text-2xl font-semibold text-ink">Tus datos</legend>
+                <legend className="mb-3 font-display text-2xl font-semibold text-fg">
+                    Tus datos
+                </legend>
 
                 <Input
                     label="Nombre y apellido"
@@ -132,7 +134,9 @@ export function CheckoutForm({
                 </div>
 
                 <fieldset className="space-y-2 sm:col-span-2">
-                    <legend className="mb-2 text-sm font-semibold text-ink">Método de entrega</legend>
+                    <legend className="mb-2 text-sm font-semibold text-fg">
+                        Método de entrega
+                    </legend>
                     <div className="grid gap-3 sm:grid-cols-2">
                         {DELIVERY_METHODS.map((method) => {
                             const Icon = DELIVERY_ICONS[method]
@@ -141,10 +145,10 @@ export function CheckoutForm({
                                 <label
                                     key={method}
                                     className={cn(
-                                        'flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border bg-white px-4 py-3 transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-gold-600',
+                                        'flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border bg-surface px-4 py-3 transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-cherry-500',
                                         isSelected
-                                            ? 'border-rose-700 bg-rose-50/60 ring-1 ring-rose-700'
-                                            : 'border-line hover:border-gold-400',
+                                            ? 'border-cherry-500 bg-elevated/60 ring-1 ring-cherry-500'
+                                            : 'border-line hover:border-cherry-500/50',
                                     )}
                                 >
                                     <input
@@ -158,17 +162,17 @@ export function CheckoutForm({
                                         className={cn(
                                             'flex size-10 shrink-0 items-center justify-center rounded-full transition',
                                             isSelected
-                                                ? 'bg-rose-700 text-white'
-                                                : 'bg-rose-50 text-rose-700',
+                                                ? 'bg-cherry-500 text-on-cherry'
+                                                : 'bg-elevated text-accent',
                                         )}
                                     >
                                         <Icon className="size-5" strokeWidth={1.75} />
                                     </span>
                                     <span className="min-w-0 flex-1">
-                                        <span className="block text-[15px] font-bold text-ink">
+                                        <span className="block text-[15px] font-bold text-fg">
                                             {DELIVERY_METHOD_LABELS[method]}
                                         </span>
-                                        <span className="block text-xs text-ink-soft">
+                                        <span className="block text-xs text-fg-soft">
                                             {DELIVERY_HINTS[method]}
                                         </span>
                                     </span>
@@ -176,11 +180,11 @@ export function CheckoutForm({
                                         aria-hidden="true"
                                         className={cn(
                                             'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition',
-                                            isSelected ? 'border-rose-700' : 'border-ink/25',
+                                            isSelected ? 'border-cherry-500' : 'border-line-strong',
                                         )}
                                     >
                                         {isSelected ? (
-                                            <span className="size-2.5 rounded-full bg-rose-700" />
+                                            <span className="size-2.5 rounded-full bg-cherry-500" />
                                         ) : null}
                                     </span>
                                 </label>
@@ -218,7 +222,7 @@ export function CheckoutForm({
                 >
                     {isSubmitting ? 'Creando tu pedido…' : 'Confirmar pedido'}
                 </Button>
-                <p className="text-center text-xs text-ink-soft">
+                <p className="text-center text-xs text-fg-soft">
                     Después verás los datos de Pago Móvil y el monto exacto en bolívares.
                 </p>
             </div>

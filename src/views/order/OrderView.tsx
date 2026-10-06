@@ -33,8 +33,8 @@ const pageClass = 'space-y-8 py-10 lg:py-14'
 
 function StepTitle({ number, children }: { number: number; children: string }) {
     return (
-        <h2 className="flex items-center gap-3 font-display text-xl text-ink">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-rose-700 text-base text-white">
+        <h2 className="flex items-center gap-3 font-display text-xl text-fg">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-cherry-500 text-base text-on-cherry">
                 {number}
             </span>
             {children}
@@ -56,7 +56,7 @@ function OrderSkeleton() {
 }
 
 /**
- * The customer's private order page (`/pedido/MR-000123?t=<token>`): how to pay, the proof
+ * The customer's private order page (`/pedido/KZ-000123?t=<token>`): how to pay, the proof
  * upload and, afterwards, where the order stands. Works without an account.
  */
 export function OrderView() {
@@ -163,11 +163,11 @@ export function OrderView() {
         <div className={cn(CONTAINER, pageClass)}>
             <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0 space-y-2">
-                    <p className="text-sm font-semibold text-ink-soft">Pedido</p>
-                    <h1 className="font-display text-4xl tracking-tight break-words text-ink uppercase sm:text-5xl">
+                    <p className="text-sm font-semibold text-fg-soft">Pedido</p>
+                    <h1 className="font-display text-[2.4rem] leading-none font-semibold break-words text-fg sm:text-5xl">
                         {order.code}
                     </h1>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-fg-soft">
                         <OrderStatusBadge status={order.status} />
                         <span>Creado el {formatDateTime(order.createdAt)}</span>
                     </div>
@@ -195,10 +195,10 @@ export function OrderView() {
                 onConfirm={() => setShowCreated(false)}
                 onClose={() => setShowCreated(false)}
             >
-                <ul className="space-y-4 text-sm text-ink-soft">
+                <ul className="space-y-4 text-sm text-fg-soft">
                     <CreatedNoticeItem icon={<Mail className="size-5" />}>
                         Te enviamos un correo a{' '}
-                        <span className="font-semibold break-all text-ink">
+                        <span className="font-semibold break-all text-fg">
                             {order.customer.email}
                         </span>{' '}
                         con el resumen, los datos del Pago Móvil y el enlace para volver a este
@@ -207,7 +207,7 @@ export function OrderView() {
                     {order.canSubmitPayment ? (
                         <CreatedNoticeItem icon={<Clock className="size-5" />}>
                             Paga y envía el comprobante antes del{' '}
-                            <span className="font-semibold text-ink">
+                            <span className="font-semibold text-fg">
                                 {formatDateTime(order.paymentDueAt)}
                             </span>{' '}
                             {/* The time already ends in "a. m."/"p. m.", so no extra period. */}
@@ -219,7 +219,7 @@ export function OrderView() {
                         En este dispositivo también lo encuentras en{' '}
                         <Link
                             to={ROUTES.myOrders}
-                            className="font-semibold text-rose-700 underline underline-offset-2"
+                            className="font-semibold text-accent underline underline-offset-2"
                         >
                             Mis pedidos
                         </Link>{' '}
@@ -242,14 +242,14 @@ export function OrderView() {
                         <>
                             <section className="space-y-4" aria-label="Paso 1">
                                 <StepTitle number={1}>Paga desde tu banco</StepTitle>
-                                <p className="text-sm text-ink-soft">
+                                <p className="text-sm text-fg-soft">
                                     Haz un Pago Móvil por el monto exacto con estos datos. Usa los
                                     botones para copiarlos.
                                 </p>
                                 {order.status === 'PENDIENTE_PAGO' ? (
                                     <div className="space-y-2">
                                         <PaymentDeadline dueAt={order.paymentDueAt} />
-                                        <p className="text-sm text-ink-soft">
+                                        <p className="text-sm text-fg-soft">
                                             Si ya pagaste, sube tu comprobante aunque se haya
                                             vencido el plazo; lo revisaremos.
                                         </p>
@@ -259,7 +259,7 @@ export function OrderView() {
                             </section>
                             <section className="space-y-4" aria-label="Paso 2">
                                 <StepTitle number={2}>Sube el comprobante</StepTitle>
-                                <p className="text-sm text-ink-soft">
+                                <p className="text-sm text-fg-soft">
                                     Cuéntanos los datos del pago para que lo ubiquemos en el banco.
                                 </p>
                                 {paymentForm}
@@ -269,15 +269,15 @@ export function OrderView() {
 
                     {late ? (
                         <section className="space-y-4" aria-labelledby="late-payment-title">
-                            <h2 id="late-payment-title" className="font-display text-xl text-ink">
+                            <h2 id="late-payment-title" className="font-display text-xl text-fg">
                                 Sube tu comprobante
                             </h2>
-                            <p className="text-sm text-ink-soft">
+                            <p className="text-sm text-fg-soft">
                                 Cuéntanos los datos del pago que hiciste para ubicarlo en el banco.
                                 Lo revisamos a mano y te confirmamos por aquí.
                             </p>
                             {paymentForm}
-                            <p className="text-sm text-ink-soft">
+                            <p className="text-sm text-fg-soft">
                                 ¿Todavía no has pagado o tienes dudas?{' '}
                                 <WhatsAppInlineLink
                                     message={`Hola, tengo una consulta sobre mi pedido ${order.code}.`}
@@ -314,7 +314,7 @@ export function OrderView() {
 
                 <aside className="min-w-0 space-y-6">
                     <Card padding="lg" className="space-y-4">
-                        <h2 className="font-display text-xl text-ink">Seguimiento</h2>
+                        <h2 className="font-display text-xl text-fg">Seguimiento</h2>
                         <OrderTimeline order={order} />
                     </Card>
                     <OrderItemsCard order={order} />
@@ -330,7 +330,7 @@ function CreatedNoticeItem({ icon, children }: { icon: ReactNode; children: Reac
         <li className="flex items-start gap-3">
             <span
                 aria-hidden="true"
-                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-cherry-tint text-accent"
             >
                 {icon}
             </span>

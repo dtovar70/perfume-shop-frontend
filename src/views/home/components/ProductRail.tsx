@@ -1,11 +1,10 @@
-import { ArrowRight, PackageOpen } from 'lucide-react'
-import { Link } from 'react-router'
+import { PackageOpen } from 'lucide-react'
 
 import type { Product } from '@/@types/product'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ProductGrid } from '@/components/shared/ProductGrid'
 import { SectionHeading } from '@/components/shared/SectionHeading'
-import { Button } from '@/components/ui'
+import { Button, ButtonLink } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { cn } from '@/utils/cn'
 
@@ -54,16 +53,9 @@ export function ProductRail({
                     title={title}
                     description={description}
                     action={
-                        <Link
-                            to={moreTo}
-                            className="group inline-flex min-h-11 items-center gap-2 text-sm font-bold text-rose-700 transition hover:text-rose-800"
-                        >
+                        <ButtonLink to={moreTo} variant="secondary">
                             {moreLabel}
-                            <ArrowRight
-                                aria-hidden="true"
-                                className="size-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Link>
+                        </ButtonLink>
                     }
                 />
 

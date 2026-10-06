@@ -3,6 +3,7 @@ import { useFieldArray, useWatch } from 'react-hook-form'
 import { Input, Textarea } from '@/components/ui'
 import { categoryCountPhrase } from '@/utils/content'
 import { FieldGroup, FieldRow } from '@/views/admin/content/components/FieldGroup'
+import { HeroMediaField } from '@/views/admin/content/components/HeroMediaField'
 import { SectionFormLayout } from '@/views/admin/content/components/SectionFormLayout'
 import { SortableList } from '@/views/admin/content/components/SortableList'
 import { TitleField } from '@/views/admin/content/components/TitleField'
@@ -19,6 +20,7 @@ export function HomeSection(props: SectionFormProps<'home'>) {
     const {
         control,
         register,
+        setValue,
         formState: { errors },
     } = state.form
     const features = useFieldArray({ control, name: 'heroFeatures' })
@@ -36,6 +38,7 @@ export function HomeSection(props: SectionFormProps<'home'>) {
                 'ctaTitle',
             ],
         })
+    const heroMedia = useWatch({ control, name: 'heroMedia' })
     const { data: categories } = useCategories()
     const categoriesPhrase = categoryCountPhrase(categories?.length)
 
@@ -77,7 +80,7 @@ export function HomeSection(props: SectionFormProps<'home'>) {
                     />
                 </FieldRow>
                 <div className="space-y-2">
-                    <p className="text-sm font-semibold text-ink">Ventajas con check</p>
+                    <p className="text-sm font-semibold text-fg">Ventajas con check</p>
                     <SortableList
                         label="Ventajas de la portada"
                         itemIds={features.fields.map((field) => field.id)}
@@ -100,6 +103,30 @@ export function HomeSection(props: SectionFormProps<'home'>) {
                         )}
                     />
                 </div>
+                <HeroMediaField
+                    value={heroMedia}
+                    onChange={(next) =>
+                        setValue('heroMedia', next, { shouldDirty: true, shouldValidate: true })
+                    }
+                    error={
+                        errors.heroMedia?.message ??
+                        errors.heroMedia?.url?.message ??
+                        errors.heroMedia?.posterUrl?.message
+                    }
+                    // Registering the alt creates `heroMedia`, so only once there is a file.
+                    altInput={
+                        heroMedia ? (
+                            <Input
+                                label="Texto alternativo"
+                                optional
+                                hint="Describe lo que se ve, para quien usa lector de pantalla. Déjalo vacío si es solo decorativo."
+                                maxLength={CONTENT_LIMITS.mediaAlt}
+                                error={errors.heroMedia?.alt?.message}
+                                {...register('heroMedia.alt')}
+                            />
+                        ) : null
+                    }
+                />
             </FieldGroup>
 
             <FieldGroup title="Categorías" description="El bloque con las tarjetas de categorías.">
@@ -216,7 +243,7 @@ export function HomeSection(props: SectionFormProps<'home'>) {
                     error={errors.testimonialsTitle?.message}
                     registration={register('testimonialsTitle')}
                 />
-                <p className="text-sm text-ink-soft">
+                <p className="text-sm text-fg-soft">
                     Usa opiniones reales de tus clientes y pídeles permiso antes de publicarlas.
                 </p>
                 <SortableList
@@ -257,7 +284,7 @@ export function HomeSection(props: SectionFormProps<'home'>) {
                                 <Input
                                     label="Producto"
                                     optional
-                                    hint="Por ejemplo: Taza personalizada."
+                                    hint="Por ejemplo: Good Girl EDP."
                                     error={errors.testimonials?.[index]?.product?.message}
                                     {...register(`testimonials.${index}.product`)}
                                 />

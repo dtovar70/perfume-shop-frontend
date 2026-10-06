@@ -77,10 +77,10 @@ export function OrderStatusesSection() {
 
             <section className="space-y-3" aria-labelledby="catalog-groups-title">
                 <div className="space-y-1">
-                    <h2 id="catalog-groups-title" className="font-display text-2xl text-ink">
+                    <h2 id="catalog-groups-title" className="font-display text-2xl text-fg">
                         Pestañas de Pedidos
                     </h2>
-                    <p className="text-sm text-ink-soft">
+                    <p className="text-sm text-fg-soft">
                         En este orden aparecen en la página de Pedidos, de izquierda a derecha.
                         «Todos» siempre va al final.
                     </p>
@@ -108,10 +108,10 @@ export function OrderStatusesSection() {
 
             <section className="space-y-3" aria-labelledby="catalog-statuses-title">
                 <div className="space-y-1">
-                    <h2 id="catalog-statuses-title" className="font-display text-2xl text-ink">
+                    <h2 id="catalog-statuses-title" className="font-display text-2xl text-fg">
                         Estados
                     </h2>
-                    <p className="text-sm text-ink-soft">
+                    <p className="text-sm text-fg-soft">
                         El nombre y el color se ven en el panel; el nombre para el cliente y el
                         mensaje, en la página de su pedido. El mensaje de WhatsApp es el que se
                         prepara con «Avisar por WhatsApp».

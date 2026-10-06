@@ -25,7 +25,7 @@ export const ABOUT_VALUE_ICON_COMPONENTS: Record<AboutValueIcon, LucideIcon> = {
 }
 
 export const ABOUT_VALUE_ICON_LABELS: Record<AboutValueIcon, string> = {
-    palette: 'Paleta (diseño)',
+    palette: 'Paleta',
     'heart-handshake': 'Apretón de manos (trato)',
     timer: 'Reloj (tiempos)',
     leaf: 'Hoja (materiales)',

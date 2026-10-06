@@ -16,15 +16,15 @@ export function FreeShippingProgress({ subtotal, className }: FreeShippingProgre
 
     return (
         <div className={cn('space-y-2', className)}>
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-fg-soft">
                 {remaining === 0 ? (
-                    <span className="font-semibold text-rose-700">
+                    <span className="font-semibold text-accent">
                         ¡Listo! Tu envío va por nuestra cuenta.
                     </span>
                 ) : (
                     <>
                         Te faltan{' '}
-                        <span className="font-semibold text-ink">{formatCurrency(remaining)}</span>{' '}
+                        <span className="font-semibold text-fg">{formatCurrency(remaining)}</span>{' '}
                         para el envío gratis.
                     </>
                 )}
@@ -36,10 +36,10 @@ export function FreeShippingProgress({ subtotal, className }: FreeShippingProgre
                 aria-valuemax={100}
                 aria-valuenow={percent}
                 aria-label="Progreso hacia el envío gratis"
-                className="h-1.5 w-full overflow-hidden rounded-full bg-rose-100"
+                className="h-1.5 w-full overflow-hidden rounded-full bg-cherry-tint"
             >
                 <div
-                    className="h-full rounded-full bg-linear-to-r from-rose-500 to-gold-400 transition-[width] duration-500 motion-reduce:transition-none"
+                    className="h-full rounded-full bg-linear-to-r from-cherry-500 to-cherry-500/40 transition-[width] duration-500 motion-reduce:transition-none"
                     style={{ width: `${percent}%` }}
                 />
             </div>

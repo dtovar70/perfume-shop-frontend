@@ -201,7 +201,7 @@ export function UserFormDialog({
                         <div
                             className={cn(
                                 FIELD_BASE_CLASS,
-                                'flex h-11 items-center gap-2 rounded-xl bg-rose-50/40 px-4 text-ink-soft',
+                                'flex h-11 items-center gap-2 rounded-xl bg-elevated/40 px-4 text-fg-soft',
                             )}
                         >
                             <Lock aria-hidden="true" className="size-4 shrink-0" />

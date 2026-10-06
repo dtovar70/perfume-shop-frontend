@@ -102,7 +102,7 @@ function description(order: AdminOrder, action: AllowedTransition) {
         case 'CANCELADO':
             return action.restoresStock
                 ? 'Las unidades vuelven al inventario. No se puede deshacer.'
-                : 'El pedido ya salió del taller, así que el inventario no cambia. No se puede deshacer.'
+                : 'El pedido ya salió de la tienda, así que el inventario no cambia. No se puede deshacer.'
         default:
             return `El pedido pasará a «${action.label}» y el cliente lo verá en su página.`
     }

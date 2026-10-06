@@ -16,7 +16,7 @@ export function BrandTile({ brand, showCount = false, className }: BrandTileProp
         <Link
             to={brandCatalogPath(brand.slug)}
             className={cn(
-                'group flex h-28 flex-col items-center justify-center gap-1.5 rounded-card border border-line bg-white px-4 text-center transition duration-300 hover:-translate-y-0.5 hover:border-gold-300 hover:shadow-soft',
+                'group flex h-28 flex-col items-center justify-center gap-1.5 rounded-card border border-line bg-surface px-4 text-center transition duration-300 hover:-translate-y-0.5 hover:border-line hover:shadow-soft',
                 className,
             )}
         >
@@ -29,12 +29,12 @@ export function BrandTile({ brand, showCount = false, className }: BrandTileProp
                     className="max-h-12 w-auto max-w-[80%] object-contain opacity-80 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                 />
             ) : (
-                <span className="line-clamp-2 font-display text-xl leading-tight font-semibold tracking-[0.06em] text-ink uppercase transition-colors group-hover:text-rose-700 sm:text-2xl">
+                <span className="line-clamp-2 font-display text-lg leading-tight font-semibold tracking-[0.08em] text-fg uppercase transition-colors group-hover:text-accent sm:text-xl">
                     {brand.name}
                 </span>
             )}
             {showCount && brand.productCount !== undefined ? (
-                <span className="text-xs text-ink-soft">
+                <span className="text-xs text-fg-soft">
                     {brand.productCount} {brand.productCount === 1 ? 'fragancia' : 'fragancias'}
                 </span>
             ) : null}

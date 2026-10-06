@@ -27,11 +27,11 @@ export function CartView() {
     return (
         <div className={cn(CONTAINER, 'space-y-8 py-10 lg:py-14')}>
             <header className="space-y-2">
-                <p className="text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
+                <p className="text-[11px] font-bold tracking-[0.28em] text-accent uppercase sm:text-xs">
                     Tu selección
                 </p>
-                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl">
-                    Carrito de <span className="text-rose-700 italic">compras</span>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-fg sm:text-5xl">
+                    Carrito de <span className="text-accent">compras</span>
                 </h1>
             </header>
 
@@ -46,9 +46,9 @@ export function CartView() {
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
                     <div className="space-y-3">
                         <div className="flex items-center justify-between gap-3 px-1">
-                            <span className="text-sm text-ink-soft">
-                                {items.length} {items.length === 1 ? 'producto' : 'productos'} en
-                                tu carrito
+                            <span className="text-sm text-fg-soft">
+                                {items.length} {items.length === 1 ? 'producto' : 'productos'} en tu
+                                carrito
                             </span>
                             <ClearCartButton itemCount={items.length} />
                         </div>
@@ -67,31 +67,31 @@ export function CartView() {
                     </div>
 
                     <Card
-                        tone="ivory"
+                        tone="elevated"
                         padding="lg"
                         className="h-fit space-y-5 lg:sticky lg:top-28"
                         aria-label="Resumen del pedido"
                     >
-                        <h2 className="font-display text-2xl font-semibold text-ink">Resumen</h2>
+                        <h2 className="font-display text-2xl font-semibold text-fg">Resumen</h2>
 
                         <FreeShippingProgress subtotal={subtotal} />
 
                         <dl className="space-y-2 text-sm">
                             <div className="flex items-center justify-between">
-                                <dt className="text-ink-soft">Subtotal</dt>
-                                <dd className="font-semibold text-ink">
+                                <dt className="text-fg-soft">Subtotal</dt>
+                                <dd className="font-semibold text-fg">
                                     {formatCurrency(subtotal)}
                                 </dd>
                             </div>
                             <div className="flex items-center justify-between">
-                                <dt className="text-ink-soft">Envío</dt>
-                                <dd className="font-semibold text-ink">
+                                <dt className="text-fg-soft">Envío</dt>
+                                <dd className="font-semibold text-fg">
                                     {shipping === 0 ? 'Gratis' : formatCurrency(shipping)}
                                 </dd>
                             </div>
                             <div className="flex items-baseline justify-between border-t border-line pt-3">
-                                <dt className="font-bold text-ink">Total</dt>
-                                <dd className="text-2xl font-bold text-ink tabular-nums">
+                                <dt className="font-bold text-fg">Total</dt>
+                                <dd className="text-2xl font-bold text-fg tabular-nums">
                                     {formatCurrency(total)}
                                 </dd>
                             </div>
@@ -101,10 +101,7 @@ export function CartView() {
                         <div className="grid gap-2">
                             {availability.hasIssues ? (
                                 <>
-                                    <p
-                                        role="status"
-                                        className="text-sm font-semibold text-rose-700"
-                                    >
+                                    <p role="status" className="text-sm font-semibold text-accent">
                                         {CART_STOCK_BLOCKED_MESSAGE}
                                     </p>
                                     <Button fullWidth size="lg" disabled>

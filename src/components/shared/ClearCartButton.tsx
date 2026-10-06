@@ -30,9 +30,13 @@ export function ClearCartButton({ itemCount, className }: ClearCartButtonProps) 
 
     if (isArmed) {
         return (
-            <div role="group" aria-label="Confirmar" className={cn('flex items-center gap-1.5', className)}>
-                <span className="text-xs font-semibold text-ink-soft">¿Vaciar todo?</span>
-                <Button size="sm" variant="danger" onClick={clear} className="h-9 px-3 text-xs">
+            <div
+                role="group"
+                aria-label="Confirmar"
+                className={cn('flex items-center gap-1.5', className)}
+            >
+                <span className="text-xs font-semibold text-fg-soft">¿Vaciar todo?</span>
+                <Button size="sm" onClick={clear} className="h-9 px-3 text-xs">
                     Sí, vaciar
                 </Button>
                 <Button
@@ -53,7 +57,7 @@ export function ClearCartButton({ itemCount, className }: ClearCartButtonProps) 
             aria-label={`Vaciar carrito (${itemCount} ${itemCount === 1 ? 'producto' : 'productos'})`}
             onClick={() => setIsArmed(true)}
             className={cn(
-                'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-ink-soft underline-offset-4 transition hover:text-rose-700 hover:underline',
+                'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-fg-soft transition-colors hover:text-accent',
                 className,
             )}
         >

@@ -41,7 +41,7 @@ export function RouteError() {
 
             <div className="space-y-3">
                 <h1 className="font-display text-3xl sm:text-4xl">{title}</h1>
-                <p className="text-ink-soft">{detail}</p>
+                <p className="text-fg-soft">{detail}</p>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3">

@@ -3,11 +3,10 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Link, useLocation } from 'react-router'
 
-import { PRODUCT_GENDERS } from '@/@types/product'
-import { GENDER_LABELS } from '@/constants/product.constant'
+import type { NavLink } from '@/configs/app.config'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
-import { useCategoryLinks } from '@/utils/hooks/useNavLinks'
+import { GENDER_LINKS, useCategoryLinks } from '@/utils/hooks/useNavLinks'
 
 /** Hover intent: the panel waits this long before closing, so a diagonal move does not drop it. */
 const CLOSE_DELAY_MS = 140
@@ -17,7 +16,8 @@ export interface PerfumesMenuProps {
 }
 
 /**
- * "Perfumes ▾": a disclosure panel with the categories and a shortcut per gender. Opens on
+ * "Perfumes ▾": a disclosure panel with two columns of the same weight, "Tipo" (the categories)
+ * and "Para" (a catalog link per gender), and a link to the whole catalog. Opens on
  * hover (pointer) or click/Enter (keyboard, touch); closes on Escape, outside click and
  * navigation.
  */
@@ -105,59 +105,55 @@ export function PerfumesMenu({ triggerClassName }: PerfumesMenuProps) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
                         transition={{ duration: 0.2, ease: 'easeOut' }}
-                        className="absolute top-full left-1/2 z-50 w-[34rem] -translate-x-1/2 pt-3"
+                        className="absolute top-full left-1/2 z-50 w-[26rem] -translate-x-1/2 pt-3"
                     >
-                        <div className="grid grid-cols-[1.4fr_1fr] gap-6 overflow-hidden rounded-card border border-line bg-white p-6 shadow-lift">
-                            <div>
-                                <p className="text-[11px] font-bold tracking-[0.2em] text-gold-700 uppercase">
-                                    Colecciones
-                                </p>
-                                <ul className="mt-3 space-y-0.5">
-                                    {categoryLinks.map((link) => (
-                                        <li key={link.to}>
-                                            <Link
-                                                to={link.to}
-                                                className="group/link flex items-center justify-between rounded-lg px-2 py-2 font-display text-lg text-ink transition hover:bg-rose-50 hover:text-rose-700"
-                                            >
-                                                {link.label}
-                                                <ArrowRight
-                                                    aria-hidden="true"
-                                                    className="size-4 -translate-x-1 opacity-0 transition group-hover/link:translate-x-0 group-hover/link:opacity-100"
-                                                />
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
+                        <div className="overflow-hidden rounded-card border border-line bg-surface shadow-lift">
+                            <div className="grid grid-cols-2 gap-6 p-5">
+                                <MenuColumn title="Tipo" links={categoryLinks} />
+                                <MenuColumn title="Para" links={GENDER_LINKS} />
                             </div>
-
-                            <div className="flex flex-col">
-                                <p className="text-[11px] font-bold tracking-[0.2em] text-gold-700 uppercase">
-                                    Para
-                                </p>
-                                <ul className="mt-3 space-y-0.5">
-                                    {PRODUCT_GENDERS.map((gender) => (
-                                        <li key={gender}>
-                                            <Link
-                                                to={`${ROUTES.catalog}?gender=${gender}`}
-                                                className="block rounded-lg px-2 py-2 text-sm font-semibold text-ink-soft transition hover:bg-rose-50 hover:text-rose-700"
-                                            >
-                                                {GENDER_LABELS[gender]}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link
-                                    to={ROUTES.catalog}
-                                    className="gradient-blush mt-auto flex items-center justify-between gap-2 rounded-xl px-4 py-3 text-sm font-bold text-rose-800 transition hover:brightness-[0.98]"
-                                >
-                                    Ver todo el catálogo
-                                    <ArrowRight aria-hidden="true" className="size-4" />
-                                </Link>
-                            </div>
+                            <Link
+                                to={ROUTES.catalog}
+                                className="flex items-center justify-between gap-2 border-t border-line bg-elevated px-7 py-3.5 text-sm font-bold text-accent-strong transition hover:text-accent"
+                            >
+                                Ver todo el catálogo
+                                <ArrowRight aria-hidden="true" className="size-4" />
+                            </Link>
                         </div>
                     </motion.div>
                 ) : null}
             </AnimatePresence>
+        </div>
+    )
+}
+
+/** One titled list of the panel; both columns share the link style so neither reads secondary. */
+function MenuColumn({ title, links }: { title: string; links: NavLink[] }) {
+    const titleId = useId()
+    return (
+        <div>
+            <p
+                id={titleId}
+                className="px-2 text-[11px] font-bold tracking-[0.2em] text-accent uppercase"
+            >
+                {title}
+            </p>
+            <ul aria-labelledby={titleId} className="mt-2 space-y-0.5">
+                {links.map((link) => (
+                    <li key={link.to}>
+                        <Link
+                            to={link.to}
+                            className="group/link flex items-center justify-between gap-2 rounded-lg px-2 py-2 font-display text-lg text-fg transition hover:bg-elevated hover:text-accent"
+                        >
+                            {link.label}
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="size-4 shrink-0 -translate-x-1 opacity-0 transition group-hover/link:translate-x-0 group-hover/link:opacity-100 group-focus-visible/link:translate-x-0 group-focus-visible/link:opacity-100"
+                            />
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }

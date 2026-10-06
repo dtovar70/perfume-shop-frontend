@@ -20,14 +20,14 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
     return (
         <Card padding="md" className="space-y-4">
             <div className="space-y-1">
-                <h2 className="font-display text-xl text-ink">Pagos reportados</h2>
-                <p className="text-xs text-ink-soft">
+                <h2 className="font-display text-xl text-fg">Pagos reportados</h2>
+                <p className="text-xs text-fg-soft">
                     El monto esperado es el total en Bs fijado al crear el pedido (
                     {formatBolivares(order.totals.totalBs)}); no cambia aunque la tasa BCV cambie.
                 </p>
             </div>
             {order.payments.length === 0 ? (
-                <p className="text-sm text-ink-soft">
+                <p className="text-sm text-fg-soft">
                     El cliente todavía no ha enviado ningún comprobante.
                 </p>
             ) : (
@@ -40,8 +40,8 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                 className={cn(
                                     'flex flex-col gap-4 rounded-2xl border p-4 sm:flex-row',
                                     payment.status === 'PENDIENTE'
-                                        ? 'border-gold-300 bg-gold-50/60'
-                                        : 'border-line bg-white',
+                                        ? 'border-line bg-elevated/60'
+                                        : 'border-line bg-surface',
                                 )}
                             >
                                 {payment.proofPath ? (
@@ -50,13 +50,13 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                         title={`Captura del pago ref. ${payment.reference}`}
                                     />
                                 ) : (
-                                    <span className="flex size-24 shrink-0 items-center justify-center rounded-2xl border border-dashed border-line bg-white px-2 text-center text-[11px] text-ink-soft">
+                                    <span className="flex size-24 shrink-0 items-center justify-center rounded-2xl border border-dashed border-line bg-surface px-2 text-center text-[11px] text-fg-soft">
                                         Sin captura
                                     </span>
                                 )}
                                 <div className="min-w-0 flex-1 space-y-2 text-sm">
                                     <div className="flex flex-wrap items-center gap-2">
-                                        <span className="flex min-w-0 items-center gap-1 font-semibold text-ink">
+                                        <span className="flex min-w-0 items-center gap-1 font-semibold text-fg">
                                             <span className="break-all">
                                                 Ref. {payment.reference}
                                             </span>
@@ -79,21 +79,21 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                     </div>
                                     <dl className="grid grid-cols-1 gap-x-4 gap-y-1 @lg:grid-cols-2">
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Pagó:</dt>
+                                            <dt className="text-fg-soft">Pagó:</dt>
                                             <dd
                                                 className={cn(
                                                     'font-semibold',
                                                     payment.amountMismatch
-                                                        ? 'text-rose-700'
-                                                        : 'text-ink',
+                                                        ? 'text-accent'
+                                                        : 'text-fg',
                                                 )}
                                             >
                                                 {formatBolivares(payment.amountBs)}
                                             </dd>
                                         </div>
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Esperado:</dt>
-                                            <dd className="font-semibold text-ink">
+                                            <dt className="text-fg-soft">Esperado:</dt>
+                                            <dd className="font-semibold text-fg">
                                                 {formatBolivares(payment.expectedBs)}
                                                 {payment.amountMismatch
                                                     ? ` (${formatDifference(payment.amountDifferenceBs)})`
@@ -101,36 +101,34 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                                             </dd>
                                         </div>
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Banco:</dt>
-                                            <dd className="text-ink">
+                                            <dt className="text-fg-soft">Banco:</dt>
+                                            <dd className="text-fg">
                                                 {payment.payerBankCode} - {payment.payerBankName}
                                             </dd>
                                         </div>
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Teléfono:</dt>
-                                            <dd className="text-ink">{payment.payerPhone}</dd>
+                                            <dt className="text-fg-soft">Teléfono:</dt>
+                                            <dd className="text-fg">{payment.payerPhone}</dd>
                                         </div>
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Cédula:</dt>
-                                            <dd className="text-ink">
+                                            <dt className="text-fg-soft">Cédula:</dt>
+                                            <dd className="text-fg">
                                                 {payment.payerIdNumber ?? '—'}
                                             </dd>
                                         </div>
                                         <div className="flex flex-wrap gap-1">
-                                            <dt className="text-ink-soft">Fecha del pago:</dt>
-                                            <dd className="text-ink">
-                                                {formatDay(payment.paidOn)}
-                                            </dd>
+                                            <dt className="text-fg-soft">Fecha del pago:</dt>
+                                            <dd className="text-fg">{formatDay(payment.paidOn)}</dd>
                                         </div>
                                     </dl>
-                                    <p className="text-xs text-ink-soft">
+                                    <p className="text-xs text-fg-soft">
                                         Enviado el {formatDateTime(payment.createdAt)}
                                         {payment.reviewedAt
                                             ? ` · revisado el ${formatDateTime(payment.reviewedAt)}${payment.reviewedBy ? ` por ${payment.reviewedBy.name}` : ''}`
                                             : ''}
                                     </p>
                                     {payment.rejectionReason ? (
-                                        <p className="font-medium break-words text-rose-700">
+                                        <p className="font-medium break-words text-accent">
                                             Motivo: {payment.rejectionReason}
                                         </p>
                                     ) : null}

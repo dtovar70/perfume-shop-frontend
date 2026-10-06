@@ -152,9 +152,9 @@ export function WhatsAppNoticeAction({ order }: { order: AdminOrder }) {
                 ) : message ? (
                     <div className="space-y-4">
                         {message.phone ? (
-                            <p className="text-sm text-ink-soft">
+                            <p className="text-sm text-fg-soft">
                                 Se abrirá tu WhatsApp con el mensaje escrito para{' '}
-                                <span className="font-semibold text-ink">
+                                <span className="font-semibold text-fg">
                                     {order.customer.fullName}
                                 </span>{' '}
                                 ({formatVePhone(message.customerPhone)}). Solo tienes que tocar
@@ -176,7 +176,7 @@ export function WhatsAppNoticeAction({ order }: { order: AdminOrder }) {
                             onChange={(event) => setText(event.target.value)}
                         />
                         {message.link ? (
-                            <p className="flex items-start gap-2 text-xs text-ink-soft">
+                            <p className="flex items-start gap-2 text-xs text-fg-soft">
                                 <Link2 aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
                                 Incluye un enlace nuevo a la página del pedido. Los enlaces que el
                                 cliente ya tenía siguen funcionando.

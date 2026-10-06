@@ -81,7 +81,7 @@ export function Input({
                 {leadingIcon ? (
                     <span
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-ink-soft"
+                        className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-fg-soft"
                     >
                         {leadingIcon}
                     </span>

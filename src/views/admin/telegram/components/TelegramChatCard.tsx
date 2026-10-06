@@ -53,13 +53,13 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
     }
 
     return (
-        <Card padding="none" className={cn('p-4 sm:p-5', !chat.isActive && 'bg-ivory')}>
+        <Card padding="none" className={cn('p-4 sm:p-5', !chat.isActive && 'bg-canvas')}>
             <div className="flex items-start gap-3">
                 <span
                     aria-hidden="true"
                     className={cn(
                         'flex size-11 shrink-0 items-center justify-center rounded-full font-display text-lg',
-                        chat.isActive ? 'bg-gold-100 text-gold-700' : 'bg-line text-ink-soft',
+                        chat.isActive ? 'bg-elevated text-accent' : 'bg-line text-fg-soft',
                     )}
                 >
                     {initial}
@@ -67,13 +67,13 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
 
                 <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <h3 className="min-w-0 font-semibold break-words text-ink">{name}</h3>
+                        <h3 className="min-w-0 font-semibold break-words text-fg">{name}</h3>
                         {chat.firstName && chat.username ? (
                             <a
                                 href={telegramUserUrl(chat.username)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="min-w-0 text-sm break-all text-gold-700 hover:underline"
+                                className="min-w-0 text-sm break-all text-accent hover:underline"
                             >
                                 @{chat.username}
                             </a>
@@ -85,7 +85,7 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
                         )}
                     </div>
 
-                    <p className="text-xs text-ink-soft">
+                    <p className="text-xs text-fg-soft">
                         Vinculado el {formatDate(chat.linkedAt)}
                         {chat.linkedBy
                             ? ` por ${chat.linkedBy.name}${chat.linkedBy.isActive === false ? ' (cuenta desactivada)' : ''}`
@@ -102,7 +102,7 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
                     </p>
 
                     {chat.isActive ? null : (
-                        <p className="text-xs text-rose-800">
+                        <p className="text-xs text-accent-strong">
                             Inactivo: el chat bloqueó al bot, así que no le llegan los avisos.
                             Desbloquéalo en Telegram y escríbele /ayuda para reactivarlo.
                         </p>
@@ -118,7 +118,7 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
                         disabled={update.isPending}
                         onChange={toggleOrders}
                     />
-                    <span aria-hidden="true" className="text-sm font-semibold text-ink">
+                    <span aria-hidden="true" className="text-sm font-semibold text-fg">
                         Nuevos pedidos
                     </span>
                 </div>
@@ -138,7 +138,7 @@ export function TelegramChatCard({ chat, botConnected, onUnlink }: TelegramChatC
                         variant="ghost"
                         size="sm"
                         onClick={() => onUnlink(chat)}
-                        className="text-rose-800 hover:bg-rose-50"
+                        className="text-accent-strong hover:bg-elevated"
                         leadingIcon={<Unlink aria-hidden="true" className="size-4" />}
                     >
                         Desvincular

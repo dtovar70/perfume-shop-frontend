@@ -4,6 +4,12 @@ import { useShallow } from 'zustand/react/shallow'
 interface UiState {
     isCartOpen: boolean
     isMobileMenuOpen: boolean
+    /**
+     * Bumped each time something lands in the cart (after the fly-to-cart flight, or right away
+     * with reduced motion); the header cart button bounces and pops its badge on every change.
+     */
+    cartPulse: number
+    pulseCart: () => void
     openCart: () => void
     closeCart: () => void
     toggleCart: () => void
@@ -16,6 +22,9 @@ interface UiState {
 export const useUiStore = create<UiState>()((set) => ({
     isCartOpen: false,
     isMobileMenuOpen: false,
+    cartPulse: 0,
+
+    pulseCart: () => set((state) => ({ cartPulse: state.cartPulse + 1 })),
 
     openCart: () => set({ isCartOpen: true, isMobileMenuOpen: false }),
     closeCart: () => set({ isCartOpen: false }),
@@ -49,4 +58,8 @@ export function useMobileMenu() {
             toggle: state.toggleMobileMenu,
         })),
     )
+}
+
+export function useCartPulse(): number {
+    return useUiStore((state) => state.cartPulse)
 }

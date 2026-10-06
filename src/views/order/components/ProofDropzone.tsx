@@ -78,12 +78,12 @@ export function ProofDropzone({ file, onChange, error, disabled = false }: Proof
             </span>
 
             {file && preview ? (
-                <div className="flex items-center gap-3 rounded-2xl border border-line bg-white p-3">
+                <div className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3">
                     <ProofViewer src={preview} title="Tu captura del pago" />
                     <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-ink">{file.name}</p>
-                        <p className="text-xs text-ink-soft">{formatFileSize(file.size)}</p>
-                        <p className="mt-1 text-xs text-ink-soft">Toca la imagen para verla.</p>
+                        <p className="truncate text-sm font-semibold text-fg">{file.name}</p>
+                        <p className="text-xs text-fg-soft">{formatFileSize(file.size)}</p>
+                        <p className="mt-1 text-xs text-fg-soft">Toca la imagen para verla.</p>
                     </div>
                     <button
                         type="button"
@@ -93,7 +93,7 @@ export function ProofDropzone({ file, onChange, error, disabled = false }: Proof
                             if (inputRef.current) inputRef.current.value = ''
                         }}
                         aria-label="Quitar la captura"
-                        className="flex size-11 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700"
+                        className="flex size-11 shrink-0 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent"
                     >
                         <X aria-hidden="true" className="size-4" />
                     </button>
@@ -110,15 +110,15 @@ export function ProofDropzone({ file, onChange, error, disabled = false }: Proof
                     className={cn(
                         'flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed px-4 py-6 text-center transition',
                         isOver
-                            ? 'border-rose-400 bg-rose-50'
-                            : 'border-line bg-white hover:border-rose-200',
-                        message && 'border-rose-500',
+                            ? 'border-accent/60 bg-elevated'
+                            : 'border-line bg-surface hover:border-cherry-500/30',
+                        message && 'border-cherry-500',
                         (disabled || isPreparing) && 'cursor-not-allowed opacity-60',
                     )}
                     aria-busy={isPreparing || undefined}
                 >
-                    <ImageUp aria-hidden="true" className="size-7 text-rose-500" />
-                    <span className="text-sm font-semibold text-ink">
+                    <ImageUp aria-hidden="true" className="size-7 text-accent" />
+                    <span className="text-sm font-semibold text-fg">
                         {isPreparing
                             ? 'Preparando tu captura…'
                             : 'Arrastra la captura aquí o toca para elegirla'}

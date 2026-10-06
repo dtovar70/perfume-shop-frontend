@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import type { Product, ProductVariant } from '@/@types/product'
 import { MAX_LINE_QUANTITY, useCartActions, useCartItems } from '@/store/cartStore'
 import { cn } from '@/utils/cn'
+import { useFlyToCart } from '@/utils/hooks/useFlyToCart'
 import { stockOf } from '@/utils/productStock'
 
 /** The visible control is compact; this pseudo-element grows each hit area to >= 44px. */
@@ -11,21 +12,22 @@ const HIT_AREA = "after:absolute after:-inset-1.5 after:content-['']"
 
 export interface CardCartControlProps {
     product: Product
-    variant: ProductVariant
+    /** Omitted for a product without variants. */
+    variant?: ProductVariant
     className?: string
 }
 
 /**
- * The card's cart control: a round "+" (36px) that adds the default version, which turns into a
+ * The card's cart control: a round "+" (40px) that adds the default version, which turns into a
  * compact −/qty/+ stepper bound to that cart line once it is in the cart.
  */
 export function CardCartControl({ product, variant, className }: CardCartControlProps) {
     const items = useCartItems()
     const { addItem, updateQuantity } = useCartActions()
     const reduceMotion = useReducedMotion()
-    const line = items.find(
-        (item) => item.productId === product.id && item.variantId === variant.id,
-    )
+    const flyToCart = useFlyToCart()
+    const variantId = variant?.id ?? ''
+    const line = items.find((item) => item.productId === product.id && item.variantId === variantId)
     const max = Math.min(stockOf(product, variant), MAX_LINE_QUANTITY)
     const transition = { duration: reduceMotion ? 0 : 0.22, ease: 'easeOut' } as const
 
@@ -39,7 +41,7 @@ export function CardCartControl({ product, variant, className }: CardCartControl
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.85 }}
                         transition={transition}
-                        className="flex h-8 w-20 items-center justify-between rounded-full bg-rose-700 text-white shadow-lift"
+                        className="flex h-9 w-24 items-center justify-between rounded-full bg-cherry-500 text-on-cherry shadow-glow"
                     >
                         <button
                             type="button"
@@ -50,7 +52,7 @@ export function CardCartControl({ product, variant, className }: CardCartControl
                                     : `Quitar una unidad de ${product.name}`
                             }
                             className={cn(
-                                'relative flex size-8 items-center justify-center rounded-full transition hover:bg-white/15',
+                                'relative flex size-9 items-center justify-center rounded-full transition hover:bg-on-cherry/15',
                                 HIT_AREA,
                             )}
                         >
@@ -65,11 +67,18 @@ export function CardCartControl({ product, variant, className }: CardCartControl
                         </output>
                         <button
                             type="button"
-                            onClick={() => updateQuantity(line.lineId, line.quantity + 1, max)}
+                            onClick={(event) => {
+                                flyToCart({
+                                    trigger: event.currentTarget,
+                                    productId: product.id,
+                                    productName: product.name,
+                                })
+                                updateQuantity(line.lineId, line.quantity + 1, max)
+                            }}
                             disabled={line.quantity >= max}
                             aria-label={`Agregar una unidad de ${product.name}`}
                             className={cn(
-                                'relative flex size-8 items-center justify-center rounded-full transition hover:bg-white/15 disabled:opacity-40',
+                                'relative flex size-9 items-center justify-center rounded-full transition hover:bg-on-cherry/15 disabled:opacity-40',
                                 HIT_AREA,
                             )}
                         >
@@ -84,10 +93,17 @@ export function CardCartControl({ product, variant, className }: CardCartControl
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.85 }}
                         transition={transition}
-                        onClick={() => addItem(product, variant.id, 1)}
+                        onClick={(event) => {
+                            flyToCart({
+                                trigger: event.currentTarget,
+                                productId: product.id,
+                                productName: product.name,
+                            })
+                            addItem(product, variantId, 1)
+                        }}
                         aria-label={`Agregar ${product.name} al carrito`}
                         className={cn(
-                            'relative flex size-9 items-center justify-center rounded-full border border-line bg-white text-rose-700 shadow-soft transition-colors duration-300 group-hover:border-transparent group-hover:bg-rose-700 group-hover:text-white hover:bg-rose-800',
+                            'relative flex size-10 items-center justify-center rounded-full border border-line-strong bg-surface text-fg shadow-soft transition-colors duration-300 group-hover:border-transparent group-hover:bg-cherry-500 group-hover:text-on-cherry hover:bg-cherry-600',
                             HIT_AREA,
                         )}
                     >

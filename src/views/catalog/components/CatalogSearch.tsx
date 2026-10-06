@@ -73,7 +73,7 @@ export function CatalogSearch({ value, onSearch, className }: CatalogSearchProps
                                 inputRef.current?.focus()
                             }}
                             className={cn(
-                                "relative flex size-8 items-center justify-center rounded-full text-ink-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-rose-50 hover:text-ink",
+                                "relative flex size-8 items-center justify-center rounded-full text-fg-soft transition after:absolute after:-inset-1.5 after:content-[''] hover:bg-elevated hover:text-fg",
                             )}
                         >
                             <X aria-hidden="true" className="size-4" />

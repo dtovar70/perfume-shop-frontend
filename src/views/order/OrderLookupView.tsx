@@ -21,7 +21,7 @@ import {
 const LOOKUP_SENT_MESSAGE = 'Si los datos coinciden, te enviamos un enlace a tu correo.'
 
 const linkClass =
-    'font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-rose-400'
+    'font-semibold text-accent underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-accent'
 
 /**
  * "Consultar mi pedido" (`/consultar-pedido`): the order code and the checkout email. When they
@@ -71,13 +71,13 @@ export function OrderLookupView() {
             )}
         >
             <div className="space-y-3 lg:col-start-1">
-                <p className="font-display text-sm font-semibold tracking-[0.2em] text-rose-700 uppercase">
+                <p className="text-[11px] font-bold tracking-[0.28em] text-accent uppercase sm:text-xs">
                     Tus pedidos
                 </p>
-                <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                    Consulta tu <span className="text-rose-500">pedido</span>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-fg sm:text-5xl">
+                    Consulta tu <span className="text-accent">pedido</span>
                 </h1>
-                <p className="max-w-2xl text-ink-soft">
+                <p className="max-w-2xl text-fg-soft">
                     ¿Perdiste el enlace de tu pedido o lo hiciste desde otro dispositivo? Escribe el
                     código del pedido y el correo que usaste al comprar, y te enviamos un enlace
                     nuevo para verlo.
@@ -89,19 +89,19 @@ export function OrderLookupView() {
                     <Card padding="lg" className="space-y-4 text-center">
                         <span
                             aria-hidden="true"
-                            className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-ink"
+                            className="mx-auto flex size-14 items-center justify-center rounded-full bg-success/10 text-fg"
                         >
                             <MailCheck className="size-6" />
                         </span>
-                        <h2 className="font-display text-2xl text-ink">Revisa tu correo</h2>
-                        <p className="text-sm text-ink-soft" role="status">
+                        <h2 className="font-display text-2xl text-fg">Revisa tu correo</h2>
+                        <p className="text-sm text-fg-soft" role="status">
                             {LOOKUP_SENT_MESSAGE}
                         </p>
-                        <p className="text-sm break-words text-ink-soft">
+                        <p className="text-sm break-words text-fg-soft">
                             Busca un mensaje para{' '}
-                            <span className="font-semibold text-ink">{sentTo}</span> (mira también
-                            en spam o promociones). Si no llega en unos minutos, revisa el código y
-                            el correo, o escríbenos por{' '}
+                            <span className="font-semibold text-fg">{sentTo}</span> (mira también en
+                            spam o promociones). Si no llega en unos minutos, revisa el código y el
+                            correo, o escríbenos por{' '}
                             <Link to={ROUTES.contact} className={linkClass}>
                                 Contacto
                             </Link>
@@ -130,7 +130,7 @@ export function OrderLookupView() {
                                     autoComplete="off"
                                     autoCapitalize="characters"
                                     spellCheck={false}
-                                    hint="Ejemplo: MR-000123"
+                                    hint="Ejemplo: KZ-000123"
                                     error={errors.code?.message}
                                     {...register('code')}
                                 />
@@ -158,13 +158,13 @@ export function OrderLookupView() {
             </div>
 
             <section aria-labelledby="lookup-help-title" className="space-y-4 lg:col-start-1">
-                <h2 id="lookup-help-title" className="font-display text-xl text-ink">
+                <h2 id="lookup-help-title" className="font-display text-xl text-fg">
                     ¿Dónde encuentro mi código?
                 </h2>
                 <ul className="space-y-3">
                     <HelpItem icon={<Mail className="size-5" />}>
                         En el correo{' '}
-                        <span className="font-semibold text-ink">«Recibimos tu pedido MR-…»</span>{' '}
+                        <span className="font-semibold text-fg">«Recibimos tu pedido KZ-…»</span>{' '}
                         que te enviamos al comprar. Ese correo también trae el botón «Ver mi
                         pedido».
                     </HelpItem>
@@ -190,14 +190,14 @@ export function OrderLookupView() {
 
 function HelpItem({ icon, children }: { icon: ReactNode; children: ReactNode }) {
     return (
-        <li className="flex items-start gap-4 rounded-card border border-line bg-white/70 p-4">
+        <li className="flex items-start gap-4 rounded-card border border-line bg-surface/70 p-4">
             <span
                 aria-hidden="true"
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cherry-tint text-accent"
             >
                 {icon}
             </span>
-            <p className="pt-2 text-sm text-ink-soft">{children}</p>
+            <p className="pt-2 text-sm text-fg-soft">{children}</p>
         </li>
     )
 }

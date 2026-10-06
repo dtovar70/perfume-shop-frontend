@@ -201,7 +201,7 @@ export function RailTooltip({
                               opacity: position ? undefined : 0,
                           }}
                           className={cn(
-                              'pointer-events-none fixed z-60 max-w-[calc(100vw-1rem)] rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink shadow-soft',
+                              'pointer-events-none fixed z-60 max-w-[calc(100vw-1rem)] rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-fg shadow-soft',
                               ORIGIN_CLASS[position?.side ?? 'right'],
                               position && 'animate-select-pop motion-reduce:animate-none',
                           )}
@@ -214,7 +214,7 @@ export function RailTooltip({
                                           : { left: position.arrowOffset }
                                   }
                                   className={cn(
-                                      'absolute size-2.5 rotate-45 border-line bg-white',
+                                      'absolute size-2.5 rotate-45 border-line bg-surface',
                                       ARROW_CLASS[position.side],
                                   )}
                               />

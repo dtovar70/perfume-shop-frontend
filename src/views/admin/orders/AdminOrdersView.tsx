@@ -37,10 +37,10 @@ const SKELETON_ROWS = 6
 const FULL_SEARCH_PLACEHOLDER_MIN_PX = 368
 
 const headerCellClass =
-    'px-3 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase first:pl-4'
+    'px-3 py-3 text-left text-xs font-bold tracking-wide text-fg-soft uppercase first:pl-4'
 const cellClass = 'px-3 py-3 align-middle first:pl-4'
 /** Pinned to the right edge, like the products list, with its own background. */
-const actionsCellClass = 'sticky right-0 bg-white px-3 transition group-hover:bg-ivory'
+const actionsCellClass = 'sticky right-0 bg-surface px-3 transition group-hover:bg-elevated'
 
 function isStatus(value: string | null): value is OrderStatus {
     return value !== null && (ORDER_STATUSES as readonly string[]).includes(value)
@@ -51,7 +51,7 @@ function OpenLink({ order }: { order: AdminOrderListItem }) {
         <Link
             to={adminOrderPath(order.code)}
             aria-label={`Ver pedido ${order.code}`}
-            className="flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+            className="flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2"
         >
             <ChevronRight aria-hidden="true" className="size-5" />
         </Link>
@@ -69,13 +69,13 @@ function FilterChip({
     label: string
 }) {
     return (
-        <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-line bg-white py-0.5 pr-1 pl-3 text-sm text-ink">
+        <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-line bg-surface py-0.5 pr-1 pl-3 text-sm text-fg">
             <span className="truncate">{children}</span>
             <button
                 type="button"
                 onClick={onRemove}
                 aria-label={label}
-                className="flex size-6 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent"
             >
                 <X aria-hidden="true" className="size-3.5" />
             </button>
@@ -281,7 +281,7 @@ export function AdminOrdersView() {
                 {orders.isFetching && !orders.isPending ? (
                     <Spinner
                         size="sm"
-                        className="shrink-0 text-rose-500"
+                        className="shrink-0 text-accent"
                         label="Actualizando la lista"
                     />
                 ) : null}
@@ -310,7 +310,7 @@ export function AdminOrdersView() {
                                     type="button"
                                     onClick={clearSearch}
                                     aria-label="Limpiar búsqueda"
-                                    className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-rose-100"
+                                    className="flex size-8 items-center justify-center rounded-full text-fg-soft hover:bg-cherry-tint"
                                 >
                                     <X aria-hidden="true" className="size-4" />
                                 </button>
@@ -342,22 +342,19 @@ export function AdminOrdersView() {
                             aria-pressed={pendingRefundsOnly}
                             onClick={toggleRefunds}
                             className={cn(
-                                'inline-flex items-center gap-2 rounded-full border py-1 pr-1.5 pl-3 text-sm font-semibold text-ink transition',
+                                'inline-flex items-center gap-2 rounded-full border py-1 pr-1.5 pl-3 text-sm font-semibold text-fg transition',
                                 pendingRefundsOnly
-                                    ? 'border-gold-400 bg-gold-100'
-                                    : 'border-gold-400/80 bg-gold-100/40 hover:bg-gold-100/80',
+                                    ? 'border-cherry-500/50 bg-elevated'
+                                    : 'border-cherry-500/50 bg-elevated/40 hover:bg-elevated/80',
                             )}
                         >
                             {pendingRefundsOnly ? (
-                                <Check aria-hidden="true" className="size-4 text-ink" />
+                                <Check aria-hidden="true" className="size-4 text-fg" />
                             ) : (
-                                <AlertTriangle
-                                    aria-hidden="true"
-                                    className="size-4 text-amber-600"
-                                />
+                                <AlertTriangle aria-hidden="true" className="size-4 text-warning" />
                             )}
                             Reembolsos pendientes
-                            <span className="min-w-6 rounded-full bg-white px-1.5 py-0.5 text-center text-xs font-bold tabular-nums">
+                            <span className="min-w-6 rounded-full bg-surface px-1.5 py-0.5 text-center text-xs font-bold tabular-nums">
                                 {pendingRefunds}
                             </span>
                         </button>
@@ -365,7 +362,7 @@ export function AdminOrdersView() {
 
                     {search ? (
                         <FilterChip onRemove={clearSearch} label="Quitar la búsqueda">
-                            <span className="text-ink-soft">Búsqueda:</span> “{search}”
+                            <span className="text-fg-soft">Búsqueda:</span> “{search}”
                         </FilterChip>
                     ) : null}
                     {status ? (
@@ -373,7 +370,7 @@ export function AdminOrdersView() {
                             onRemove={() => updateParams({ estado: undefined })}
                             label="Quitar el filtro de estado"
                         >
-                            <span className="text-ink-soft">Estado:</span>{' '}
+                            <span className="text-fg-soft">Estado:</span>{' '}
                             {statusCatalog.status(status).label}
                         </FilterChip>
                     ) : null}
@@ -382,7 +379,7 @@ export function AdminOrdersView() {
                             onRemove={() => updateParams({ desde: undefined, hasta: undefined })}
                             label="Quitar el filtro de fechas"
                         >
-                            <span className="text-ink-soft">Fechas:</span>{' '}
+                            <span className="text-fg-soft">Fechas:</span>{' '}
                             {formatDayRange(fromDate, parseCalendarDay(to))}
                         </FilterChip>
                     ) : null}
@@ -390,7 +387,7 @@ export function AdminOrdersView() {
                     {hasFilters ? (
                         <div className="ml-auto flex items-center gap-3">
                             {orders.data ? (
-                                <span className="text-sm text-ink-soft" aria-live="polite">
+                                <span className="text-sm text-fg-soft" aria-live="polite">
                                     {orders.data.total}{' '}
                                     {orders.data.total === 1 ? 'pedido' : 'pedidos'}
                                 </span>
@@ -468,7 +465,7 @@ export function AdminOrdersView() {
                                         <col className="w-48" />
                                         <col className="w-15" />
                                     </colgroup>
-                                    <thead className="border-b border-line bg-rose-50/60">
+                                    <thead className="border-b border-line bg-elevated/60">
                                         <tr>
                                             <th scope="col" className={headerCellClass}>
                                                 Pedido
@@ -493,7 +490,7 @@ export function AdminOrdersView() {
                                                 className={cn(
                                                     headerCellClass,
                                                     actionsCellClass,
-                                                    'bg-linear-to-r from-rose-50/60 to-rose-50/60',
+                                                    'bg-elevated',
                                                 )}
                                             >
                                                 <span className="sr-only">Acciones</span>
@@ -504,32 +501,32 @@ export function AdminOrdersView() {
                                         {items.map((order) => (
                                             <tr
                                                 key={order.code}
-                                                className="group transition hover:bg-ivory"
+                                                className="group transition hover:bg-elevated"
                                             >
                                                 <td className={cellClass}>
                                                     <Link
                                                         to={adminOrderPath(order.code)}
-                                                        className="font-display text-base text-ink hover:text-rose-700"
+                                                        className="font-display text-base text-fg hover:text-accent"
                                                     >
                                                         {order.code}
                                                     </Link>
-                                                    <p className="text-xs text-ink-soft">
+                                                    <p className="text-xs text-fg-soft">
                                                         {formatDateTime(order.createdAt)}
                                                     </p>
                                                 </td>
                                                 <td className={cellClass}>
-                                                    <p className="truncate font-semibold text-ink">
+                                                    <p className="truncate font-semibold text-fg">
                                                         {order.customerName}
                                                     </p>
-                                                    <p className="truncate text-xs text-ink-soft">
+                                                    <p className="truncate text-xs text-fg-soft">
                                                         {order.customerPhone} · {order.itemCount} u.
                                                     </p>
                                                 </td>
                                                 <td className={`${cellClass} text-right`}>
-                                                    <p className="font-semibold text-ink">
+                                                    <p className="font-semibold text-fg">
                                                         {formatCurrency(order.totalUsd)}
                                                     </p>
-                                                    <p className="text-xs text-ink-soft">
+                                                    <p className="text-xs text-fg-soft">
                                                         {formatBolivares(order.totalBs)}
                                                     </p>
                                                 </td>
@@ -541,7 +538,7 @@ export function AdminOrdersView() {
                                                 </td>
                                                 <td className={cellClass}>
                                                     <div className="space-y-1">
-                                                        <p className="truncate text-xs text-ink-soft">
+                                                        <p className="truncate text-xs text-fg-soft">
                                                             {order.latestPayment
                                                                 ? `Ref. ${order.latestPayment.reference}`
                                                                 : '—'}
@@ -567,11 +564,11 @@ export function AdminOrdersView() {
                                             <div className="min-w-0 flex-1 space-y-1">
                                                 <Link
                                                     to={adminOrderPath(order.code)}
-                                                    className="font-display text-lg text-ink"
+                                                    className="font-display text-lg text-fg"
                                                 >
                                                     {order.code}
                                                 </Link>
-                                                <p className="text-xs text-ink-soft">
+                                                <p className="text-xs text-fg-soft">
                                                     {formatDateTime(order.createdAt)}
                                                 </p>
                                                 <OrderStatusBadge status={order.status} size="sm" />
@@ -579,19 +576,19 @@ export function AdminOrdersView() {
                                             <OpenLink order={order} />
                                         </div>
                                         <div className="min-w-0 text-sm">
-                                            <p className="truncate font-semibold text-ink">
+                                            <p className="truncate font-semibold text-fg">
                                                 {order.customerName}
                                             </p>
-                                            <p className="truncate text-xs text-ink-soft">
+                                            <p className="truncate text-xs text-fg-soft">
                                                 {order.customerPhone} · {order.itemCount} u.
                                             </p>
                                         </div>
                                         <div className="mt-auto flex flex-wrap items-end justify-between gap-2 border-t border-line pt-3">
                                             <div>
-                                                <p className="font-semibold text-ink">
+                                                <p className="font-semibold text-fg">
                                                     {formatCurrency(order.totalUsd)}
                                                 </p>
-                                                <p className="text-xs text-ink-soft">
+                                                <p className="text-xs text-fg-soft">
                                                     {formatBolivares(order.totalBs)}
                                                 </p>
                                             </div>

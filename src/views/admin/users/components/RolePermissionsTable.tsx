@@ -16,7 +16,7 @@ function Allowed({ allowed }: { allowed: boolean }) {
         <span
             className={cn(
                 'inline-flex size-7 items-center justify-center rounded-full',
-                allowed ? 'bg-emerald-100 text-ink' : 'bg-line text-ink-soft',
+                allowed ? 'bg-success/10 text-fg' : 'bg-line text-fg-soft',
             )}
         >
             {allowed ? (
@@ -37,18 +37,18 @@ export function RolePermissionsTable({ className }: { className?: string }) {
     return (
         <details
             className={cn(
-                'group overflow-hidden rounded-card border border-line bg-white shadow-soft',
+                'group overflow-hidden rounded-card border border-line bg-surface shadow-soft',
                 className,
             )}
         >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-card px-5 py-4 font-display text-base text-ink transition hover:bg-rose-50/60 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-card px-5 py-4 font-display text-base text-fg transition hover:bg-elevated/60 focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:outline-none focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center gap-3">
-                    <ShieldCheck aria-hidden="true" className="size-5 shrink-0 text-rose-500" />
+                    <ShieldCheck aria-hidden="true" className="size-5 shrink-0 text-accent" />
                     ¿Qué puede hacer cada rol?
                 </span>
                 <ChevronDown
                     aria-hidden="true"
-                    className="size-5 shrink-0 text-rose-500 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+                    className="size-5 shrink-0 text-accent transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
                 />
             </summary>
             <div className="border-t border-line">
@@ -59,11 +59,11 @@ export function RolePermissionsTable({ className }: { className?: string }) {
                         <col className="w-18 sm:w-32" />
                         <col className="w-18 sm:w-32" />
                     </colgroup>
-                    <thead className="bg-rose-50/60">
+                    <thead className="bg-elevated/60">
                         <tr>
                             <th
                                 scope="col"
-                                className="px-4 py-3 text-left text-xs font-bold tracking-wide text-ink-soft uppercase sm:px-5"
+                                className="px-4 py-3 text-left text-xs font-bold tracking-wide text-fg-soft uppercase sm:px-5"
                             >
                                 Módulo / acción
                             </th>
@@ -71,7 +71,7 @@ export function RolePermissionsTable({ className }: { className?: string }) {
                                 <th
                                     key={role}
                                     scope="col"
-                                    className="px-1 py-3 text-center text-xs font-bold tracking-wide text-ink-soft uppercase"
+                                    className="px-1 py-3 text-center text-xs font-bold tracking-wide text-fg-soft uppercase"
                                 >
                                     <span aria-hidden="true" className="sm:hidden">
                                         {SHORT_ROLE_LABEL[role]}
@@ -87,7 +87,7 @@ export function RolePermissionsTable({ className }: { className?: string }) {
                                 <th
                                     scope="colgroup"
                                     colSpan={3}
-                                    className="bg-ivory px-4 pt-3 pb-1.5 text-left font-display text-sm font-semibold text-rose-700 sm:px-5"
+                                    className="bg-canvas px-4 pt-3 pb-1.5 text-left font-display text-sm font-semibold text-accent sm:px-5"
                                 >
                                     {area}
                                 </th>
@@ -96,7 +96,7 @@ export function RolePermissionsTable({ className }: { className?: string }) {
                                 <tr key={capability.action} className="border-t border-line/70">
                                     <th
                                         scope="row"
-                                        className="px-4 py-2.5 text-left font-normal break-words text-ink sm:px-5"
+                                        className="px-4 py-2.5 text-left font-normal break-words text-fg sm:px-5"
                                     >
                                         {capability.action}
                                     </th>
@@ -110,7 +110,7 @@ export function RolePermissionsTable({ className }: { className?: string }) {
                         </tbody>
                     ))}
                 </table>
-                <p className="border-t border-line px-4 py-3 text-xs text-ink-soft sm:px-5">
+                <p className="border-t border-line px-4 py-3 text-xs text-fg-soft sm:px-5">
                     Solo un administrador cambia el rol de una cuenta. El servidor aplica estos
                     permisos en cada acción.
                 </p>

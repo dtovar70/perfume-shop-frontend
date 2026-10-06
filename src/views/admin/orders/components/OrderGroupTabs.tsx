@@ -17,7 +17,7 @@ const SKELETON_TABS = 5
  * 42rem fits the whole row with two-digit counts.
  */
 const TABLIST_CLASS =
-    'flex flex-wrap gap-1 rounded-card border border-line bg-white p-1 @2xl:w-max @2xl:flex-nowrap @2xl:rounded-full'
+    'flex flex-wrap gap-1 rounded-card border border-line bg-surface p-1 @2xl:w-max @2xl:flex-nowrap @2xl:rounded-full'
 /** Narrow, each pill grows from 9.5rem: two per row on phones, three on wider containers. */
 const TAB_SIZE_CLASS = 'flex-[1_1_9.5rem] @2xl:flex-none'
 
@@ -114,11 +114,11 @@ export function OrderGroupTabs({
                             }
                             onClick={() => onSelect(id)}
                             className={cn(
-                                'inline-flex items-center justify-center gap-2 rounded-full py-2 pr-2.5 pl-4 text-sm font-semibold whitespace-nowrap transition focus-visible:ring-offset-white',
+                                'inline-flex items-center justify-center gap-2 rounded-full py-2 pr-2.5 pl-4 text-sm font-semibold whitespace-nowrap transition focus-visible:ring-offset-surface',
                                 TAB_SIZE_CLASS,
                                 isActive
-                                    ? 'bg-rose-100 text-rose-800'
-                                    : 'text-ink-soft hover:bg-rose-50 hover:text-ink',
+                                    ? 'bg-cherry-tint text-accent-strong'
+                                    : 'text-fg-soft hover:bg-elevated hover:text-fg',
                                 count === undefined && 'pr-4',
                             )}
                         >
@@ -128,10 +128,10 @@ export function OrderGroupTabs({
                                     className={cn(
                                         'min-w-6 rounded-full px-1.5 py-0.5 text-center text-xs font-bold tabular-nums',
                                         isUrgent
-                                            ? 'bg-rose-700 text-white'
+                                            ? 'bg-cherry-500 text-on-cherry'
                                             : isActive
-                                              ? 'bg-white text-rose-700'
-                                              : 'bg-line/80 text-ink-soft',
+                                              ? 'bg-surface text-accent'
+                                              : 'bg-line/80 text-fg-soft',
                                     )}
                                 >
                                     {count}

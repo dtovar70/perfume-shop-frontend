@@ -22,7 +22,7 @@ export const SECTION_META: Record<ContentSection, SectionMeta> = {
     },
     about: {
         label: 'Nosotros',
-        description: 'Historia del taller, valores y cifras de la página Nosotros.',
+        description: 'Historia de la tienda, valores y cifras de la página Nosotros.',
     },
     contact: {
         label: 'Contacto y redes',

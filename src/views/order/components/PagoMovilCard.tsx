@@ -48,13 +48,13 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
     ].join('\n')
 
     return (
-        <div className="@container space-y-4 rounded-card border border-line bg-ivory p-5 shadow-soft">
+        <div className="@container space-y-4 rounded-card border border-line bg-canvas p-5 shadow-soft">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-ink">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-success/10 text-fg">
                         <Smartphone aria-hidden="true" className="size-5" />
                     </span>
-                    <p className="font-display text-lg text-ink">Pago Móvil</p>
+                    <p className="font-display text-lg text-fg">Pago Móvil</p>
                 </div>
                 <CopyButton value={everything} label="Copiar todos los datos">
                     Copiar todo
@@ -69,17 +69,17 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
                             key={row.label}
                             className={
                                 isAmount
-                                    ? 'flex min-w-0 items-center gap-2 rounded-2xl border border-rose-300 bg-white px-4 py-3 @md:col-span-2'
-                                    : 'flex min-w-0 items-center gap-2 rounded-2xl bg-white px-4 py-2.5'
+                                    ? 'flex min-w-0 items-center gap-2 rounded-2xl border border-accent/60 bg-surface px-4 py-3 @md:col-span-2'
+                                    : 'flex min-w-0 items-center gap-2 rounded-2xl bg-surface px-4 py-2.5'
                             }
                         >
                             <div className="min-w-0 flex-1">
-                                <dt className="text-xs text-ink-soft">{row.label}</dt>
+                                <dt className="text-xs text-fg-soft">{row.label}</dt>
                                 <dd
                                     className={
                                         isAmount
-                                            ? 'font-display text-2xl break-words text-ink'
-                                            : 'font-semibold break-words text-ink'
+                                            ? 'font-display text-2xl break-words text-fg'
+                                            : 'font-semibold break-words text-fg'
                                     }
                                 >
                                     {row.display}
@@ -94,13 +94,13 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
                 })}
             </dl>
 
-            <p className="text-xs text-ink-soft">
+            <p className="text-xs text-fg-soft">
                 Total {formatCurrency(totals.totalUsd)} · Tasa BCV del{' '}
                 {formatDay(totals.exchangeRateDate)}: {formatRate(totals.exchangeRate)} Bs/$. El
                 monto en bolívares se mantiene durante todo el plazo de pago.
             </p>
             {pagoMovil.instructions ? (
-                <p className="text-sm break-words whitespace-pre-line text-ink-soft">
+                <p className="text-sm break-words whitespace-pre-line text-fg-soft">
                     {pagoMovil.instructions}
                 </p>
             ) : null}

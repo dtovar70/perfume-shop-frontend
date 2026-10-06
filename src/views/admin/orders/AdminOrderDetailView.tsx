@@ -25,7 +25,7 @@ function BackLink() {
     return (
         <Link
             to={ADMIN_ROUTES.orders}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-rose-700"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-fg-soft hover:text-accent"
         >
             <ArrowLeft aria-hidden="true" className="size-4" />
             Pedidos

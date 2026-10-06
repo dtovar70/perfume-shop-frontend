@@ -1,41 +1,58 @@
 /**
- * Hex mirror of the `@theme` tokens in `index.css`. Inline SVG artwork (the bottle placeholder,
- * the loader) and `<meta name="theme-color">` need literal values, which utility classes cannot
- * provide. Keep both files in sync.
+ * Hex mirror of the `--theme-*` palettes in `index.css`, one per theme. Styling never reads
+ * these (utility classes and `var(--theme-*)` follow `data-theme` on their own); they exist for
+ * places that need a literal value, such as `<meta name="theme-color">`. Keep both files in sync.
  */
-export const PALETTE = {
-    rose50: '#FDF6F7',
-    rose100: '#FAE9EC',
-    rose200: '#F4D3D9',
-    rose300: '#EBB3BE',
-    rose400: '#DD8C9C',
-    rose500: '#C96B7E',
-    rose600: '#B05468',
-    rose700: '#8F4254',
-    rose800: '#6E3442',
-    rose900: '#4A2530',
-    gold50: '#FBF7EF',
-    gold100: '#F7EFE1',
-    gold200: '#EEDCBC',
-    gold300: '#E2C494',
-    gold400: '#D4AB6D',
-    gold500: '#C4954F',
-    gold600: '#A77B3B',
-    gold700: '#84602F',
-    gold800: '#654A26',
-    gold900: '#4A361C',
-    ivory: '#FFFAF7',
-    ink: '#2B1F24',
-    inkSoft: '#6D5A61',
-    line: '#EFE3E5',
-    noir: '#1C1417',
-} as const
+export const THEMES = ['dark', 'light'] as const
 
-export type PaletteKey = keyof typeof PALETTE
+export type Theme = (typeof THEMES)[number]
 
-/** Mirror of the `--gradient-*` custom properties in `index.css`. */
-export const GRADIENTS = {
-    blush: 'linear-gradient(135deg, #fae9ec 0%, #fbf3ef 50%, #f7efe1 100%)',
-    gold: 'linear-gradient(135deg, #ecd6ae 0%, #d9b479 45%, #c4954f 100%)',
-    rose: 'linear-gradient(135deg, #b05468 0%, #8f4254 60%, #7a3949 100%)',
-} as const
+/** localStorage key for the visitor's explicit choice (also read by the script in index.html). */
+export const THEME_STORAGE_KEY = 'kaizen-theme'
+
+export const PALETTES = {
+    dark: {
+        canvas: '#0B0B0D',
+        surface: '#141417',
+        elevated: '#1C1C21',
+        line: '#2A2A31',
+        lineStrong: '#3A3A43',
+        fg: '#F5F5F7',
+        fgSoft: '#A1A1AA',
+        fgMuted: '#8B8B94',
+        accent: '#FF6FA0',
+        accentStrong: '#FF9CBF',
+        cherry500: '#D6336C',
+        cherry600: '#C42A60',
+        onCherry: '#FFFFFF',
+        success: '#34D399',
+        warning: '#FBBF24',
+        danger: '#F87171',
+    },
+    light: {
+        canvas: '#FAFAFA',
+        surface: '#FFFFFF',
+        elevated: '#F4F4F5',
+        line: '#E4E4E7',
+        lineStrong: '#D4D4D8',
+        fg: '#18181B',
+        fgSoft: '#52525B',
+        fgMuted: '#6B6B75',
+        accent: '#C42A60',
+        accentStrong: '#A3214F',
+        cherry500: '#D6336C',
+        cherry600: '#C42A60',
+        onCherry: '#FFFFFF',
+        success: '#047857',
+        warning: '#9A4A06',
+        danger: '#B91C1C',
+    },
+} as const satisfies Record<Theme, Record<string, string>>
+
+export type PaletteKey = keyof (typeof PALETTES)['dark']
+
+/** Browser chrome color per theme: the page canvas, so the address bar blends in. */
+export const THEME_COLOR: Record<Theme, string> = {
+    dark: PALETTES.dark.canvas,
+    light: PALETTES.light.canvas,
+}

@@ -27,8 +27,8 @@ export function OrderSummary({
     const problemAt = (index: number) => problems.find((problem) => problem.index === index)
 
     return (
-        <Card tone="ivory" padding="lg" className="h-fit space-y-5 lg:sticky lg:top-28">
-            <h2 className="font-display text-2xl font-semibold text-ink">Tu pedido</h2>
+        <Card tone="elevated" padding="lg" className="h-fit space-y-5 lg:sticky lg:top-28">
+            <h2 className="font-display text-2xl font-semibold text-fg">Tu pedido</h2>
 
             <ul className="space-y-4">
                 {items.map((item, index) => {
@@ -38,19 +38,19 @@ export function OrderSummary({
                             <div className="flex items-center gap-3">
                                 <CartLineMedia item={item} size="sm" className="w-14 sm:w-14" />
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate font-display text-base font-semibold text-ink">
+                                    <p className="truncate font-display text-base font-semibold text-fg">
                                         {item.name}
                                     </p>
-                                    <p className="text-xs text-ink-soft">
+                                    <p className="text-xs text-fg-soft">
                                         {item.variantLabel} · {item.quantity} u.
                                     </p>
                                 </div>
-                                <span className="shrink-0 text-sm font-semibold text-ink">
+                                <span className="shrink-0 text-sm font-semibold text-fg">
                                     {formatCurrency(item.unitPrice * item.quantity)}
                                 </span>
                             </div>
                             {problem ? (
-                                <p role="alert" className="text-sm font-medium text-rose-700">
+                                <p role="alert" className="text-sm font-medium text-accent">
                                     {problem.message}
                                 </p>
                             ) : null}
@@ -67,18 +67,18 @@ export function OrderSummary({
 
             <dl className="space-y-2 border-t border-line pt-4 text-sm">
                 <div className="flex items-center justify-between">
-                    <dt className="text-ink-soft">Subtotal</dt>
-                    <dd className="font-semibold text-ink">{formatCurrency(subtotal)}</dd>
+                    <dt className="text-fg-soft">Subtotal</dt>
+                    <dd className="font-semibold text-fg">{formatCurrency(subtotal)}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                    <dt className="text-ink-soft">Envío</dt>
-                    <dd className="font-semibold text-ink">
+                    <dt className="text-fg-soft">Envío</dt>
+                    <dd className="font-semibold text-fg">
                         {shipping === 0 ? 'Gratis' : formatCurrency(shipping)}
                     </dd>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-line pt-3">
-                    <dt className="font-bold text-ink">Total</dt>
-                    <dd className="text-2xl font-bold text-ink tabular-nums">
+                    <dt className="font-bold text-fg">Total</dt>
+                    <dd className="text-2xl font-bold text-fg tabular-nums">
                         {formatCurrency(total)}
                     </dd>
                 </div>

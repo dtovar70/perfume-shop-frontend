@@ -55,9 +55,10 @@ export function CategoryList({ categories, onDelete }: CategoryListProps) {
 
     return (
         <div className="space-y-3">
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-fg-soft">
                 Arrastra las categorías o usa las flechas para cambiar el orden. Las primeras{' '}
-                {MENU_LIMIT} se destacan en la página de inicio; todas aparecen en el menú «Perfumes».
+                {MENU_LIMIT} se destacan en la página de inicio; todas aparecen en el menú
+                «Perfumes».
             </p>
 
             {reorder.isError ? (

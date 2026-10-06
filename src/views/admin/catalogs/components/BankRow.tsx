@@ -13,7 +13,7 @@ import { useUpdateBank } from '@/views/admin/hooks/useAdminCatalogs'
 
 /** `aria-disabled` instead of `disabled` keeps keyboard focus on the button while saving. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 function plural(count: number, singular: string, pluralForm: string): string {
     return `${count} ${count === 1 ? singular : pluralForm}`
@@ -57,23 +57,23 @@ export function BankRow({ bank, index, total, isBusy, onMove, onDelete }: BankRo
         <li
             data-bank-code={bank.code}
             className={cn(
-                'rounded-card border border-line bg-white shadow-soft',
-                !bank.isActive && 'bg-ivory/60',
+                'rounded-card border border-line bg-surface shadow-soft',
+                !bank.isActive && 'bg-canvas/60',
             )}
         >
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:p-4">
                 <div className="flex min-w-0 flex-1 basis-56 items-center gap-3">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-bold text-ink">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-canvas text-sm font-bold text-fg">
                         <span className="sr-only">Posición </span>
                         {index + 1}
                     </span>
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                            <span className="font-mono text-sm text-ink-soft">{bank.code}</span>
+                            <span className="font-mono text-sm text-fg-soft">{bank.code}</span>
                             <h3
                                 className={cn(
                                     'min-w-0 font-display text-lg break-words',
-                                    bank.isActive ? 'text-ink' : 'text-ink-soft',
+                                    bank.isActive ? 'text-fg' : 'text-fg-soft',
                                 )}
                             >
                                 {bank.name}
@@ -84,7 +84,7 @@ export function BankRow({ bank, index, total, isBusy, onMove, onDelete }: BankRo
                                 </Badge>
                             )}
                         </div>
-                        <p className="text-xs text-ink-soft">
+                        <p className="text-xs text-fg-soft">
                             {usage ?? 'Ningún pago lo usa todavía'}
                         </p>
                     </div>
@@ -135,7 +135,7 @@ export function BankRow({ bank, index, total, isBusy, onMove, onDelete }: BankRo
                             aria-expanded={isExpanded}
                             aria-controls={panelId}
                             aria-label={`Renombrar ${bank.name}`}
-                            className={cn(actionClass, isExpanded && 'bg-rose-100 text-rose-700')}
+                            className={cn(actionClass, isExpanded && 'bg-cherry-tint text-accent')}
                         >
                             <Pencil aria-hidden="true" className="size-4" />
                         </button>
@@ -219,17 +219,17 @@ function BankNameForm({ bank }: { bank: AdminBank }) {
         <form onSubmit={submit} noValidate className="space-y-4">
             <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-[8rem_minmax(0,1fr)]">
                 <div className="space-y-1.5">
-                    <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-fg">
                         <Lock aria-hidden="true" className="size-3.5" />
                         Código
                     </p>
-                    <p className="flex h-11 items-center rounded-full border border-dashed border-line px-4 font-mono text-sm text-ink-soft">
+                    <p className="flex h-11 items-center rounded-full border border-dashed border-line px-4 font-mono text-sm text-fg-soft">
                         {bank.code}
                     </p>
                 </div>
                 <Input label="Nombre" error={errors.name?.message} {...register('name')} />
             </div>
-            <p className="text-xs text-ink-soft">
+            <p className="text-xs text-fg-soft">
                 El código identifica al banco en los pagos y no se puede cambiar. Los pagos ya
                 registrados conservan el nombre que tenía el banco ese día.
             </p>

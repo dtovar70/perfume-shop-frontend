@@ -1,9 +1,6 @@
-import { ArrowRight } from 'lucide-react'
-import { Link } from 'react-router'
-
 import { BrandTile } from '@/components/shared/BrandTile'
 import { SectionHeading } from '@/components/shared/SectionHeading'
-import { Skeleton } from '@/components/ui'
+import { ButtonLink, Skeleton } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
@@ -27,20 +24,13 @@ export function BrandsStrip() {
                     title="Nuestras *marcas*"
                     description="Trabajamos con las casas que amas, siempre con producto original."
                     action={
-                        <Link
-                            to={ROUTES.brands}
-                            className="group inline-flex min-h-11 items-center gap-2 text-sm font-bold text-rose-700 transition hover:text-rose-800"
-                        >
+                        <ButtonLink to={ROUTES.brands} variant="secondary">
                             Ver todas las marcas
-                            <ArrowRight
-                                aria-hidden="true"
-                                className="size-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Link>
+                        </ButtonLink>
                     }
                 />
 
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
                     {isPending
                         ? Array.from({ length: 6 }, (_, index) => (
                               <li key={index}>

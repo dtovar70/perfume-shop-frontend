@@ -113,7 +113,7 @@ export function MobilePhoneField({
             </label>
 
             <div role="group" aria-labelledby={labelId} className="flex min-w-0 gap-2">
-                <div className="w-28 shrink-0">
+                <div className="w-32 shrink-0">
                     <Select
                         label={`${label}: código de operadora`}
                         hideLabel

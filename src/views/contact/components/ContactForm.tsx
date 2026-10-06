@@ -28,7 +28,7 @@ const DEFAULT_VALUES: ContactValues = {
     fullName: '',
     email: '',
     phone: '',
-    topic: 'personalizado',
+    topic: 'asesoria',
     message: '',
     website: '',
 }
@@ -91,12 +91,12 @@ export function ContactForm() {
             <Card padding="lg" className="space-y-4 text-center">
                 <span
                     aria-hidden="true"
-                    className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-ink"
+                    className="mx-auto flex size-14 items-center justify-center rounded-full bg-success/10 text-fg"
                 >
                     <PartyPopper className="size-6" />
                 </span>
-                <h2 className="font-display text-2xl text-ink">¡Mensaje enviado, {sentToName}!</h2>
-                <p className="text-sm text-ink-soft">
+                <h2 className="font-display text-2xl text-fg">¡Mensaje enviado, {sentToName}!</h2>
+                <p className="text-sm text-fg-soft">
                     Te respondemos en menos de 24 horas hábiles con una propuesta y un presupuesto.
                 </p>
                 <Button variant="secondary" onClick={() => setSentToName(null)}>
@@ -110,7 +110,7 @@ export function ContactForm() {
         <Card padding="lg">
             <form onSubmit={onSubmit} noValidate className="space-y-5">
                 <fieldset className="space-y-5" disabled={isSubmitting}>
-                    <legend className="mb-2 font-display text-xl text-ink">Escríbenos</legend>
+                    <legend className="mb-2 font-display text-xl text-fg">Escríbenos</legend>
 
                     <Input
                         label="Nombre y apellido"
@@ -180,7 +180,7 @@ export function ContactForm() {
                                 href={whatsappUrl(contact.whatsapp, failure.whatsappText)}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-2 inline-flex items-center gap-1 rounded-sm font-semibold text-rose-700 underline underline-offset-2 hover:text-rose-800 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+                                className="mt-2 inline-flex items-center gap-1 rounded-sm font-semibold text-accent underline underline-offset-2 hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2"
                             >
                                 <MessageCircle aria-hidden="true" className="size-4 shrink-0" />
                                 Enviar este mensaje por WhatsApp

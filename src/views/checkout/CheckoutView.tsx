@@ -125,11 +125,11 @@ export function CheckoutView() {
     return (
         <div className={cn(CONTAINER, 'space-y-8 py-10 lg:py-14')}>
             <header className="space-y-2">
-                <p className="text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs">
+                <p className="text-[11px] font-bold tracking-[0.28em] text-accent uppercase sm:text-xs">
                     Checkout
                 </p>
-                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl">
-                    Finalizar <span className="text-rose-700 italic">compra</span>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-fg sm:text-5xl">
+                    Finalizar <span className="text-accent">compra</span>
                 </h1>
             </header>
 

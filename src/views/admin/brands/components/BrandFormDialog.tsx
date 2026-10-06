@@ -118,7 +118,7 @@ export function BrandFormDialog({ isOpen, brand, onClose, onSubmit }: BrandFormD
                 <div className="space-y-2">
                     <p className={FIELD_LABEL_CLASS}>Logo</p>
                     <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex h-20 w-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-white p-2">
+                        <div className="flex h-20 w-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-surface p-2">
                             {shownLogo ? (
                                 <img
                                     src={shownLogo}
@@ -126,13 +126,13 @@ export function BrandFormDialog({ isOpen, brand, onClose, onSubmit }: BrandFormD
                                     className="max-h-full max-w-full object-contain"
                                 />
                             ) : (
-                                <span className="text-xs text-ink-soft">Sin logo</span>
+                                <span className="text-xs text-fg-soft">Sin logo</span>
                             )}
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <label
                                 htmlFor={fileInputId}
-                                className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-ink/80 px-4 text-sm font-semibold text-ink transition hover:bg-ink hover:text-ivory has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-gold-600"
+                                className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line-strong px-4 text-sm font-semibold text-fg transition hover:bg-fg/5 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-cherry-500"
                             >
                                 <ImagePlus aria-hidden="true" className="size-4" />
                                 Subir archivo
@@ -178,7 +178,7 @@ export function BrandFormDialog({ isOpen, brand, onClose, onSubmit }: BrandFormD
                         </p>
                     ) : null}
                     {logoFile ? (
-                        <p className="text-xs text-ink-soft">Archivo elegido: {logoFile.name}</p>
+                        <p className="text-xs text-fg-soft">Archivo elegido: {logoFile.name}</p>
                     ) : (
                         <Input
                             label="…o enlace del logo"
@@ -207,8 +207,8 @@ export function BrandFormDialog({ isOpen, brand, onClose, onSubmit }: BrandFormD
                         control={control}
                         name="isActive"
                         render={({ field }) => (
-                            <div className="flex min-h-11 items-center justify-between gap-4 rounded-xl border border-line bg-ivory px-4 py-2">
-                                <span className="text-sm font-semibold text-ink">
+                            <div className="flex min-h-11 items-center justify-between gap-4 rounded-xl border border-line bg-canvas px-4 py-2">
+                                <span className="text-sm font-semibold text-fg">
                                     Visible en la tienda
                                 </span>
                                 <Switch

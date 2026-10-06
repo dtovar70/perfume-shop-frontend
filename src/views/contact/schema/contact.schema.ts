@@ -6,12 +6,12 @@ import {
 } from '@/constants/ui.constant'
 import { mobilePhoneSchema } from '@/utils/veFormats'
 
-export const CONTACT_TOPICS = ['personalizado', 'mayoreo', 'pedido', 'otro'] as const
+export const CONTACT_TOPICS = ['asesoria', 'mayoreo', 'pedido', 'otro'] as const
 
 export type ContactTopic = (typeof CONTACT_TOPICS)[number]
 
 export const CONTACT_TOPIC_LABELS: Record<ContactTopic, string> = {
-    personalizado: 'Quiero un diseño personalizado',
+    asesoria: 'Asesoría de fragancias',
     mayoreo: 'Pedido por mayor',
     pedido: 'Consulta sobre un pedido',
     otro: 'Otro tema',

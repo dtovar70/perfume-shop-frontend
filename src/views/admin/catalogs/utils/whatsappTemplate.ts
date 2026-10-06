@@ -61,13 +61,13 @@ export function whatsAppTemplateError(template: string, status?: OrderStatus): s
 export function sampleWhatsAppValues(brandName: string): Record<WhatsAppPlaceholder, string> {
     return {
         nombre: 'Ana',
-        pedido: 'MR-000123',
-        enlace: 'https://manadarusso.com/pedido/MR-000123?t=…',
+        pedido: 'KZ-000123',
+        enlace: 'https://kaizenperfumeria.com/pedido/KZ-000123?t=…',
         total: '$36,00 (Bs. 30.760,69)',
         motivo: 'La referencia no coincide con el monto',
         marca: brandName,
         envio: 'MRW, guía 123456',
-        comprobante: 'https://api.manadarusso.com/api/orders/MR-000123/receipt.pdf?t=…',
+        comprobante: 'https://api.kaizenperfumeria.com/api/orders/KZ-000123/receipt.pdf?t=…',
     }
 }
 

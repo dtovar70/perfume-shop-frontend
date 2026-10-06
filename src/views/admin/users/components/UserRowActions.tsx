@@ -5,9 +5,9 @@ import { Tooltip } from '@/components/ui'
 import { cn } from '@/utils/cn'
 
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2'
 /** Still focusable (aria-disabled), so keyboard users also reach the tooltip saying why. */
-const blockedClass = 'cursor-not-allowed opacity-40 hover:bg-transparent hover:text-ink-soft'
+const blockedClass = 'cursor-not-allowed opacity-40 hover:bg-transparent hover:text-fg-soft'
 
 export interface UserRowActionsProps {
     user: AdminUser

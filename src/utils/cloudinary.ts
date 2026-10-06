@@ -32,3 +32,24 @@ export function cldSrcSet(url: string, widths: readonly number[]): string | unde
     if (!isTransformable(url)) return undefined
     return widths.map((width) => `${cldUrl(url, width)} ${width}w`).join(', ')
 }
+
+const VIDEO_UPLOAD_SEGMENT = '/video/upload/'
+
+/**
+ * A still of a public Cloudinary video (its first frame, as an optimized image), or null for any
+ * other URL. Used as the poster when the admin did not upload one.
+ */
+export function cldVideoPoster(url: string, width = 1200): string | null {
+    try {
+        const parsed = new URL(url)
+        if (parsed.hostname !== 'res.cloudinary.com') return null
+        if (!parsed.pathname.includes(VIDEO_UPLOAD_SEGMENT)) return null
+        if (/\/s--[^/]+--\//.test(parsed.pathname)) return null
+    } catch {
+        return null
+    }
+    const transform = `so_0,f_auto,q_auto,c_limit,w_${Math.round(width)}`
+    return url
+        .replace(VIDEO_UPLOAD_SEGMENT, `${VIDEO_UPLOAD_SEGMENT}${transform}/`)
+        .replace(/\.(mp4|webm)(\?.*)?$/i, '.jpg')
+}

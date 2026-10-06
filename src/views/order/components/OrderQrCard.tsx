@@ -42,10 +42,10 @@ export function OrderQrCard({ code, url }: OrderQrCardProps) {
 
     const heading = (
         <span className="flex items-center gap-3">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-700">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-elevated text-accent">
                 <QrCode aria-hidden="true" className="size-5" />
             </span>
-            <span className="font-display text-lg text-ink">Abre tu pedido desde tu teléfono</span>
+            <span className="font-display text-lg text-fg">Abre tu pedido desde tu teléfono</span>
         </span>
     )
 
@@ -60,10 +60,10 @@ export function OrderQrCard({ code, url }: OrderQrCardProps) {
                         aria-expanded={isOpen}
                         aria-controls={panelId}
                         onClick={() => setIsOpen((open) => !open)}
-                        className="-m-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-2xl p-2 text-left transition hover:bg-rose-50 focus-visible:outline-2 focus-visible:outline-rose-400"
+                        className="-m-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-2xl p-2 text-left transition hover:bg-elevated focus-visible:outline-2 focus-visible:outline-accent"
                     >
                         {heading}
-                        <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-rose-700">
+                        <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-accent">
                             {isOpen ? 'Ocultar' : 'Ver QR'}
                             <ChevronDown
                                 aria-hidden="true"
@@ -80,7 +80,7 @@ export function OrderQrCard({ code, url }: OrderQrCardProps) {
             {expanded ? (
                 <div id={panelId} className="space-y-4">
                     <div className="flex flex-col items-center gap-4 sm:flex-row lg:flex-col">
-                        <div className="shrink-0 rounded-2xl bg-white p-2 ring-1 ring-ink/10">
+                        <div className="shrink-0 rounded-2xl bg-surface p-2 ring-1 ring-fg/10">
                             {qr ? (
                                 <img
                                     src={qr}
@@ -93,7 +93,7 @@ export function OrderQrCard({ code, url }: OrderQrCardProps) {
                                 <Skeleton shape="block" className="size-44" />
                             )}
                         </div>
-                        <p className="text-sm text-ink-soft">
+                        <p className="text-sm text-fg-soft">
                             Escanéalo con la cámara de tu celular. No lo compartas: quien lo tenga
                             puede ver tu pedido.
                         </p>

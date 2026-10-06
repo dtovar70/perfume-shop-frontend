@@ -33,13 +33,13 @@ export function CatalogToolbar({
         <div className="flex items-center gap-2 sm:gap-3">
             <p
                 aria-live="polite"
-                className="mr-auto min-w-0 truncate text-sm text-ink-soft max-sm:sr-only"
+                className="mr-auto min-w-0 truncate text-sm text-fg-soft max-sm:sr-only"
             >
                 {isRefreshing ? (
                     'Actualizando…'
                 ) : (
                     <>
-                        <span className="font-bold text-ink tabular-nums">{total}</span>{' '}
+                        <span className="font-bold text-fg tabular-nums">{total}</span>{' '}
                         {total === 1 ? 'perfume' : 'perfumes'}
                     </>
                 )}
@@ -50,12 +50,12 @@ export function CatalogToolbar({
                     type="button"
                     onClick={onOpenFilters}
                     aria-haspopup="dialog"
-                    className="inline-flex h-11 shrink-0 items-center gap-2 rounded-xl border border-line bg-white px-3.5 text-sm font-semibold text-ink transition hover:border-gold-400"
+                    className="inline-flex h-11 shrink-0 items-center gap-2 rounded-xl border border-line bg-surface px-3.5 text-sm font-semibold text-fg transition hover:border-cherry-500/50"
                 >
                     <SlidersHorizontal aria-hidden="true" className="size-4" />
                     Filtros
                     {activeFilterCount > 0 ? (
-                        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-700 px-1.5 text-[11px] font-bold text-white tabular-nums">
+                        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-cherry-500 px-1.5 text-[11px] font-bold text-on-cherry tabular-nums">
                             <span className="sr-only">(</span>
                             {activeFilterCount}
                             <span className="sr-only"> activos)</span>

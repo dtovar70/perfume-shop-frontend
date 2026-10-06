@@ -4,21 +4,24 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { HighlightedText } from '@/components/shared/HighlightedText'
 import { cn } from '@/utils/cn'
 
-const headingVariants = cva('font-display leading-[1.05] font-semibold text-balance text-ink', {
-    variants: {
-        level: {
-            h1: 'text-[2.6rem] sm:text-5xl lg:text-6xl',
-            h2: 'text-[2.1rem] sm:text-[2.6rem] lg:text-5xl',
-            h3: 'text-2xl sm:text-3xl',
+const headingVariants = cva(
+    'font-display leading-[1.02] font-semibold tracking-tight text-balance text-fg',
+    {
+        variants: {
+            level: {
+                h1: 'text-4xl uppercase sm:text-5xl lg:text-6xl',
+                h2: 'text-3xl uppercase sm:text-4xl lg:text-5xl',
+                h3: 'text-2xl sm:text-3xl',
+            },
+        },
+        defaultVariants: {
+            level: 'h2',
         },
     },
-    defaultVariants: {
-        level: 'h2',
-    },
-})
+)
 
 export interface SectionHeadingProps extends VariantProps<typeof headingVariants> {
-    /** Words between asterisks are set in rose italic: "Tus *favoritos*". */
+    /** Words between asterisks are painted in cherry: "Tus *favoritos*". */
     title: string
     /** Applied to the heading element so a section can reference it with aria-labelledby. */
     headingId?: string
@@ -51,17 +54,8 @@ export function SectionHeading({
         >
             <div className={cn('max-w-2xl space-y-3', align === 'center' && 'mx-auto')}>
                 {eyebrow ? (
-                    <p
-                        className={cn(
-                            'flex items-center gap-3 text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs',
-                            align === 'center' && 'sm:justify-center',
-                        )}
-                    >
-                        <span aria-hidden="true" className="h-px w-8 bg-gold-400" />
+                    <p className="font-display text-sm font-semibold tracking-[0.2em] text-accent uppercase">
                         {eyebrow}
-                        {align === 'center' ? (
-                            <span aria-hidden="true" className="h-px w-8 bg-gold-400 max-sm:hidden" />
-                        ) : null}
                     </p>
                 ) : null}
 
@@ -70,7 +64,7 @@ export function SectionHeading({
                 </Heading>
 
                 {description ? (
-                    <p className="text-[15px] leading-relaxed text-ink-soft sm:text-base">
+                    <p className="text-base leading-relaxed text-fg-soft sm:text-lg">
                         {description}
                     </p>
                 ) : null}

@@ -27,7 +27,7 @@ const NO_CODE_NOTE =
     '¿No te llegó? Revisa también la carpeta de spam, o pídele a un administrador que restablezca tu contraseña desde Usuarios.'
 
 const linkClass =
-    'font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-rose-400'
+    'font-semibold text-accent underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-accent'
 
 function BackToLogin() {
     return (
@@ -61,7 +61,7 @@ function EmailStep({
 
     return (
         <form onSubmit={(event) => void submit(event)} noValidate className="space-y-5">
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-fg-soft">
                 Escribe el correo con el que entras al panel. Te enviaremos un código de 6 dígitos
                 para crear una contraseña nueva: por Telegram si lo tienes vinculado, o a ese
                 correo.
@@ -86,7 +86,7 @@ function EmailStep({
             >
                 Enviar código
             </Button>
-            <p className="text-sm text-ink-soft">{NO_CODE_NOTE}</p>
+            <p className="text-sm text-fg-soft">{NO_CODE_NOTE}</p>
         </form>
     )
 }
@@ -145,8 +145,8 @@ function ResetStep({
                 <p>{RECOVERY_SENT_MESSAGE}</p>
                 <p className="mt-2 font-normal">{NO_CODE_NOTE}</p>
             </Alert>
-            <p className="text-sm break-words text-ink-soft">
-                Código para <span className="font-semibold text-ink">{email}</span> ·{' '}
+            <p className="text-sm break-words text-fg-soft">
+                Código para <span className="font-semibold text-fg">{email}</span> ·{' '}
                 <button type="button" onClick={onChangeEmail} className={linkClass}>
                     Cambiar correo o pedir otro código
                 </button>

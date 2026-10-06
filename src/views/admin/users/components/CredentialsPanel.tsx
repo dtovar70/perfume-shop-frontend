@@ -12,10 +12,10 @@ export interface CredentialsPanelProps {
 
 function CredentialRow({ label, value }: { label: string; value: string }) {
     return (
-        <div className="flex items-center gap-2 rounded-2xl border border-line bg-white py-1.5 pr-1.5 pl-4">
+        <div className="flex items-center gap-2 rounded-2xl border border-line bg-surface py-1.5 pr-1.5 pl-4">
             <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-ink-soft">{label}</p>
-                <p className="font-mono text-sm break-all text-ink">{value}</p>
+                <p className="text-xs font-semibold text-fg-soft">{label}</p>
+                <p className="font-mono text-sm break-all text-fg">{value}</p>
             </div>
             <CopyButton value={value} label={`Copiar ${label.toLowerCase()}`} />
         </div>
@@ -28,21 +28,21 @@ function CredentialRow({ label, value }: { label: string; value: string }) {
  */
 export function CredentialsPanel({ email, password, kind }: CredentialsPanelProps) {
     const loginUrl = `${window.location.origin}${ADMIN_ROUTES.login}`
-    const message = `Tu acceso al panel de Manada Russo:\n${loginUrl}\nCorreo: ${email}\nContraseña: ${password}\n\nCuando entres, cámbiala desde «Mi cuenta».`
+    const message = `Tu acceso al panel de KaiZen:\n${loginUrl}\nCorreo: ${email}\nContraseña: ${password}\n\nCuando entres, cámbiala desde «Mi cuenta».`
 
     return (
-        <div className="space-y-4 rounded-card border border-emerald-500/60 bg-emerald-100/30 p-4 sm:p-5">
+        <div className="space-y-4 rounded-card border border-success/40 bg-success/10 p-4 sm:p-5">
             <div className="flex items-start gap-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-ink">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface text-fg">
                     <KeyRound aria-hidden="true" className="size-4" />
                 </span>
                 <div className="space-y-1 text-sm">
-                    <p className="font-display text-base text-ink">
+                    <p className="font-display text-base text-fg">
                         {kind === 'created'
                             ? 'Cuenta creada. Copia estos datos ahora'
                             : 'Contraseña nueva. Cópiala ahora'}
                     </p>
-                    <p className="text-ink-soft">
+                    <p className="text-fg-soft">
                         No la volveremos a mostrar. Compártela solo por un canal privado (en persona
                         o por mensaje directo, nunca en un grupo) y pídele que la cambie desde «Mi
                         cuenta» al entrar.

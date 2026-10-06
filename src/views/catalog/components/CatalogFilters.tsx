@@ -18,19 +18,19 @@ import {
 } from '@/views/catalog/hooks/useCatalogFilters'
 
 const chipVariants = cva(
-    'inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-sm transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-gold-600',
+    'inline-flex min-h-10 pointer-coarse:min-h-11 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-sm transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-cherry-500',
     {
         variants: {
             isSelected: {
-                true: 'border-rose-700 bg-rose-700 font-bold text-white',
-                false: 'border-line bg-white font-semibold text-ink-soft hover:border-gold-400 hover:text-ink',
+                true: 'border-cherry-500 bg-cherry-500 font-bold text-on-cherry',
+                false: 'border-line bg-surface font-semibold text-fg-soft hover:border-cherry-500/50 hover:text-fg',
             },
         },
         defaultVariants: { isSelected: false },
     },
 )
 
-const legendClass = 'mb-3 text-[11px] font-bold tracking-[0.22em] text-gold-700 uppercase'
+const legendClass = 'mb-3 text-[11px] font-bold tracking-[0.22em] text-accent uppercase'
 
 function FilterGroup({ legend, children }: { legend: string; children: ReactNode }) {
     return (
@@ -86,7 +86,7 @@ export function CatalogFilters({
                             const checked = filters.brands.includes(brand.slug)
                             return (
                                 <li key={brand.slug}>
-                                    <label className="group flex min-h-10 cursor-pointer items-center gap-3 rounded-lg px-1 text-sm text-ink transition hover:bg-rose-50/70 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-gold-600">
+                                    <label className="group flex min-h-10 cursor-pointer items-center gap-3 rounded-lg px-1 text-sm text-fg transition hover:bg-elevated/70 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-cherry-500 pointer-coarse:min-h-11">
                                         <input
                                             type="checkbox"
                                             className="peer sr-only"
@@ -98,16 +98,23 @@ export function CatalogFilters({
                                             className={cn(
                                                 'flex size-5 shrink-0 items-center justify-center rounded-md border transition',
                                                 checked
-                                                    ? 'border-rose-700 bg-rose-700 text-white'
-                                                    : 'border-ink/25 bg-white group-hover:border-rose-400',
+                                                    ? 'border-cherry-500 bg-cherry-500 text-on-cherry'
+                                                    : 'border-line-strong bg-surface group-hover:border-accent/60',
                                             )}
                                         >
-                                            {checked ? <Check className="size-3.5" strokeWidth={3} /> : null}
+                                            {checked ? (
+                                                <Check className="size-3.5" strokeWidth={3} />
+                                            ) : null}
                                         </span>
-                                        <span className={cn('flex-1 truncate', checked && 'font-bold')}>
+                                        <span
+                                            className={cn(
+                                                'flex-1 truncate',
+                                                checked && 'font-bold',
+                                            )}
+                                        >
                                             {brand.name}
                                         </span>
-                                        <span className="text-xs text-ink-soft tabular-nums">
+                                        <span className="text-xs text-fg-soft tabular-nums">
                                             {brand.count}
                                         </span>
                                     </label>

@@ -6,7 +6,7 @@ import { BsApproximation } from '@/components/shared/BsApproximation'
 import { CardCartControl } from '@/components/shared/CardCartControl'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { ProductMedia } from '@/components/shared/ProductMedia'
-import { Sticker } from '@/components/ui'
+import { Badge } from '@/components/ui'
 import { formatPerfumeSpec } from '@/constants/product.constant'
 import { productPath } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
@@ -54,74 +54,75 @@ export function ProductCard({ product, priority = false, className }: ProductCar
         void queryClient.prefetchQuery(productDetailQueryOptions(product.slug))
     }
 
-    const badges: { key: string; label: string; tone: 'blush' | 'butter' | 'sky' | 'lilac' }[] =
-        []
-    if (isSoldOut) badges.push({ key: 'agotado', label: 'Agotado', tone: 'sky' })
-    if (discount) badges.push({ key: 'oferta', label: `Oferta -${discount}%`, tone: 'blush' })
+    const badges: { key: string; label: string; tone: 'solid' | 'blush' | 'neutral' }[] = []
+    if (isSoldOut) badges.push({ key: 'agotado', label: 'Agotado', tone: 'neutral' })
+    if (discount) badges.push({ key: 'oferta', label: `-${discount}%`, tone: 'solid' })
     else if (product.tags.includes('oferta')) {
-        badges.push({ key: 'oferta', label: 'Oferta', tone: 'blush' })
+        badges.push({ key: 'oferta', label: 'Oferta', tone: 'solid' })
     }
-    if (product.tags.includes('nuevo')) badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'butter' })
+    if (product.tags.includes('nuevo')) badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'blush' })
 
     return (
         <article
+            data-fly-scope=""
             onMouseEnter={prefetchDetail}
             onFocus={prefetchDetail}
-            className={cn('group relative flex h-full flex-col', className)}
+            className={cn(
+                'group relative flex h-full flex-col overflow-hidden rounded-xl2 border border-line bg-surface shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cherry-500/30 hover:shadow-lift motion-reduce:transform-none',
+                className,
+            )}
         >
-            <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line/70 bg-rose-50 transition-shadow duration-500 group-hover:shadow-lift">
+            <div className="relative aspect-square overflow-hidden border-b border-line bg-surface">
                 <ProductMedia
                     image={coverImage}
                     fallbackAlt={product.name}
                     brandName={product.brand?.name}
                     loading={priority ? 'eager' : 'lazy'}
                     sizes="(min-width: 1280px) 20rem, (min-width: 768px) 30vw, 50vw"
-                    className={cn(
-                        'transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transform-none',
-                        isSoldOut && 'opacity-60 grayscale-[35%]',
-                    )}
+                    muted={isSoldOut}
+                    className="transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transform-none"
                 />
 
                 {badges.length > 0 ? (
-                    <ul className="pointer-events-none absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5 sm:top-3 sm:left-3">
+                    <ul className="pointer-events-none absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5 sm:top-3.5 sm:left-3.5">
                         {badges.slice(0, 2).map((badge) => (
                             <li key={badge.key}>
-                                <Sticker tone={badge.tone} size="sm">
+                                <Badge tone={badge.tone} size="sm">
                                     {badge.label}
-                                </Sticker>
+                                </Badge>
                             </li>
                         ))}
                     </ul>
                 ) : null}
 
-                {defaultVariant && !isSoldOut ? (
+                {!isSoldOut ? (
                     <CardCartControl
                         product={product}
                         variant={defaultVariant}
-                        className="absolute right-2.5 bottom-2.5 sm:right-3 sm:bottom-3"
+                        className="absolute right-2.5 bottom-2.5 sm:right-3.5 sm:bottom-3.5"
                     />
                 ) : null}
             </div>
 
-            <div className="flex flex-1 flex-col gap-1 px-0.5 pt-3.5 sm:pt-4">
+            <div className="flex flex-1 flex-col gap-1 p-3 sm:gap-1.5 sm:p-5">
                 {product.brand ? (
-                    <p className="truncate text-[10px] font-bold tracking-[0.2em] text-gold-700 uppercase sm:text-[11px]">
+                    <p className="truncate text-[11px] font-semibold tracking-[0.12em] text-accent uppercase sm:text-xs sm:tracking-[0.15em]">
                         {product.brand.name}
                     </p>
                 ) : null}
 
-                <h3 className="line-clamp-2 font-display text-lg leading-tight font-semibold text-ink sm:text-xl">
+                <h3 className="line-clamp-2 font-display text-base leading-snug font-semibold text-fg sm:text-lg">
                     <Link
                         to={productPath(product.slug)}
-                        className="rounded-sm transition-colors after:absolute after:inset-0 after:rounded-card after:content-[''] group-hover:text-rose-700"
+                        className="rounded-sm transition-colors group-hover:text-accent-strong after:absolute after:inset-0 after:content-['']"
                     >
                         {product.name}
                     </Link>
                 </h3>
 
-                {spec ? <p className="text-xs text-ink-soft">{spec}</p> : null}
+                {spec ? <p className="text-xs text-fg-soft sm:text-sm">{spec}</p> : null}
 
-                <div className="mt-auto space-y-0.5 pt-2">
+                <div className="mt-auto space-y-0.5 pt-2 sm:pt-3">
                     <PriceTag
                         price={fromPrice}
                         isFromPrice={fromPrice !== toPrice}

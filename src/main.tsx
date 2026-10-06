@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { App } from '@/App'
 import { createQueryClient } from '@/configs/query.config'
+// Side effect: syncs <html data-theme> and starts following the OS theme before first render.
+import '@/store/themeStore'
 import '@/index.css'
 
 const rootElement = document.getElementById('root')

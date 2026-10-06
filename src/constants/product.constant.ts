@@ -33,8 +33,10 @@ export function formatPerfumeSpec(
 ): string {
     const parts: string[] = []
     if (concentration) {
-        const label = CONCENTRATION_LABELS[concentration]
-        parts.push(long ? label.long : label.short)
+        // The API types it as a string: an unknown value is shown as it comes.
+        const label = CONCENTRATION_LABELS[concentration] as
+            (typeof CONCENTRATION_LABELS)[Concentration] | undefined
+        parts.push(label ? (long ? label.long : label.short) : concentration)
     }
     if (volumeMl) parts.push(`${volumeMl} ml`)
     return parts.join(' · ')

@@ -19,13 +19,13 @@ function formatDelta(delta: number): string {
 
 function DeltaPill({ delta }: { delta: number }) {
     if (delta === 0) {
-        return <span className="text-[0.7rem] font-semibold text-ink-soft">base</span>
+        return <span className="text-[0.7rem] font-semibold text-fg-soft">base</span>
     }
     return (
         <span
             className={cn(
                 'rounded-full px-1.5 py-px text-[0.7rem] font-bold tabular-nums',
-                delta < 0 ? 'bg-gold-100 text-gold-800' : 'bg-gold-100 text-ink',
+                delta < 0 ? 'bg-elevated text-accent' : 'bg-elevated text-fg',
             )}
         >
             {formatDelta(delta)}
@@ -83,7 +83,7 @@ export function AdminPriceCell({ product, align = 'start' }: AdminPriceCellProps
                 align === 'center' ? 'items-center text-center' : 'items-start',
             )}
         >
-            <span className="font-semibold text-ink">{formatCurrency(product.price)}</span>
+            <span className="font-semibold text-fg">{formatCurrency(product.price)}</span>
 
             {isVariable ? (
                 <>
@@ -98,8 +98,8 @@ export function AdminPriceCell({ product, align = 'start' }: AdminPriceCellProps
                         onBlur={close}
                         onClick={onClick}
                         className={cn(
-                            'inline-flex cursor-help items-center gap-1 rounded-full bg-gold-50 px-2 py-0.5 text-[0.7rem] font-semibold whitespace-nowrap text-gold-900 transition hover:bg-gold-100',
-                            isOpen && 'bg-gold-100',
+                            'inline-flex cursor-help items-center gap-1 rounded-full bg-elevated px-2 py-0.5 text-[0.7rem] font-semibold whitespace-nowrap text-accent transition hover:bg-elevated',
+                            isOpen && 'bg-elevated',
                         )}
                     >
                         <Tags aria-hidden="true" className="size-3" />
@@ -121,7 +121,7 @@ export function AdminPriceCell({ product, align = 'start' }: AdminPriceCellProps
                         decorative
                         className="w-64 p-3.5 text-left"
                     >
-                        <p className="mb-2 font-display text-sm font-semibold text-ink">
+                        <p className="mb-2 font-display text-sm font-semibold text-fg">
                             Precio por variante
                         </p>
                         <ul className="divide-y divide-line">
@@ -130,12 +130,12 @@ export function AdminPriceCell({ product, align = 'start' }: AdminPriceCellProps
                                     key={`${index}-${variant.label}`}
                                     className="flex items-center justify-between gap-3 py-1.5"
                                 >
-                                    <span className="min-w-0 truncate text-sm text-ink-soft">
+                                    <span className="min-w-0 truncate text-sm text-fg-soft">
                                         {variant.label}
                                     </span>
                                     <span className="flex shrink-0 items-center gap-2">
                                         <DeltaPill delta={variant.priceDelta} />
-                                        <span className="w-16 text-right text-sm font-semibold text-ink tabular-nums">
+                                        <span className="w-16 text-right text-sm font-semibold text-fg tabular-nums">
                                             {formatCurrency(variantPrice(product, variant))}
                                         </span>
                                     </span>
@@ -147,7 +147,7 @@ export function AdminPriceCell({ product, align = 'start' }: AdminPriceCellProps
             ) : null}
 
             {hasCompareAt ? (
-                <span className="text-xs text-ink-soft line-through">
+                <span className="text-xs text-fg-soft line-through">
                     <span className="sr-only">Antes </span>
                     {formatCurrency(product.compareAtPrice as number)}
                 </span>

@@ -9,13 +9,13 @@ const badgeVariants = cva(
         variants: {
             tone: {
                 // Tone names are API values (order statuses); only their look is ours.
-                blush: 'bg-rose-100 text-rose-800',
-                sky: 'bg-stone-100 text-stone-700',
-                mint: 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/70',
-                butter: 'bg-gold-100 text-gold-800',
-                lilac: 'bg-rose-50 text-rose-700 ring-1 ring-rose-200',
-                solid: 'gradient-rose text-white',
-                neutral: 'bg-line/70 text-ink-soft',
+                blush: 'bg-cherry-tint text-accent-strong ring-1 ring-cherry-500/25',
+                sky: 'bg-elevated text-fg-soft ring-1 ring-line',
+                mint: 'bg-success/10 text-success ring-1 ring-success/30',
+                butter: 'bg-warning/10 text-warning ring-1 ring-warning/30',
+                lilac: 'bg-elevated text-accent-strong ring-1 ring-cherry-500/30',
+                solid: 'bg-cherry-500 text-on-cherry',
+                neutral: 'bg-elevated text-fg-soft ring-1 ring-line',
             },
             size: {
                 sm: 'px-2.5 py-0.5 text-[11px]',

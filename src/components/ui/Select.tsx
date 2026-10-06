@@ -52,14 +52,14 @@ const optionVariants = cva(
     'flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition duration-150',
     {
         variants: {
-            isSelected: { true: 'text-rose-700', false: 'text-ink-soft' },
+            isSelected: { true: 'text-accent', false: 'text-fg-soft' },
             isActive: { true: '', false: '' },
             isDisabled: { true: 'cursor-not-allowed opacity-45', false: '' },
         },
         compoundVariants: [
-            { isSelected: true, isActive: true, class: 'bg-rose-100 text-rose-800' },
-            { isSelected: true, isActive: false, class: 'bg-rose-100' },
-            { isSelected: false, isActive: true, class: 'bg-rose-50 text-ink' },
+            { isSelected: true, isActive: true, class: 'bg-cherry-tint text-accent-strong' },
+            { isSelected: true, isActive: false, class: 'bg-cherry-tint' },
+            { isSelected: false, isActive: true, class: 'bg-elevated text-fg' },
         ],
         defaultVariants: { isSelected: false, isActive: false, isDisabled: false },
     },
@@ -403,22 +403,22 @@ export function Select({
                     className={cn(
                         FIELD_BASE_CLASS,
                         'flex h-11 items-center justify-between gap-3 rounded-xl px-4 text-left outline-none',
-                        'enabled:hover:border-rose-200',
-                        isOpen && 'border-gold-500 ring-4 ring-gold-200/60',
+                        'enabled:hover:border-cherry-500/30',
+                        isOpen && 'border-cherry-500/50 ring-4 ring-cherry-500/30',
                         isTouch &&
-                            'pointer-events-none peer-focus-visible:border-gold-500 peer-focus-visible:ring-4 peer-focus-visible:ring-gold-200/60',
+                            'pointer-events-none peer-focus-visible:border-cherry-500/50 peer-focus-visible:ring-4 peer-focus-visible:ring-cherry-500/30',
                         error && FIELD_ERROR_CLASS,
                         className,
                     )}
                 >
-                    <span className={cn('truncate', !selectedOption && 'text-ink-soft/70')}>
+                    <span className={cn('truncate', !selectedOption && 'text-fg-muted')}>
                         {selectedOption?.label ?? placeholder ?? ''}
                     </span>
                     <ChevronDown
                         aria-hidden="true"
                         className={cn(
-                            'size-4 shrink-0 text-ink-soft transition duration-200',
-                            isOpen && 'rotate-180 text-rose-500',
+                            'size-4 shrink-0 text-fg-soft transition duration-200',
+                            isOpen && 'rotate-180 text-accent',
                         )}
                     />
                 </button>
@@ -438,7 +438,7 @@ export function Select({
                         }}
                         className={cn(
                             'absolute z-30 max-h-60 w-max space-y-0.5 overflow-y-auto overscroll-contain',
-                            'animate-select-pop rounded-2xl border border-line bg-white p-1.5 shadow-lift',
+                            'animate-select-pop rounded-2xl border border-line bg-surface p-1.5 shadow-lift',
                             panel.dropUp
                                 ? 'bottom-full mb-2 origin-bottom'
                                 : 'top-full mt-2 origin-top',
@@ -469,7 +469,7 @@ export function Select({
                                     {option.description ? (
                                         <span className="flex min-w-0 flex-col gap-0.5">
                                             <span className="truncate">{option.label}</span>
-                                            <span className="text-xs leading-snug font-normal text-ink-soft">
+                                            <span className="text-xs leading-snug font-normal text-fg-soft">
                                                 {option.description}
                                             </span>
                                         </span>

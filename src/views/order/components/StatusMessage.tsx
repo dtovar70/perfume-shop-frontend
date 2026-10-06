@@ -19,11 +19,11 @@ import { useFillPlaceholders } from '@/utils/hooks/useSiteContent'
 type MessageTone = 'butter' | 'sky' | 'mint' | 'blush' | 'neutral'
 
 const TONE_CLASS: Record<MessageTone, string> = {
-    butter: 'border-gold-400/70 bg-gold-100/40',
-    sky: 'border-gold-300 bg-gold-50',
-    mint: 'border-emerald-500/60 bg-emerald-100/40',
-    blush: 'border-rose-300 bg-rose-50',
-    neutral: 'border-line bg-white',
+    butter: 'border-cherry-500/50 bg-elevated/40',
+    sky: 'border-line bg-elevated',
+    mint: 'border-success/40 bg-success/10',
+    blush: 'border-accent/60 bg-elevated',
+    neutral: 'border-line bg-surface',
 }
 
 /**
@@ -50,7 +50,7 @@ const MESSAGE_STYLE: Record<OrderStatus, { icon: LucideIcon; tone: MessageTone }
  */
 const PICKUP_READY = {
     title: '¡Tu pedido está listo para retirar!',
-    body: 'Ya puedes pasar por el taller a buscarlo.',
+    body: 'Ya puedes pasar por la tienda a buscarlo.',
 }
 
 /** Statuses whose latest history note (shipping details, cancellation reason) replaces the body. */
@@ -89,12 +89,12 @@ export function StatusMessage({ order, late = false }: StatusMessageProps) {
             role="status"
             className={cn('flex items-start gap-4 rounded-card border p-5', TONE_CLASS[tone])}
         >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink shadow-soft">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface text-fg shadow-soft">
                 <Icon aria-hidden="true" className="size-5" />
             </span>
             <div className="min-w-0 space-y-1">
-                <p className="font-display text-lg text-ink">{title}</p>
-                {body ? <p className="text-sm break-words text-ink-soft">{body}</p> : null}
+                <p className="font-display text-lg text-fg">{title}</p>
+                {body ? <p className="text-sm break-words text-fg-soft">{body}</p> : null}
             </div>
         </div>
     )

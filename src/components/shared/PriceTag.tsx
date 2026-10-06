@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 import { formatCurrency } from '@/utils/formatCurrency'
 
-const priceVariants = cva('font-bold text-ink tabular-nums', {
+const priceVariants = cva('font-bold text-fg tabular-nums', {
     variants: {
         size: {
             sm: 'text-[15px] sm:text-base',
@@ -16,7 +16,7 @@ const priceVariants = cva('font-bold text-ink tabular-nums', {
     },
 })
 
-const compareVariants = cva('text-ink-soft line-through decoration-rose-400/70', {
+const compareVariants = cva('text-fg-soft line-through decoration-accent', {
     variants: {
         size: {
             sm: 'text-xs',
@@ -42,7 +42,7 @@ export function PriceTag({ price, compareAtPrice, isFromPrice, size, className }
 
     return (
         <p className={cn('flex flex-wrap items-baseline gap-x-2 gap-y-0.5', className)}>
-            {isFromPrice ? <span className="text-xs font-medium text-ink-soft">Desde</span> : null}
+            {isFromPrice ? <span className="text-xs font-medium text-fg-soft">Desde</span> : null}
             <span className={priceVariants({ size })}>{formatCurrency(price)}</span>
             {hasDiscount ? (
                 <span className={compareVariants({ size })}>

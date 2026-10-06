@@ -12,7 +12,35 @@
             name="description"
             content="Perfumes originales de diseñador y árabes para mujer y hombre. Precios en dólares con referencia BCV, pago por Pago Móvil y envíos a toda Venezuela."
         />
-        <meta name="theme-color" content="#FFFAF7" />
+        <meta name="theme-color" content="#0B0B0D" />
+        <meta name="color-scheme" content="dark light" />
+
+        <!--
+          Applies the color theme before first paint (no flash of the wrong one): the saved
+          choice ("kaizen-theme"), else the OS preference, else dark. Mirrors src/store/themeStore.ts.
+        -->
+        <script>
+            ;(function () {
+                var theme = null
+                try {
+                    theme = localStorage.getItem('kaizen-theme')
+                } catch (error) {}
+                if (theme !== 'light' && theme !== 'dark') {
+                    try {
+                        theme = matchMedia('(prefers-color-scheme: light)').matches
+                            ? 'light'
+                            : 'dark'
+                    } catch (error) {
+                        theme = 'dark'
+                    }
+                }
+                var root = document.documentElement
+                root.setAttribute('data-theme', theme)
+                root.style.colorScheme = theme
+                var meta = document.querySelector('meta[name="theme-color"]')
+                if (meta) meta.setAttribute('content', theme === 'light' ? '#FAFAFA' : '#0B0B0D')
+            })()
+        </script>
 
         <!-- Link previews (WhatsApp, Instagram, Facebook, X). -->
         <meta property="og:type" content="website" />
@@ -44,7 +72,7 @@
         <link
             rel="preload"
             as="style"
-            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
             onload="
                 this.onload = null
                 this.rel = 'stylesheet'
@@ -53,7 +81,7 @@
         <noscript>
             <link
                 rel="stylesheet"
-                href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap"
+                href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
             />
         </noscript>
     </head>

@@ -2,27 +2,25 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * Shared by `Button` and `ButtonLink` so a CTA looks identical whether it renders a
- * `<button>` or a router `<Link>`. Contrast: white on the rose gradient is >= 4.9:1 and ink on
- * the gold gradient is >= 5.8:1 (WCAG AA for body text).
+ * `<button>` or a router `<Link>`. Pills, like the original store. Contrast: `on-cherry` text
+ * on cherry-500 is 4.6:1 in both themes (5.6:1 on the cherry-600 hover/press).
  */
 export const buttonVariants = cva(
-    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-[0.01em] whitespace-nowrap transition duration-300 ease-out focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none',
+    'inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cherry-500 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none',
     {
         variants: {
             variant: {
                 primary:
-                    'gradient-rose text-white shadow-soft hover:-translate-y-0.5 hover:shadow-lift hover:brightness-110',
-                /** Champagne gold accent CTA (hero, banners). */
-                gold: 'gradient-gold text-ink shadow-glow hover:-translate-y-0.5 hover:brightness-105',
+                    'bg-cherry-500 text-on-cherry shadow-glow hover:-translate-y-0.5 hover:bg-cherry-600 active:bg-cherry-600 disabled:bg-elevated disabled:text-fg-soft disabled:opacity-100 disabled:shadow-none disabled:ring-1 disabled:ring-line-strong',
                 secondary:
-                    'border border-ink/80 bg-transparent text-ink hover:-translate-y-0.5 hover:bg-ink hover:text-ivory',
-                ghost: 'text-ink hover:bg-rose-50',
-                'outline-gold':
-                    'border border-gold-400/70 bg-gold-50 text-gold-800 hover:border-gold-500 hover:bg-gold-100',
+                    'border border-line-strong bg-transparent text-fg hover:-translate-y-0.5 hover:border-fg/60 hover:bg-fg/5',
+                ghost: 'text-fg hover:bg-fg/5',
+                /** Quiet pill on a surface (filters, secondary actions inside cards). */
+                soft: 'border border-line bg-elevated text-fg hover:border-cherry-500/40 hover:text-accent-strong',
                 /** WhatsApp green (darkened for white text contrast). */
                 whatsapp:
-                    'bg-[#128c7e] text-white shadow-soft hover:-translate-y-0.5 hover:bg-[#0b6f63]',
-                danger: 'bg-rose-800 text-white shadow-soft hover:-translate-y-0.5 hover:bg-rose-900',
+                    'bg-whatsapp text-white shadow-soft hover:-translate-y-0.5 hover:bg-whatsapp-hover',
+                danger: 'bg-danger text-canvas shadow-soft hover:-translate-y-0.5 hover:bg-danger-hover',
             },
             size: {
                 // Touch screens get a 44px target; mouse users keep the compact size.

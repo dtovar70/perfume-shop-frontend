@@ -355,7 +355,7 @@ export function AnimatedEyeToggle({ visible, onToggle, className }: AnimatedEyeT
             aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
             aria-pressed={visible}
             className={cn(
-                'flex size-8 items-center justify-center rounded-full text-ink transition-colors outline-none hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-gold-500',
+                'flex size-8 items-center justify-center rounded-full text-fg transition-colors outline-none hover:bg-elevated focus-visible:ring-2 focus-visible:ring-cherry-500',
                 className,
             )}
         >
@@ -390,21 +390,21 @@ export function AnimatedEyeToggle({ visible, onToggle, className }: AnimatedEyeT
                             cx={IRIS_CENTER.x}
                             cy={IRIS_CENTER.y}
                             r={4.3}
-                            fill="var(--color-rose-400)"
+                            fill="var(--theme-accent)"
                         />
                         <circle
                             cx={IRIS_CENTER.x}
                             cy={IRIS_CENTER.y}
                             r={4.3}
                             fill="none"
-                            stroke="var(--color-rose-600)"
+                            stroke="var(--theme-cherry-600)"
                             strokeWidth={0.7}
                         />
                         <circle
                             cx={IRIS_CENTER.x}
                             cy={IRIS_CENTER.y}
                             r={2}
-                            fill="var(--color-ink)"
+                            fill="var(--theme-on-cherry)"
                         />
                         <circle
                             cx={IRIS_CENTER.x - 1.35}

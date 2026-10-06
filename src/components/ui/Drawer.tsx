@@ -9,7 +9,7 @@ import { cn } from '@/utils/cn'
 const panelVariants = cva(
     // Above `sm` the panel floats inset from the window edges, so it reads as a card
     // instead of a slab sliced by the top and bottom of the viewport.
-    'pointer-events-auto flex h-full w-full flex-col overflow-hidden bg-ivory shadow-lift transition-transform duration-300 ease-out motion-reduce:transition-none',
+    'pointer-events-auto flex h-full w-full flex-col overflow-hidden border-line bg-surface shadow-lift sm:border transition-transform duration-300 ease-out motion-reduce:transition-none',
     {
         variants: {
             side: {
@@ -138,7 +138,7 @@ export function Drawer({
                 aria-label="Cerrar el panel"
                 onClick={onClose}
                 className={cn(
-                    'absolute inset-0 cursor-default bg-noir/45 backdrop-blur-[3px] transition-opacity duration-300 motion-reduce:transition-none',
+                    'absolute inset-0 cursor-default bg-scrim backdrop-blur-[3px] transition-opacity duration-300 motion-reduce:transition-none',
                     isOpen ? 'opacity-100' : 'opacity-0',
                 )}
             />
@@ -158,7 +158,7 @@ export function Drawer({
                             onClick={onClose}
                             tabIndex={isOpen ? 0 : -1}
                             aria-label="Volver"
-                            className="flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition hover:bg-rose-50"
+                            className="flex size-11 shrink-0 items-center justify-center rounded-full text-fg transition hover:bg-elevated"
                         >
                             <ChevronLeft aria-hidden="true" className="size-5" />
                         </button>
@@ -178,17 +178,19 @@ export function Drawer({
                             onClick={onClose}
                             tabIndex={isOpen ? 0 : -1}
                             aria-label="Cerrar"
-                            className="flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition hover:rotate-90 hover:bg-rose-50"
+                            className="flex size-11 shrink-0 items-center justify-center rounded-full text-fg transition hover:rotate-90 hover:bg-elevated"
                         >
                             <X aria-hidden="true" className="size-5" />
                         </button>
                     ) : null}
                 </header>
 
-                <div className="scroll-soft flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
+                <div className="scroll-soft flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+                    {children}
+                </div>
 
                 {footer ? (
-                    <div className="relative z-10 border-t border-line bg-white px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_-18px_rgb(43_31_36/0.3)] sm:px-6">
+                    <div className="relative z-10 border-t border-line bg-elevated px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-up sm:px-6">
                         {footer}
                     </div>
                 ) : null}

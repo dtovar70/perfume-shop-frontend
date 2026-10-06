@@ -203,13 +203,13 @@ export function Popover({
     if (asSheet) {
         return createPortal(
             <div className="fixed inset-0 z-60 flex flex-col justify-end">
-                <div aria-hidden="true" className="absolute inset-0 bg-ink/35" />
+                <div aria-hidden="true" className="absolute inset-0 bg-scrim" />
                 <div
                     ref={panelRef}
                     {...a11y}
                     onKeyDown={onPanelKeyDown}
                     className={cn(
-                        'scroll-soft relative max-h-[88dvh] animate-sheet-up overflow-y-auto overscroll-contain rounded-t-3xl border-t-2 border-line bg-white pb-[env(safe-area-inset-bottom)] shadow-lift',
+                        'scroll-soft relative max-h-[88dvh] animate-sheet-up overflow-y-auto overscroll-contain rounded-t-3xl border-t-2 border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-lift',
                         className,
                     )}
                 >
@@ -237,7 +237,7 @@ export function Popover({
                 opacity: position ? undefined : 0,
             }}
             className={cn(
-                'fixed z-60 max-w-[calc(100vw-1rem)] rounded-2xl border border-line bg-white shadow-lift',
+                'fixed z-60 max-w-[calc(100vw-1rem)] rounded-2xl border border-line bg-surface shadow-lift',
                 position?.maxHeight !== undefined &&
                     'scroll-soft overflow-y-auto overscroll-contain',
                 position?.side === 'top' ? 'origin-bottom' : 'origin-top',
@@ -251,7 +251,7 @@ export function Popover({
                     aria-hidden="true"
                     style={{ left: position.arrowLeft }}
                     className={cn(
-                        'absolute size-3 -translate-x-1/2 rotate-45 border-line bg-white',
+                        'absolute size-3 -translate-x-1/2 rotate-45 border-line bg-surface',
                         position.side === 'bottom'
                             ? '-top-[7px] border-t-2 border-l-2'
                             : '-bottom-[7px] border-r-2 border-b-2',

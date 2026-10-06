@@ -6,10 +6,9 @@ import { cn } from '@/utils/cn'
 const cardVariants = cva('rounded-card border transition duration-300', {
     variants: {
         tone: {
-            white: 'border-line bg-white',
-            ivory: 'border-line bg-ivory',
-            blush: 'border-rose-100 bg-rose-50',
-            gold: 'border-gold-200/70 bg-gold-50',
+            surface: 'border-line bg-surface',
+            elevated: 'border-line bg-elevated',
+            cherry: 'border-cherry-500/25 bg-cherry-tint',
         },
         elevation: {
             none: '',
@@ -17,7 +16,7 @@ const cardVariants = cva('rounded-card border transition duration-300', {
             lift: 'shadow-lift',
         },
         interactive: {
-            true: 'hover:-translate-y-1 hover:shadow-lift motion-reduce:transform-none motion-reduce:transition-none',
+            true: 'hover:-translate-y-1 hover:border-cherry-500/30 hover:shadow-lift motion-reduce:transform-none motion-reduce:transition-none',
             false: '',
         },
         padding: {
@@ -28,7 +27,7 @@ const cardVariants = cva('rounded-card border transition duration-300', {
         },
     },
     defaultVariants: {
-        tone: 'white',
+        tone: 'surface',
         elevation: 'soft',
         interactive: false,
         padding: 'md',

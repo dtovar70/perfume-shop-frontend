@@ -1,41 +1,48 @@
-import { ArrowRight } from 'lucide-react'
-
 import { HighlightedText } from '@/components/shared/HighlightedText'
 import { SocialIcon } from '@/components/shared/SocialIcon'
-import { ButtonLink } from '@/components/ui'
+import { BottleArt } from '@/components/shared/BottleArt'
+import { ButtonLink, Sticker } from '@/components/ui'
 import { buttonVariants } from '@/components/ui/Button.variants'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
-import { cn } from '@/utils/cn'
 import { whatsappUrl } from '@/utils/content'
 import { useSiteContent } from '@/utils/hooks/useSiteContent'
 
-/** Closing banner on a deep rose scene: advice by WhatsApp, or the About page. */
+/**
+ * The original closing banner: a big rounded "blob" panel with a sticker, an uppercase headline
+ * and two pill buttons. On black it carries a soft cherry glow instead of the pastel gradient.
+ */
 export function CtaBanner() {
     const { home, contact } = useSiteContent()
 
     return (
-        <section aria-labelledby="cta-heading" className="pt-8 pb-4">
+        <section aria-labelledby="cta-heading" className="pt-16 lg:pt-24">
             <div className={CONTAINER}>
-                <div className="relative isolate overflow-hidden rounded-card bg-[radial-gradient(120%_120%_at_85%_0%,#b05468_0%,#6e3442_45%,#2b1f24_100%)] px-6 py-14 text-ivory sm:px-12 lg:py-20">
-                    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-                        <span className="absolute -right-20 -bottom-24 size-80 rounded-full border border-gold-300/30" />
-                        <span className="absolute -right-6 -bottom-10 size-52 rounded-full border border-gold-300/20" />
-                        <span className="absolute -top-24 left-1/3 size-72 rounded-full bg-gold-400/15 blur-3xl" />
-                    </div>
+                <div className="relative isolate overflow-hidden rounded-blob border border-line bg-surface glow-cherry px-6 py-14 sm:px-12 lg:py-16">
+                    <div
+                        aria-hidden="true"
+                        className="absolute -right-16 -bottom-24 -z-10 size-80 rounded-full bg-cherry-500/15 blur-3xl"
+                    />
+                    <BottleArt
+                        shape="tall"
+                        className="absolute right-10 -bottom-6 -z-10 h-56 w-auto text-fg/10 max-lg:hidden"
+                        strokeWidth={1}
+                    />
 
-                    <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-                        <div className="max-w-2xl space-y-5">
-                            <p className="text-[11px] font-bold tracking-[0.28em] text-gold-200 uppercase sm:text-xs">
+                    <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:pr-40">
+                        <div className="max-w-2xl space-y-6">
+                            <Sticker tone="blush" rotation="right">
                                 {home.ctaBadge}
-                            </p>
+                            </Sticker>
+
                             <h2
                                 id="cta-heading"
-                                className="font-display text-4xl leading-[1.05] font-semibold text-balance sm:text-5xl"
+                                className="font-display text-3xl font-bold tracking-tight text-balance text-fg uppercase sm:text-4xl lg:text-5xl"
                             >
-                                <HighlightedText text={home.ctaTitle} className="text-gold-200" />
+                                <HighlightedText text={home.ctaTitle} />
                             </h2>
-                            <p className="max-w-md text-ivory/80">{home.ctaDescription}</p>
+
+                            <p className="max-w-md text-fg-soft">{home.ctaDescription}</p>
                         </div>
 
                         <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
@@ -47,23 +54,17 @@ export function CtaBanner() {
                                     )}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className={buttonVariants({ variant: 'gold', size: 'lg' })}
+                                    className={buttonVariants({ size: 'lg' })}
                                 >
                                     <SocialIcon network="WhatsApp" className="size-4.5" />
                                     {home.ctaPrimary}
                                 </a>
                             ) : (
-                                <ButtonLink to={ROUTES.contact} size="lg" variant="gold">
+                                <ButtonLink to={ROUTES.contact} size="lg">
                                     {home.ctaPrimary}
                                 </ButtonLink>
                             )}
-                            <ButtonLink
-                                to={ROUTES.about}
-                                size="lg"
-                                variant="secondary"
-                                className={cn('border-ivory/60 text-ivory hover:bg-ivory hover:text-ink')}
-                                trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
-                            >
+                            <ButtonLink to={ROUTES.about} size="lg" variant="secondary">
                                 {home.ctaSecondary}
                             </ButtonLink>
                         </div>

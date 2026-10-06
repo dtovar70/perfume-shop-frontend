@@ -19,12 +19,12 @@ const DESCRIPTION = 'Recibe los pagos por verificar en Telegram y apruébalos de
 
 function TelegramHelp() {
     return (
-        <Card tone="gold" elevation="none" padding="none" className="space-y-3 p-5">
-            <h2 className="flex items-center gap-2 font-display text-lg text-ink">
-                <MessageCircleQuestion aria-hidden="true" className="size-5 text-gold-700" />
+        <Card tone="cherry" elevation="none" padding="none" className="space-y-3 p-5">
+            <h2 className="flex items-center gap-2 font-display text-lg text-fg">
+                <MessageCircleQuestion aria-hidden="true" className="size-5 text-accent" />
                 ¿Cómo funciona?
             </h2>
-            <ul className="list-disc space-y-2 pl-5 text-sm text-ink-soft marker:text-gold-400">
+            <ul className="list-disc space-y-2 pl-5 text-sm text-fg-soft marker:text-accent">
                 <li>
                     Cada pago por verificar llega a <strong>todos</strong> los chats vinculados.
                 </li>
@@ -127,12 +127,12 @@ export function AdminTelegramView() {
                             <div className="flex items-baseline justify-between gap-3">
                                 <h2
                                     id="telegram-chats-title"
-                                    className="font-display text-xl text-ink"
+                                    className="font-display text-xl text-fg"
                                 >
                                     Chats vinculados
                                 </h2>
                                 {chats.length > 0 ? (
-                                    <span className="text-sm text-ink-soft tabular-nums">
+                                    <span className="text-sm text-fg-soft tabular-nums">
                                         {chats.length === 1 ? '1 chat' : `${chats.length} chats`}
                                     </span>
                                 ) : null}
@@ -176,7 +176,7 @@ export function AdminTelegramView() {
                 description={
                     pendingUnlink ? (
                         <>
-                            <strong className="font-semibold text-ink">
+                            <strong className="font-semibold text-fg">
                                 {chatDisplayName(pendingUnlink)}
                             </strong>{' '}
                             dejará de recibir avisos y no podrá aprobar pagos.

@@ -2,8 +2,8 @@ import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 
 import { isApiError } from '@/services/errors'
 
-/** "email", "steps.1.title": paths the forms use as-is. */
-const FIELD_PATH = /^[A-Za-z]+(?:\.\d+\.[A-Za-z]+)?$/
+/** "email", "steps.1.title", "heroMedia.url": paths the forms use as-is. */
+const FIELD_PATH = /^[A-Za-z]+(?:\.\d+\.[A-Za-z]+|\.[A-Za-z]+)?$/
 
 /**
  * Pins the API's validation errors on their fields and returns the message for the form-level

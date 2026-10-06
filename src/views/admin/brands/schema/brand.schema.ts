@@ -82,12 +82,6 @@ export function toBrandInput(
         description: values.description.trim(),
         sortOrder: values.sortOrder,
         isActive: values.isActive,
-        ...(logo
-            ? { logo }
-            : logoUrl
-              ? { logoUrl }
-              : mode === 'edit'
-                ? { logoUrl: null }
-                : {}),
+        ...(logo ? { logo } : logoUrl ? { logoUrl } : mode === 'edit' ? { logoUrl: null } : {}),
     }
 }

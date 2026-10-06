@@ -18,7 +18,7 @@ const NEW_ARRIVALS_PARAMS: ProductQueryParams = {
     tags: ['nuevo'],
     sort: 'newest',
     page: 1,
-    pageSize: 8,
+    pageSize: 4,
 }
 
 /** "Novedades": products tagged `nuevo`, newest first. */

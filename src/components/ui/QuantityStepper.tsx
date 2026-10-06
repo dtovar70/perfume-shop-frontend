@@ -15,7 +15,7 @@ export interface QuantityStepperProps {
 
 /** 36px visible; the pseudo-element grows the hit area to 44px for thumbs. */
 const stepButtonClass =
-    "relative flex size-9 items-center justify-center rounded-full text-ink transition after:absolute after:-inset-1 after:content-[''] hover:bg-rose-50 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+    "relative flex size-9 items-center justify-center rounded-full text-fg transition after:absolute after:-inset-1 after:content-[''] hover:bg-elevated hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
 
 export function QuantityStepper({
     value,
@@ -33,7 +33,7 @@ export function QuantityStepper({
     return (
         <div
             className={cn(
-                'inline-flex items-center gap-1 rounded-full border border-line bg-white p-1 shadow-[0_1px_0_rgb(43_31_36/0.02)]',
+                'inline-flex items-center gap-1 rounded-full border border-line bg-surface p-1 shadow-hairline',
                 className,
             )}
         >

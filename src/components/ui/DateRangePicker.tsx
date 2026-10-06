@@ -31,15 +31,15 @@ const TWO_MONTHS_QUERY = '(min-width: 50rem)'
  */
 const RANGE_CALENDAR_CLASSES: Partial<ClassNames> = {
     ...CALENDAR_CLASSES,
-    range_start: `rounded-l-full bg-rose-100 group-[.is-previewing]/calendar:bg-rose-50 ${CALENDAR_SELECTED_DAY_CLASS}`,
-    range_end: `rounded-r-full bg-rose-100 group-[.is-previewing]/calendar:bg-rose-50 ${CALENDAR_SELECTED_DAY_CLASS}`,
+    range_start: `rounded-l-full bg-cherry-tint group-[.is-previewing]/calendar:bg-elevated ${CALENDAR_SELECTED_DAY_CLASS}`,
+    range_end: `rounded-r-full bg-cherry-tint group-[.is-previewing]/calendar:bg-elevated ${CALENDAR_SELECTED_DAY_CLASS}`,
     range_middle:
-        'bg-rose-100 group-[.is-previewing]/calendar:bg-rose-50 [&>button]:rounded-full [&>button]:text-rose-800 [&>button]:hover:bg-rose-200',
+        'bg-cherry-tint group-[.is-previewing]/calendar:bg-elevated [&>button]:rounded-full [&>button]:text-accent-strong [&>button]:hover:bg-cherry-500/20',
 }
 
 /** The day under the pointer while only the start is picked: a dashed, not-yet-chosen end. */
 const PREVIEW_END_CLASS =
-    '[&>button]:bg-white! [&>button]:text-rose-700! [&>button]:outline-2 [&>button]:-outline-offset-2 [&>button]:outline-rose-400 [&>button]:outline-dashed'
+    '[&>button]:bg-surface! [&>button]:text-accent! [&>button]:outline-2 [&>button]:-outline-offset-2 [&>button]:outline-accent [&>button]:outline-dashed'
 
 function firstVisibleMonth(anchor: Date, twoMonths: boolean): Date {
     return twoMonths ? subMonths(startOfMonth(anchor), 1) : startOfMonth(anchor)
@@ -162,19 +162,19 @@ export function DateRangePicker({
                 onClick={() => (isOpen ? close() : open())}
                 className={cn(
                     FIELD_BASE_CLASS,
-                    'flex h-11 items-center gap-2.5 rounded-xl px-4 text-left outline-none hover:border-rose-200',
-                    hasValue && 'border-rose-200 bg-rose-50/60 pr-11',
-                    isOpen && 'border-rose-400 ring-4 ring-rose-200/70',
+                    'flex h-11 items-center gap-2.5 rounded-xl px-4 text-left outline-none hover:border-cherry-500/30',
+                    hasValue && 'border-cherry-500/30 bg-elevated/60 pr-11',
+                    isOpen && 'border-accent/60 ring-4 ring-cherry-500/30',
                 )}
             >
                 <CalendarDays
                     aria-hidden="true"
-                    className={cn('size-4 shrink-0', hasValue ? 'text-rose-600' : 'text-ink-soft')}
+                    className={cn('size-4 shrink-0', hasValue ? 'text-accent' : 'text-fg-soft')}
                 />
                 <span
                     className={cn(
                         'truncate text-sm font-semibold',
-                        hasValue ? 'text-ink' : 'text-ink-soft',
+                        hasValue ? 'text-fg' : 'text-fg-soft',
                     )}
                 >
                     {hasValue && from ? formatDayRange(from, to) : label}
@@ -188,7 +188,7 @@ export function DateRangePicker({
                         triggerRef.current?.focus()
                     }}
                     aria-label="Quitar el filtro de fechas"
-                    className="absolute top-1/2 right-1.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700"
+                    className="absolute top-1/2 right-1.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent"
                 >
                     <X aria-hidden="true" className="size-4" />
                 </button>
@@ -212,7 +212,7 @@ export function DateRangePicker({
                     calendar and fits short windows. */}
                 <div className="flex flex-col sm:grid sm:grid-cols-[11rem_auto] sm:grid-rows-[auto_1fr]">
                     <div className="px-4 pt-3 sm:col-start-1 sm:row-start-1 sm:px-3 sm:pt-3">
-                        <p className="mb-2 px-1 text-xs font-bold tracking-wide text-ink-soft uppercase sm:mb-1.5 sm:px-2.5 sm:text-[0.7rem]">
+                        <p className="mb-2 px-1 text-xs font-bold tracking-wide text-fg-soft uppercase sm:mb-1.5 sm:px-2.5 sm:text-[0.7rem]">
                             Atajos
                         </p>
                         <ul className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-col sm:gap-0 sm:overflow-visible sm:px-0 sm:pb-0">
@@ -227,8 +227,8 @@ export function DateRangePicker({
                                             className={cn(
                                                 'w-full rounded-full border px-3 py-1.5 text-left text-sm font-semibold whitespace-nowrap transition sm:rounded-lg sm:border-0 sm:px-2.5 sm:py-1',
                                                 isActive
-                                                    ? 'border-rose-400 bg-rose-100 text-rose-700'
-                                                    : 'border-line text-ink-soft hover:bg-rose-50 hover:text-ink',
+                                                    ? 'border-accent/60 bg-cherry-tint text-accent'
+                                                    : 'border-line text-fg-soft hover:bg-elevated hover:text-fg',
                                             )}
                                         >
                                             {preset.label}
@@ -271,7 +271,7 @@ export function DateRangePicker({
                             aria-live="polite"
                             className={cn(
                                 'text-sm sm:px-1 sm:text-xs sm:leading-4',
-                                draft.from && draft.to ? 'font-semibold text-ink' : 'text-ink-soft',
+                                draft.from && draft.to ? 'font-semibold text-fg' : 'text-fg-soft',
                             )}
                         >
                             {status}

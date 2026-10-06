@@ -102,8 +102,8 @@ export function OrderQrAction({ order }: { order: AdminOrder }) {
                     </>
                 }
             >
-                <div className="flex flex-col items-center gap-4 rounded-card bg-white p-5 text-center ring-1 ring-ink/5 sm:flex-row sm:text-left">
-                    <div className="shrink-0 rounded-2xl bg-white p-1 ring-1 ring-ink/10">
+                <div className="flex flex-col items-center gap-4 rounded-card bg-surface p-5 text-center ring-1 ring-fg/10 sm:flex-row sm:text-left">
+                    <div className="shrink-0 rounded-2xl bg-surface p-1 ring-1 ring-fg/10">
                         {ready && qr ? (
                             <img
                                 src={qr}
@@ -117,12 +117,12 @@ export function OrderQrAction({ order }: { order: AdminOrder }) {
                         )}
                     </div>
                     <div className="min-w-0 space-y-1">
-                        <p className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+                        <p className="text-xs font-semibold tracking-wide text-fg-soft uppercase">
                             {general.brandName}
                         </p>
-                        <p className="font-display text-2xl text-ink">{order.code}</p>
-                        <p className="text-sm break-words text-ink">{order.customer.fullName}</p>
-                        <p className="pt-1 text-xs text-ink-soft">
+                        <p className="font-display text-2xl text-fg">{order.code}</p>
+                        <p className="text-sm break-words text-fg">{order.customer.fullName}</p>
+                        <p className="pt-1 text-xs text-fg-soft">
                             La etiqueta mide 6 × 4 cm. Quien escanee el QR podrá ver el pedido.
                         </p>
                     </div>

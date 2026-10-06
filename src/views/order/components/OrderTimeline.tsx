@@ -36,7 +36,7 @@ export function OrderTimeline({ order }: { order: PublicOrder }) {
                                 aria-hidden="true"
                                 className={cn(
                                     'absolute top-7 bottom-0 left-3.5 w-0.5 -translate-x-1/2',
-                                    done && index < currentIndex ? 'bg-rose-300' : 'bg-line',
+                                    done && index < currentIndex ? 'bg-cherry-500/30' : 'bg-line',
                                 )}
                             />
                         ) : null}
@@ -44,9 +44,9 @@ export function OrderTimeline({ order }: { order: PublicOrder }) {
                             className={cn(
                                 'relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-xs',
                                 done
-                                    ? 'border-rose-700 bg-rose-700 text-white'
-                                    : 'border-line bg-white text-ink-soft',
-                                current && 'ring-4 ring-rose-200/70',
+                                    ? 'border-cherry-500 bg-cherry-500 text-on-cherry'
+                                    : 'border-line bg-surface text-fg-soft',
+                                current && 'ring-4 ring-cherry-500/30',
                             )}
                         >
                             {done ? <Check aria-hidden="true" className="size-4" /> : index + 1}
@@ -55,21 +55,21 @@ export function OrderTimeline({ order }: { order: PublicOrder }) {
                             <p
                                 className={cn(
                                     'text-sm font-semibold',
-                                    done ? 'text-ink' : 'text-ink-soft',
+                                    done ? 'text-fg' : 'text-fg-soft',
                                 )}
                                 aria-current={current ? 'step' : undefined}
                             >
                                 {stepLabel(status)}
                             </p>
                             {at ? (
-                                <p className="text-xs text-ink-soft">{formatDateTime(at)}</p>
+                                <p className="text-xs text-fg-soft">{formatDateTime(at)}</p>
                             ) : null}
                         </div>
                     </li>
                 )
             })}
             {isClosed ? (
-                <li className="mt-4 rounded-2xl bg-line/60 px-4 py-2 text-sm font-semibold text-ink-soft">
+                <li className="mt-4 rounded-2xl bg-line/60 px-4 py-2 text-sm font-semibold text-fg-soft">
                     {stepLabel(order.status)}
                     {reachedAt(order.status)
                         ? ` · ${formatDateTime(reachedAt(order.status) ?? '')}`

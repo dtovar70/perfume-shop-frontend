@@ -19,8 +19,8 @@ import { useCategories } from '@/views/catalog/hooks/useCategories'
 import { useFacets } from '@/views/catalog/hooks/useFacets'
 import { useProducts } from '@/views/catalog/hooks/useProducts'
 
-const eyebrowClass = 'text-[11px] font-bold tracking-[0.28em] text-gold-700 uppercase sm:text-xs'
-const titleClass = 'font-display text-[2.4rem] leading-none font-semibold text-ink sm:text-5xl'
+const eyebrowClass = 'text-[11px] font-bold tracking-[0.28em] text-accent uppercase sm:text-xs'
+const titleClass = 'font-display text-[2.4rem] leading-none font-semibold text-fg sm:text-5xl'
 
 export function CatalogView() {
     const catalog = useCatalogFilters()
@@ -82,14 +82,16 @@ export function CatalogView() {
     const title =
         activeCategory?.name ??
         brandName ??
-        (filters.gender ? `Perfumes para ${GENDER_LABELS[filters.gender].toLowerCase()}` : 'Perfumes')
+        (filters.gender
+            ? `Perfumes para ${GENDER_LABELS[filters.gender].toLowerCase()}`
+            : 'Perfumes')
 
     return (
         <div className="pb-12 lg:pb-16">
             <header className={cn(CONTAINER, 'space-y-3 pt-8 pb-5 sm:pt-12 lg:pt-14')}>
                 <p className={eyebrowClass}>Catálogo</p>
                 <h1 className={titleClass}>{title}</h1>
-                <p className="max-w-2xl text-[15px] text-ink-soft">
+                <p className="max-w-2xl text-[15px] text-fg-soft">
                     {activeCategory?.description ||
                         'Fragancias originales para cada momento. Filtra por marca, familia olfativa o concentración.'}
                 </p>
@@ -101,7 +103,7 @@ export function CatalogView() {
             </div>
 
             {/* Sticky toolbar: categories, count, sort and (below lg) filters. */}
-            <div className="sticky top-16 z-30 border-y border-line/80 bg-ivory/90 backdrop-blur-md lg:top-20">
+            <div className="sticky top-16 z-30 border-y border-line/80 bg-canvas/90 backdrop-blur-md lg:top-20">
                 <div
                     className={cn(
                         CONTAINER,
@@ -127,9 +129,9 @@ export function CatalogView() {
 
             <div className={cn(CONTAINER, 'pt-6 lg:pt-8')}>
                 {filters.search ? (
-                    <p className="mb-5 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+                    <p className="mb-5 flex flex-wrap items-center gap-2 text-sm text-fg-soft">
                         Resultados para
-                        <span className="inline-flex items-center gap-2 rounded-full bg-rose-100 py-1 pr-2 pl-3 font-semibold text-rose-800">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-cherry-tint py-1 pr-2 pl-3 font-semibold text-accent-strong">
                             {filters.search}
                             <button
                                 type="button"
@@ -146,10 +148,7 @@ export function CatalogView() {
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] xl:gap-12">
                     {isDesktop ? (
-                        <aside
-                            aria-label="Filtros del catálogo"
-                            className="scroll-soft h-fit max-h-[calc(100dvh-11rem)] overflow-y-auto pr-1 lg:sticky lg:top-40"
-                        >
+                        <aside aria-label="Filtros del catálogo" className="h-fit">
                             {filterPanel}
                         </aside>
                     ) : (
@@ -171,8 +170,10 @@ export function CatalogView() {
                     )}
 
                     <section aria-label="Resultados" className="min-w-0 space-y-8">
-                        <p aria-hidden="true" className="-mt-2 text-sm text-ink-soft sm:hidden">
-                            <span className="font-bold text-ink tabular-nums">{data?.total ?? 0}</span>{' '}
+                        <p aria-hidden="true" className="-mt-2 text-sm text-fg-soft sm:hidden">
+                            <span className="font-bold text-fg tabular-nums">
+                                {data?.total ?? 0}
+                            </span>{' '}
                             {data?.total === 1 ? 'perfume' : 'perfumes'}
                         </p>
 

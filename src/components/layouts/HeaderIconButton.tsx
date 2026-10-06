@@ -10,6 +10,7 @@ export interface HeaderIconButtonProps extends Omit<ComponentPropsWithRef<'butto
     badge?: ReactNode
 }
 
+/** A 44px round icon button for the header bar. */
 export function HeaderIconButton({
     label,
     icon,
@@ -22,34 +23,27 @@ export function HeaderIconButton({
             type="button"
             aria-label={label}
             className={cn(
-                'group relative flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors duration-200 hover:bg-rose-50/80 hover:text-rose-700',
+                'group relative flex size-11 shrink-0 items-center justify-center rounded-full border border-transparent text-fg transition-colors duration-200 hover:bg-elevated hover:text-accent-strong focus-visible:text-accent-strong aria-expanded:border-line aria-expanded:bg-elevated',
                 className,
             )}
             {...rest}
         >
-            {/*
-             * The ring sits on the button's edge and draws itself on hover:
-             * 132 is 2πr for r = 21 inside the 44-unit viewBox, used as both the dash length
-             * and the resting offset, so the stroke starts fully retracted. The values are
-             * inlined because Tailwind only picks up arbitrary values written as literals.
-             */}
+            {/* Hover ring: a cherry stroke that draws itself around the circle, starting at the top. */}
             <svg
-                viewBox="0 0 44 44"
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 size-full -rotate-90 text-gold-400"
+                viewBox="0 0 44 44"
+                className="pointer-events-none absolute -inset-px -rotate-90"
             >
                 <circle
                     cx="22"
                     cy="22"
                     r="21"
                     fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    className="transition-[stroke-dashoffset] duration-500 ease-out [stroke-dasharray:132] [stroke-dashoffset:132] group-hover:[stroke-dashoffset:0] group-focus-visible:[stroke-dashoffset:0] motion-reduce:transition-none"
+                    pathLength={100}
+                    strokeDasharray="102"
+                    className="stroke-cherry-500 [stroke-width:1.5] opacity-0 transition-[stroke-dashoffset,opacity] duration-500 ease-out [stroke-dashoffset:102] group-hover:opacity-100 group-hover:[stroke-dashoffset:0] group-focus-visible:opacity-100 group-focus-visible:[stroke-dashoffset:0] motion-reduce:transition-none"
                 />
             </svg>
-
             {icon}
             {badge}
         </button>

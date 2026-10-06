@@ -16,11 +16,13 @@ export function ValuesGrid({ values }: ValuesGridProps) {
                 return (
                     <li key={index} className="h-full">
                         <Card className="flex h-full flex-col gap-3">
-                            <span className="gradient-blush flex size-12 items-center justify-center rounded-full text-rose-700 ring-1 ring-gold-200">
+                            <span className="flex size-12 items-center justify-center rounded-full bg-elevated text-accent ring-1 ring-cherry-500/30">
                                 <Icon aria-hidden="true" className="size-5" />
                             </span>
-                            <h3 className="font-display text-2xl font-semibold text-ink">{value.title}</h3>
-                            <p className="text-sm text-ink-soft">{value.description}</p>
+                            <h3 className="font-display text-2xl font-semibold text-fg">
+                                {value.title}
+                            </h3>
+                            <p className="text-sm text-fg-soft">{value.description}</p>
                         </Card>
                     </li>
                 )

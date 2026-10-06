@@ -7,38 +7,59 @@ import { useSiteContent } from '@/utils/hooks/useSiteContent'
 
 export interface WordmarkProps {
     className?: string
-    /** Light text for dark surfaces (footer). */
-    inverted?: boolean
 }
 
-/** "KaiZen" set in Cormorant: ink (or ivory) lead, gold italic accent. */
-export function Wordmark({ className, inverted = false }: WordmarkProps) {
+/** "KaiZen" set in Outfit: a light lead and a cherry accent. */
+export function Wordmark({ className }: WordmarkProps) {
     return (
         <span
-            className={cn(
-                'font-display leading-none font-semibold tracking-[0.02em]',
-                inverted ? 'text-ivory' : 'text-ink',
-                className,
-            )}
+            className={cn('font-display leading-none font-bold tracking-tight text-fg', className)}
         >
             {appConfig.wordmark.lead}
-            <span className="gold-text italic">{appConfig.wordmark.accent}</span>
+            <span className="text-accent">{appConfig.wordmark.accent}</span>
         </span>
     )
 }
 
-/** Square "K" monogram (favicon look) for compact places such as the admin rail. */
+/** Round "K" monogram (favicon look) for compact places such as the admin rail. */
 export function Monogram({ className }: { className?: string }) {
     return (
         <span
             aria-hidden="true"
             className={cn(
-                'flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-900 ring-1 ring-gold-400/50',
+                'flex size-11 shrink-0 items-center justify-center rounded-2xl bg-cherry-500 shadow-glow',
                 className,
             )}
         >
-            <span className="gold-text font-display text-2xl leading-none font-semibold">K</span>
+            <span className="font-display text-2xl leading-none font-bold text-on-cherry">K</span>
         </span>
+    )
+}
+
+/** The client's logo is a 64×43 px original, so it is never shown larger than 48 px. */
+const LOGO_SRC = '/img/kaizen-logo.jpg'
+
+export interface LogoMarkProps {
+    className?: string
+    /** Rendered size in px (36 compact header, 40 header, 48 footer). */
+    size?: 36 | 40 | 48
+}
+
+/** Circular crop of the KaiZen logo: the original has a white background, so it sits in a white disc. */
+export function LogoMark({ className, size = 40 }: LogoMarkProps) {
+    return (
+        <img
+            src={LOGO_SRC}
+            alt="KaiZen Perfumes"
+            width={size}
+            height={size}
+            decoding="async"
+            className={cn(
+                'shrink-0 rounded-full bg-white object-contain p-0.5 ring-2 ring-cherry-500/40',
+                className,
+            )}
+            style={{ width: size, height: size }}
+        />
     )
 }
 
@@ -46,37 +67,40 @@ export interface BrandLogoProps {
     className?: string
     /** Renders the tagline under the wordmark; used in the footer. */
     withTagline?: boolean
-    inverted?: boolean
+    /** Footer size: a 48px mark. */
+    large?: boolean
 }
 
-export function BrandLogo({ className, withTagline = false, inverted = false }: BrandLogoProps) {
+export function BrandLogo({ className, withTagline = false, large = false }: BrandLogoProps) {
     const { general } = useSiteContent()
 
     return (
         <Link
             to={ROUTES.home}
             aria-label={`${appConfig.wordmark.lead}${appConfig.wordmark.accent} — ir al inicio`}
-            className={cn('group inline-flex flex-col rounded-lg', className)}
+            className={cn('group inline-flex flex-col rounded-2xl', className)}
         >
-            <Wordmark inverted={inverted} className="text-[1.75rem] sm:text-[2rem]" />
-            <span
-                aria-hidden="true"
-                className={cn(
-                    'mt-1 text-[0.6rem] font-bold tracking-[0.42em] uppercase',
-                    inverted ? 'text-gold-300' : 'text-gold-700',
+            <span className="flex items-center gap-2.5 sm:gap-3">
+                {large ? (
+                    <LogoMark size={48} />
+                ) : (
+                    <>
+                        <LogoMark size={36} className="sm:hidden" />
+                        <LogoMark size={40} className="max-sm:hidden" />
+                    </>
                 )}
-            >
-                Perfumería
+                <span className="flex flex-col items-start">
+                    <Wordmark className="text-2xl sm:text-[1.7rem]" />
+                    <span
+                        aria-hidden="true"
+                        className="mt-1 text-[0.6rem] font-bold tracking-[0.3em] text-fg-soft uppercase"
+                    >
+                        Perfumería
+                    </span>
+                </span>
             </span>
             {withTagline ? (
-                <span
-                    className={cn(
-                        'mt-3 max-w-xs text-sm',
-                        inverted ? 'text-ivory/70' : 'text-ink-soft',
-                    )}
-                >
-                    {general.tagline}
-                </span>
+                <span className="mt-4 max-w-xs text-sm text-fg-soft">{general.tagline}</span>
             ) : null}
         </Link>
     )

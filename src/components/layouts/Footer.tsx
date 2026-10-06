@@ -8,7 +8,7 @@ import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
 import { socialLinks } from '@/utils/content'
-import { useCategoryLinks } from '@/utils/hooks/useNavLinks'
+import { GENDER_LINKS, useCategoryLinks } from '@/utils/hooks/useNavLinks'
 import { useShippingContent, useSiteContent } from '@/utils/hooks/useSiteContent'
 
 const SHOP_EXTRA_LINKS = [
@@ -29,9 +29,9 @@ const HELP_LINKS = [
     { label: 'Envíos y pagos', to: `${ROUTES.contact}#preguntas` },
 ]
 
-const headingClass = 'text-[11px] font-bold tracking-[0.24em] text-gold-300 uppercase'
+const headingClass = 'font-display text-base font-semibold text-fg'
 const linkClass =
-    'inline-flex min-h-8 items-center text-sm text-ivory/70 transition hover:text-ivory hover:underline hover:decoration-gold-400 hover:underline-offset-4'
+    'inline-flex min-h-11 items-center text-sm text-fg-soft transition hover:text-accent-strong sm:min-h-8'
 
 export function Footer() {
     const categoryLinks = useCategoryLinks(appConfig.categoryLinkLimits.footer)
@@ -41,21 +41,20 @@ export function Footer() {
     const brand = `${appConfig.wordmark.lead}${appConfig.wordmark.accent}`
 
     const columns = [
-        { id: 'footer-shop', title: 'Tienda', links: [...categoryLinks, ...SHOP_EXTRA_LINKS] },
+        {
+            id: 'footer-shop',
+            title: 'Tienda',
+            links: [...categoryLinks, ...GENDER_LINKS, ...SHOP_EXTRA_LINKS],
+        },
         { id: 'footer-orders', title: 'Tus pedidos', links: ORDER_LINKS },
         { id: 'footer-help', title: 'Ayuda', links: HELP_LINKS },
     ]
 
     return (
-        <footer className="gradient-noir relative mt-20 overflow-hidden text-ivory sm:mt-28">
-            {/* A gold hairline and a faint rose glow mark the edge of the page. */}
+        <footer className="relative mt-20 overflow-hidden border-t border-line bg-surface sm:mt-24">
             <span
                 aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-gold-400/70 to-transparent"
-            />
-            <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -top-40 right-[-10%] size-96 rounded-full bg-rose-700/25 blur-3xl"
+                className="pointer-events-none absolute -top-40 right-[-10%] size-96 rounded-full bg-cherry-500/10 blur-3xl"
             />
 
             <div
@@ -65,8 +64,8 @@ export function Footer() {
                 )}
             >
                 <div className="space-y-6">
-                    <BrandLogo inverted withTagline />
-                    <p className="max-w-sm text-sm leading-relaxed text-ivory/65">
+                    <BrandLogo large withTagline />
+                    <p className="max-w-sm text-sm leading-relaxed text-fg-soft">
                         {general.description}
                     </p>
 
@@ -79,7 +78,7 @@ export function Footer() {
                                         target="_blank"
                                         rel="noreferrer"
                                         aria-label={`${social.label} (${social.handle})`}
-                                        className="flex size-11 items-center justify-center rounded-full border border-ivory/15 text-ivory/80 transition hover:border-gold-400 hover:bg-gold-400/10 hover:text-gold-200"
+                                        className="flex size-11 items-center justify-center rounded-full border border-line bg-elevated text-fg-soft transition hover:border-cherry-500/50 hover:bg-cherry-tint hover:text-accent-strong"
                                     >
                                         <SocialIcon network={social.label} className="size-4.5" />
                                     </a>
@@ -109,20 +108,29 @@ export function Footer() {
 
                     <div className="col-span-2 space-y-4 sm:col-span-1">
                         <h2 className={headingClass}>Contacto</h2>
-                        <ul className="space-y-3 text-sm text-ivory/70">
+                        <ul className="space-y-3 text-sm text-fg-soft">
                             <li className="flex gap-2.5">
-                                <MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-gold-400" />
+                                <MapPin
+                                    aria-hidden="true"
+                                    className="mt-0.5 size-4 shrink-0 text-accent"
+                                />
                                 {contact.city}
                             </li>
                             <li className="flex gap-2.5">
-                                <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-gold-400" />
+                                <Clock
+                                    aria-hidden="true"
+                                    className="mt-0.5 size-4 shrink-0 text-accent"
+                                />
                                 {contact.schedule}
                             </li>
                             <li className="flex min-w-0 gap-2.5">
-                                <Mail aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-gold-400" />
+                                <Mail
+                                    aria-hidden="true"
+                                    className="mt-0.5 size-4 shrink-0 text-accent"
+                                />
                                 <a
                                     href={`mailto:${contact.email}`}
-                                    className="min-w-0 break-all transition hover:text-ivory"
+                                    className="min-w-0 break-all transition hover:text-accent-strong"
                                 >
                                     {contact.email}
                                 </a>
@@ -132,11 +140,11 @@ export function Footer() {
                 </div>
             </div>
 
-            <div className="relative border-t border-ivory/10">
+            <div className="relative border-t border-line">
                 <div
                     className={cn(
                         CONTAINER,
-                        'flex flex-col gap-2 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-xs text-ivory/55 sm:flex-row sm:items-center sm:justify-between',
+                        'flex flex-col gap-2 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-xs text-fg-muted sm:flex-row sm:items-center sm:justify-between',
                     )}
                 >
                     <p>

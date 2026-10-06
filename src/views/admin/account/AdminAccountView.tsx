@@ -28,8 +28,8 @@ import {
 function SectionTitle({ title, description }: { title: string; description: string }) {
     return (
         <div className="space-y-1">
-            <h2 className="font-display text-xl text-ink">{title}</h2>
-            <p className="text-sm text-ink-soft">{description}</p>
+            <h2 className="font-display text-xl text-fg">{title}</h2>
+            <p className="text-sm text-fg-soft">{description}</p>
         </div>
     )
 }
@@ -89,17 +89,17 @@ function ProfileCard({ user }: { user: AdminSession }) {
                 />
                 <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                     <div className="space-y-1">
-                        <dt className="font-semibold text-ink">Correo electrónico</dt>
-                        <dd className="break-all text-ink-soft">{user.email}</dd>
+                        <dt className="font-semibold text-fg">Correo electrónico</dt>
+                        <dd className="break-all text-fg-soft">{user.email}</dd>
                     </div>
                     <div className="space-y-1">
-                        <dt className="font-semibold text-ink">Rol</dt>
-                        <dd className="flex flex-wrap items-center gap-2 text-ink-soft">
+                        <dt className="font-semibold text-fg">Rol</dt>
+                        <dd className="flex flex-wrap items-center gap-2 text-fg-soft">
                             <RoleBadge role={user.role} />
                         </dd>
                     </div>
                 </dl>
-                <p className="text-xs text-ink-soft">
+                <p className="text-xs text-fg-soft">
                     El correo y el rol los cambia un administrador desde Usuarios.
                 </p>
                 {updateMe.isError && !isApiError(updateMe.error, 400) ? (
@@ -128,14 +128,14 @@ function CapabilityList({
 
     return (
         <section className="space-y-3">
-            <h3 className="font-display text-base text-ink">{title}</h3>
+            <h3 className="font-display text-base text-fg">{title}</h3>
             <div className="space-y-3">
                 {groups.map(({ area, capabilities }) => (
                     <div key={area} className="space-y-1.5">
-                        <p className="text-xs font-bold tracking-wide text-ink-soft uppercase">
+                        <p className="text-xs font-bold tracking-wide text-fg-soft uppercase">
                             {area}
                         </p>
-                        <ul className="space-y-1.5 text-sm text-ink">
+                        <ul className="space-y-1.5 text-sm text-fg">
                             {capabilities.map(({ action }) => (
                                 <li key={action} className="flex items-start gap-2">
                                     <span
@@ -143,8 +143,8 @@ function CapabilityList({
                                         className={cn(
                                             'mt-px flex size-5 shrink-0 items-center justify-center rounded-full',
                                             allowed
-                                                ? 'bg-emerald-100 text-ink'
-                                                : 'bg-line text-ink-soft',
+                                                ? 'bg-success/10 text-fg'
+                                                : 'bg-line text-fg-soft',
                                         )}
                                     >
                                         <Icon className="size-3.5" strokeWidth={2.5} />
@@ -171,7 +171,7 @@ function RoleAccessCard({ user }: { user: AdminSession }) {
                 description={`Tu rol es ${roleLabel}. Solo un administrador puede cambiarlo.`}
             />
             {user.role === 'ADMIN' ? (
-                <p className="flex items-center gap-3 rounded-2xl bg-emerald-100/50 px-4 py-3 text-sm text-ink">
+                <p className="flex items-center gap-3 rounded-2xl bg-success/10 px-4 py-3 text-sm text-fg">
                     <ShieldCheck aria-hidden="true" className="size-5 shrink-0" />
                     Tienes acceso a todo el panel.
                 </p>

@@ -33,10 +33,10 @@ export function ToneField({ value, onChange, sample }: ToneFieldProps) {
                     <label
                         key={tone}
                         className={cn(
-                            'flex cursor-pointer flex-col items-center gap-1 rounded-2xl border p-2 transition has-focus-visible:ring-2 has-focus-visible:ring-gold-500',
+                            'flex cursor-pointer flex-col items-center gap-1 rounded-2xl border p-2 transition has-focus-visible:ring-2 has-focus-visible:ring-cherry-500',
                             tone === value
-                                ? 'border-rose-400 bg-rose-50'
-                                : 'border-line hover:border-rose-200',
+                                ? 'border-accent/60 bg-elevated'
+                                : 'border-line hover:border-cherry-500/30',
                         )}
                     >
                         <input
@@ -50,7 +50,7 @@ export function ToneField({ value, onChange, sample }: ToneFieldProps) {
                         <Badge tone={tone} size="sm" className="max-w-40 truncate">
                             {sample || TONE_LABELS[tone]}
                         </Badge>
-                        <span className="text-xs text-ink-soft">{TONE_LABELS[tone]}</span>
+                        <span className="text-xs text-fg-soft">{TONE_LABELS[tone]}</span>
                     </label>
                 ))}
             </div>

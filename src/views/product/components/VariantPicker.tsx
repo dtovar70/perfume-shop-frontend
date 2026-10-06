@@ -7,15 +7,15 @@ import { isVariantSoldOut } from '@/utils/productStock'
 import { variantDisplayLabel } from '@/utils/variantLabel'
 
 const optionVariants = cva(
-    'relative flex min-h-14 min-w-24 cursor-pointer flex-col items-center justify-center rounded-xl border px-4 py-2 text-center transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-gold-600',
+    'relative flex min-h-14 min-w-24 cursor-pointer flex-col items-center justify-center rounded-xl border px-4 py-2 text-center transition duration-200 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-cherry-500',
     {
         variants: {
             isSelected: {
-                true: 'border-rose-700 bg-rose-50 text-rose-800 ring-1 ring-rose-700',
-                false: 'border-line bg-white text-ink hover:border-gold-400',
+                true: 'border-cherry-500 bg-elevated text-accent-strong ring-1 ring-cherry-500',
+                false: 'border-line bg-surface text-fg hover:border-cherry-500/50',
             },
             isSoldOut: {
-                true: 'cursor-not-allowed border-dashed border-line bg-ivory text-ink-soft/70 hover:border-line',
+                true: 'cursor-not-allowed border-dashed border-line bg-canvas text-fg-muted hover:border-line',
                 false: '',
             },
         },
@@ -46,7 +46,7 @@ export function VariantPicker({
 
     return (
         <fieldset className="space-y-3">
-            <legend className="text-[11px] font-bold tracking-[0.22em] text-gold-700 uppercase">
+            <legend className="text-[11px] font-bold tracking-[0.22em] text-accent uppercase">
                 {bySize ? 'Tamaño' : 'Presentación'}
             </legend>
 
@@ -73,11 +73,11 @@ export function VariantPicker({
                                 {variantDisplayLabel(variant)}
                             </span>
                             {isSoldOut ? (
-                                <span className="text-[11px] font-semibold text-rose-700">
+                                <span className="text-[11px] font-semibold text-accent">
                                     Agotado
                                 </span>
                             ) : showPrices ? (
-                                <span className="text-xs text-ink-soft tabular-nums">
+                                <span className="text-xs text-fg-soft tabular-nums">
                                     {formatCurrency(basePrice + variant.priceDelta)}
                                 </span>
                             ) : null}

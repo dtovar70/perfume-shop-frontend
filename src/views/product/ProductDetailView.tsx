@@ -9,7 +9,7 @@ import { PriceTag } from '@/components/shared/PriceTag'
 import { SocialIcon } from '@/components/shared/SocialIcon'
 import { Button, QuantityStepper } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
-import { CONCENTRATION_LABELS, GENDER_LABELS } from '@/constants/product.constant'
+import { formatPerfumeSpec, GENDER_LABELS } from '@/constants/product.constant'
 import { brandCatalogPath, categoryPath, ROUTES } from '@/constants/route.constant'
 import { NotFoundError } from '@/services/ProductService'
 import { MAX_LINE_QUANTITY, useCartItems } from '@/store/cartStore'
@@ -34,7 +34,7 @@ import { useProduct } from '@/views/product/hooks/useProduct'
 
 const pageClass = 'space-y-16 py-6 sm:py-10 lg:space-y-24 lg:py-12'
 const breadcrumbLinkClass =
-    'inline-flex min-h-8 items-center text-ink-soft transition hover:text-rose-700'
+    'inline-flex min-h-8 items-center text-fg-soft transition hover:text-accent'
 
 export function ProductDetailView() {
     const { slug = '' } = useParams()
@@ -84,180 +84,211 @@ export function ProductDetailView() {
     const unitPrice = variantPrice(product, selectedVariant)
     const isVariablePrice = hasVariablePrice(product)
     const stockLeft = stockOf(product, selectedVariant)
-    const inCart = selectedVariant ? cartUnitsOf(cartItems, product.id, selectedVariant.id) : 0
+    const variantId = selectedVariant?.id ?? ''
+    const inCart = cartUnitsOf(cartItems, product.id, variantId)
     const addable = Math.max(0, stockLeft - inCart)
     const maxQuantity = Math.max(1, Math.min(addable, MAX_LINE_QUANTITY))
     const safeQuantity = Math.min(quantity, maxQuantity)
     const volumeMl = selectedVariant?.volumeMl ?? product.volumeMl
     const specParts = [
-        product.concentration ? CONCENTRATION_LABELS[product.concentration].long : null,
-        volumeMl ? `${volumeMl} ml` : null,
-        GENDER_LABELS[product.gender] ? `Para ${GENDER_LABELS[product.gender].toLowerCase()}` : null,
+        formatPerfumeSpec(product.concentration, volumeMl ?? null, true) || null,
+        GENDER_LABELS[product.gender] ? GENDER_LABELS[product.gender] : null,
     ].filter(Boolean)
     const whatsappMessage = `Hola, tengo una duda sobre ${product.name}${
         product.brand ? ` de ${product.brand.name}` : ''
     }${selectedVariant ? ` (${variantDisplayLabel(selectedVariant)})` : ''}.`
 
     return (
-        <div className={cn(CONTAINER, pageClass)}>
-            <div className="space-y-5 sm:space-y-6">
-                <nav aria-label="Ruta de navegación" className="text-sm">
-                    <ol className="flex flex-wrap items-center gap-x-1.5">
-                        <li>
-                            <Link to={ROUTES.home} className={breadcrumbLinkClass}>
-                                Inicio
-                            </Link>
-                        </li>
-                        <li aria-hidden="true">
-                            <ChevronRight className="size-3.5 text-ink-soft/60" />
-                        </li>
-                        <li>
-                            <Link to={ROUTES.catalog} className={breadcrumbLinkClass}>
-                                Perfumes
-                            </Link>
-                        </li>
-                        {category ? (
-                            <>
-                                <li aria-hidden="true">
-                                    <ChevronRight className="size-3.5 text-ink-soft/60" />
-                                </li>
-                                <li>
-                                    <Link
-                                        to={categoryPath(category.slug)}
-                                        className={breadcrumbLinkClass}
-                                    >
-                                        {category.name}
-                                    </Link>
-                                </li>
-                            </>
-                        ) : null}
-                        <li aria-hidden="true" className="max-sm:hidden">
-                            <ChevronRight className="size-3.5 text-ink-soft/60" />
-                        </li>
-                        <li aria-current="page" className="truncate font-semibold text-ink max-sm:hidden">
-                            {product.name}
-                        </li>
-                    </ol>
-                </nav>
-
-                <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14 xl:gap-20">
-                    <div className="lg:sticky lg:top-28 lg:self-start">
-                        <ProductGallery product={product} />
-                    </div>
-
-                    <div className="space-y-7">
-                        <div className="space-y-3">
-                            {product.brand ? (
-                                <Link
-                                    to={brandCatalogPath(product.brand.slug)}
-                                    className="inline-flex min-h-8 items-center text-xs font-bold tracking-[0.24em] text-gold-700 uppercase transition hover:text-rose-700"
-                                >
-                                    {product.brand.name}
+        <>
+            <div className={cn(CONTAINER, pageClass)}>
+                <div className="space-y-5 sm:space-y-6">
+                    <nav aria-label="Ruta de navegación" className="text-sm">
+                        <ol className="flex flex-wrap items-center gap-x-1.5">
+                            <li>
+                                <Link to={ROUTES.home} className={breadcrumbLinkClass}>
+                                    Inicio
                                 </Link>
+                            </li>
+                            <li aria-hidden="true">
+                                <ChevronRight className="size-3.5 text-fg-muted" />
+                            </li>
+                            <li>
+                                <Link to={ROUTES.catalog} className={breadcrumbLinkClass}>
+                                    Perfumes
+                                </Link>
+                            </li>
+                            {category ? (
+                                <>
+                                    <li aria-hidden="true">
+                                        <ChevronRight className="size-3.5 text-fg-muted" />
+                                    </li>
+                                    <li>
+                                        <Link
+                                            to={categoryPath(category.slug)}
+                                            className={breadcrumbLinkClass}
+                                        >
+                                            {category.name}
+                                        </Link>
+                                    </li>
+                                </>
                             ) : null}
-
-                            <h1 className="font-display text-[2.5rem] leading-[1.02] font-semibold text-balance text-ink sm:text-5xl">
+                            <li aria-hidden="true" className="max-sm:hidden">
+                                <ChevronRight className="size-3.5 text-fg-muted" />
+                            </li>
+                            <li
+                                aria-current="page"
+                                className="truncate font-semibold text-fg max-sm:hidden"
+                            >
                                 {product.name}
-                            </h1>
+                            </li>
+                        </ol>
+                    </nav>
 
-                            {specParts.length > 0 ? (
-                                <p className="text-[15px] text-ink-soft">{specParts.join(' · ')}</p>
-                            ) : null}
+                    <div className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] lg:gap-12 xl:gap-16">
+                        <div className="lg:sticky lg:top-28 lg:self-start">
+                            <ProductGallery product={product} />
                         </div>
 
-                        <div className="space-y-3 border-y border-line py-5">
-                            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-                                <PriceTag
-                                    price={unitPrice}
-                                    compareAtPrice={product.compareAtPrice}
-                                    size="lg"
-                                />
-                                <BsApproximation usd={unitPrice} className="text-left sm:text-right" />
+                        <div className="space-y-7 lg:space-y-6">
+                            <div className="space-y-3">
+                                {product.brand ? (
+                                    <Link
+                                        to={brandCatalogPath(product.brand.slug)}
+                                        className="inline-flex min-h-8 items-center text-xs font-bold tracking-[0.24em] text-accent uppercase transition hover:text-accent"
+                                    >
+                                        {product.brand.name}
+                                    </Link>
+                                ) : null}
+
+                                <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(2rem,2.4vw,2.75rem)]">
+                                    {product.name}
+                                </h1>
+
+                                {specParts.length > 0 ? (
+                                    <p className="text-[15px] text-fg-soft">
+                                        {specParts.join(' · ')}
+                                    </p>
+                                ) : null}
                             </div>
-                            {isVariablePrice && selectedVariant ? (
-                                <p className="text-xs text-ink-soft">
-                                    Precio para {variantDisplayLabel(selectedVariant)}. Varía según
-                                    el tamaño que elijas.
-                                </p>
-                            ) : null}
-                            <StockState stock={stockLeft} />
-                        </div>
 
-                        <VariantPicker
-                            variants={product.variants}
-                            basePrice={product.price}
-                            selectedVariantId={selectedVariant?.id}
-                            onSelect={setChosenVariantId}
-                        />
+                            <div className="space-y-3 border-y border-line py-5">
+                                <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+                                    <PriceTag
+                                        price={unitPrice}
+                                        compareAtPrice={product.compareAtPrice}
+                                        size="lg"
+                                    />
+                                    <BsApproximation
+                                        usd={unitPrice}
+                                        className="text-left sm:text-right"
+                                    />
+                                </div>
+                                {isVariablePrice && selectedVariant ? (
+                                    <p className="text-xs text-fg-soft">
+                                        Precio para {variantDisplayLabel(selectedVariant)}. Varía
+                                        según el tamaño que elijas.
+                                    </p>
+                                ) : null}
+                                <StockState stock={stockLeft} />
+                            </div>
 
-                        <div className="space-y-3">
-                            <div ref={addRowRef} className="flex flex-wrap items-center gap-3">
-                                <QuantityStepper
-                                    value={safeQuantity}
-                                    max={maxQuantity}
-                                    disabled={addable === 0}
-                                    onChange={setQuantity}
-                                    className="h-13"
-                                />
+                            <VariantPicker
+                                variants={product.variants}
+                                basePrice={product.price}
+                                selectedVariantId={selectedVariant?.id}
+                                onSelect={setChosenVariantId}
+                            />
 
-                                {selectedVariant ? (
+                            <div className="space-y-3">
+                                <div ref={addRowRef} className="flex flex-wrap items-center gap-3">
+                                    {stockLeft > 0 ? (
+                                        <QuantityStepper
+                                            value={safeQuantity}
+                                            max={maxQuantity}
+                                            disabled={addable === 0}
+                                            onChange={setQuantity}
+                                            className="h-13"
+                                        />
+                                    ) : null}
+
                                     <AddToCartButton
                                         product={product}
-                                        variantId={selectedVariant.id}
+                                        variantId={variantId}
                                         quantity={safeQuantity}
                                         size="lg"
                                         // Phones: the button takes the rest of the row.
                                         className="flex-1 basis-48 px-5"
                                     />
+                                </div>
+
+                                {inCart > 0 && stockLeft > 0 ? (
+                                    <p role="status" className="text-sm text-fg-soft">
+                                        Ya tienes {inCart} en el carrito
+                                        {addable === 0
+                                            ? ': no quedan más unidades de este tamaño.'
+                                            : ` · puedes agregar ${Math.min(addable, MAX_LINE_QUANTITY)} más.`}
+                                    </p>
                                 ) : null}
                             </div>
 
-                            {inCart > 0 && stockLeft > 0 ? (
-                                <p role="status" className="text-sm text-ink-soft">
-                                    Ya tienes {inCart} en el carrito
-                                    {addable === 0
-                                        ? ': no quedan más unidades de este tamaño.'
-                                        : ` · puedes agregar ${Math.min(addable, MAX_LINE_QUANTITY)} más.`}
-                                </p>
-                            ) : null}
-                        </div>
-
-                        <ul className="space-y-2.5 rounded-card border border-line bg-white p-4 text-sm text-ink-soft sm:p-5">
-                            <li className="flex items-start gap-3">
-                                <Truck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-gold-700" />
-                                <span>
-                                    {shipping.freeShippingText} · {shipping.productionCopy}
-                                </span>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-gold-700" />
-                                Fragancia 100% original y sellada
-                            </li>
-                            {contact.whatsapp ? (
+                            <ul className="space-y-2.5 rounded-card border border-line bg-surface p-4 text-sm text-fg-soft sm:p-5">
                                 <li className="flex items-start gap-3">
-                                    <SocialIcon
-                                        network="WhatsApp"
-                                        className="mt-0.5 size-4 shrink-0 text-[#128c7e]"
+                                    <Truck
+                                        aria-hidden="true"
+                                        className="mt-0.5 size-4 shrink-0 text-accent"
                                     />
                                     <span>
-                                        ¿Dudas?{' '}
-                                        <a
-                                            href={whatsappUrl(contact.whatsapp, whatsappMessage)}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="font-bold text-rose-700 underline decoration-rose-300 underline-offset-4 transition hover:decoration-rose-700"
-                                        >
-                                            Escríbenos por WhatsApp
-                                        </a>
+                                        {shipping.freeShippingText} · {shipping.productionCopy}
                                     </span>
                                 </li>
-                            ) : null}
-                        </ul>
+                                <li className="flex items-start gap-3">
+                                    <ShieldCheck
+                                        aria-hidden="true"
+                                        className="mt-0.5 size-4 shrink-0 text-accent"
+                                    />
+                                    Fragancia 100% original y sellada
+                                </li>
+                                {contact.whatsapp ? (
+                                    <li className="flex items-start gap-3">
+                                        <SocialIcon
+                                            network="WhatsApp"
+                                            className="mt-0.5 size-4 shrink-0 text-whatsapp"
+                                        />
+                                        <span>
+                                            ¿Dudas?{' '}
+                                            <a
+                                                href={whatsappUrl(
+                                                    contact.whatsapp,
+                                                    whatsappMessage,
+                                                )}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="font-bold text-accent underline decoration-accent underline-offset-4 transition hover:decoration-accent"
+                                            >
+                                                Escríbenos por WhatsApp
+                                            </a>
+                                        </span>
+                                    </li>
+                                ) : null}
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
+                <div className="grid gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20">
+                    <OlfactoryPyramid
+                        notes={product.notes}
+                        family={product.olfactoryFamily}
+                        className="lg:self-start"
+                    />
+                    <ProductMeta product={product} />
+                </div>
+
+                <RelatedProducts slug={product.slug} />
             </div>
 
-            {selectedVariant ? (
+            {/* Outside the spaced container: `space-y` margins would lift the fixed bar. */}
+            {stockLeft > 0 ? (
                 <StickyAddToCartBar
                     anchorRef={addRowRef}
                     price={unitPrice}
@@ -266,24 +297,13 @@ export function ProductDetailView() {
                 >
                     <AddToCartButton
                         product={product}
-                        variantId={selectedVariant.id}
+                        variantId={variantId}
                         quantity={safeQuantity}
                         label="Agregar"
                         className="px-4"
                     />
                 </StickyAddToCartBar>
             ) : null}
-
-            <div className="grid gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20">
-                <OlfactoryPyramid
-                    notes={product.notes}
-                    family={product.olfactoryFamily}
-                    className="lg:self-start"
-                />
-                <ProductMeta product={product} />
-            </div>
-
-            <RelatedProducts slug={product.slug} />
-        </div>
+        </>
     )
 }

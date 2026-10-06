@@ -77,7 +77,7 @@ export function ResetPasswordDialog({ user, onClose, onDone }: ResetPasswordDial
             description={
                 user ? (
                     <>
-                        Nueva contraseña para <strong className="text-ink">{user.name}</strong> (
+                        Nueva contraseña para <strong className="text-fg">{user.name}</strong> (
                         {user.email}).
                     </>
                 ) : undefined

@@ -15,10 +15,10 @@ export interface CheckboxFieldProps {
 export function CheckboxField({ checked, onChange, children, hint, disabled }: CheckboxFieldProps) {
     const id = useId()
     return (
-        <div className="flex items-start gap-3 rounded-2xl border-2 border-line bg-white px-4 py-3">
+        <div className="flex items-start gap-3 rounded-2xl border-2 border-line bg-surface px-4 py-3">
             {/*
               Drawn by hand instead of `accent-color`: browsers pick the tick color themselves
-              (black on our pink), so the box is styled here and the tick is always white.
+              (black on our pink), so the box is styled here and the tick is always dark.
             */}
             <span className="relative mt-0.5 flex size-5 shrink-0">
                 <input
@@ -28,16 +28,16 @@ export function CheckboxField({ checked, onChange, children, hint, disabled }: C
                     disabled={disabled}
                     onChange={(event) => onChange(event.target.checked)}
                     aria-describedby={hint ? `${id}-hint` : undefined}
-                    className="peer size-5 cursor-pointer appearance-none rounded-md border-2 border-ink/25 bg-white transition-colors checked:border-rose-700 checked:bg-rose-700 hover:border-rose-400 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="peer size-5 cursor-pointer appearance-none rounded-md border-2 border-line-strong bg-surface transition-colors checked:border-cherry-500 checked:bg-cherry-500 hover:border-accent/60 focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 <Check
                     aria-hidden="true"
                     strokeWidth={3.5}
-                    className="pointer-events-none absolute inset-0 m-auto size-3.5 text-white opacity-0 transition-opacity peer-checked:opacity-100"
+                    className="pointer-events-none absolute inset-0 m-auto size-3.5 text-on-cherry opacity-0 transition-opacity peer-checked:opacity-100"
                 />
             </span>
             <div className="min-w-0 space-y-1">
-                <label htmlFor={id} className="text-sm font-semibold text-ink">
+                <label htmlFor={id} className="text-sm font-semibold text-fg">
                     {children}
                 </label>
                 {hint ? (

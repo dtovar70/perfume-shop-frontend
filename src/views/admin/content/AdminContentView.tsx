@@ -31,7 +31,7 @@ const SECTION_OPTIONS: SelectOption[] = CONTENT_SECTIONS.map((section) => ({
 }))
 
 const tabClass =
-    'relative inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap transition duration-200 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2'
+    'relative inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap transition duration-200 focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2'
 
 type DirtyChange = (section: ContentSection, isDirty: boolean) => void
 
@@ -185,7 +185,7 @@ export function AdminContentView() {
                     <div
                         role="tablist"
                         aria-label="Secciones del contenido"
-                        className="hidden flex-wrap gap-1 rounded-card border border-line bg-white p-2 shadow-soft md:flex"
+                        className="hidden flex-wrap gap-1 rounded-card border border-line bg-surface p-2 shadow-soft md:flex"
                     >
                         {CONTENT_SECTIONS.map((section, index) => {
                             const isActive = section === active
@@ -207,8 +207,8 @@ export function AdminContentView() {
                                     className={cn(
                                         tabClass,
                                         isActive
-                                            ? 'bg-rose-100 text-rose-700'
-                                            : 'text-ink-soft hover:bg-rose-50 hover:text-ink',
+                                            ? 'bg-cherry-tint text-accent'
+                                            : 'text-fg-soft hover:bg-elevated hover:text-fg',
                                     )}
                                 >
                                     {SECTION_META[section].label}
@@ -216,7 +216,7 @@ export function AdminContentView() {
                                         <>
                                             <span
                                                 aria-hidden="true"
-                                                className="size-2 rounded-full bg-gold-400"
+                                                className="size-2 rounded-full bg-cherry-500"
                                             />
                                             <span className="sr-only">(cambios sin guardar)</span>
                                         </>

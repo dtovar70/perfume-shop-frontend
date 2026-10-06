@@ -40,7 +40,7 @@ export function CartDrawer() {
                     <div className="space-y-3">
                         <FreeShippingProgress subtotal={subtotal} />
                         {availability.hasIssues ? (
-                            <p role="status" className="text-xs font-semibold text-rose-700">
+                            <p role="status" className="text-xs font-semibold text-accent">
                                 {CART_STOCK_BLOCKED_MESSAGE}
                             </p>
                         ) : null}
@@ -55,7 +55,7 @@ export function CartDrawer() {
                         <Link
                             to={ROUTES.cart}
                             onClick={close}
-                            className="flex min-h-11 items-center justify-center text-sm font-semibold text-ink-soft underline-offset-4 transition hover:text-rose-700 hover:underline"
+                            className="flex min-h-11 items-center justify-center text-sm font-semibold text-fg-soft underline-offset-4 transition hover:text-accent hover:underline"
                         >
                             Ver el carrito completo
                         </Link>
@@ -67,12 +67,12 @@ export function CartDrawer() {
                 <div className="flex min-h-full flex-col items-center justify-center gap-4 py-10 text-center">
                     <span
                         aria-hidden="true"
-                        className="gradient-blush flex size-20 items-center justify-center rounded-full text-rose-700 ring-1 ring-gold-200"
+                        className="flex size-20 items-center justify-center rounded-full bg-elevated text-accent ring-1 ring-cherry-500/30"
                     >
                         <ShoppingBag className="size-8" strokeWidth={1.4} />
                     </span>
                     <p className="font-display text-2xl font-semibold">Tu carrito está vacío</p>
-                    <p className="max-w-xs text-sm text-ink-soft">
+                    <p className="max-w-xs text-sm text-fg-soft">
                         Agrega algunos perfumes para comenzar.
                     </p>
                     <ButtonLink to={ROUTES.catalog} onClick={close}>
@@ -82,7 +82,7 @@ export function CartDrawer() {
             ) : (
                 <>
                     <div className="-mt-2 flex items-center justify-between gap-3">
-                        <span className="text-sm text-ink-soft">
+                        <span className="text-sm text-fg-soft">
                             {count} {count === 1 ? 'artículo' : 'artículos'}
                         </span>
                         <ClearCartButton itemCount={items.length} className="-mr-2" />
@@ -98,18 +98,18 @@ export function CartDrawer() {
 
                                     <div className="flex min-w-0 flex-1 flex-col gap-1">
                                         {item.brandName ? (
-                                            <p className="truncate text-[10px] font-bold tracking-[0.2em] text-gold-700 uppercase">
+                                            <p className="truncate text-[10px] font-bold tracking-[0.2em] text-accent uppercase">
                                                 {item.brandName}
                                             </p>
                                         ) : null}
                                         <Link
                                             to={productPath(item.slug)}
                                             onClick={close}
-                                            className="font-display text-lg leading-tight font-semibold text-ink transition hover:text-rose-700"
+                                            className="font-display text-lg leading-tight font-semibold text-fg transition hover:text-accent"
                                         >
                                             {item.name}
                                         </Link>
-                                        <p className="text-xs text-ink-soft">{item.variantLabel}</p>
+                                        <p className="text-xs text-fg-soft">{item.variantLabel}</p>
 
                                         <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
                                             <QuantityStepper
@@ -120,7 +120,7 @@ export function CartDrawer() {
                                                     updateQuantity(item.lineId, quantity, max)
                                                 }
                                             />
-                                            <span className="text-sm font-bold text-ink tabular-nums">
+                                            <span className="text-sm font-bold text-fg tabular-nums">
                                                 {formatCurrency(item.unitPrice * item.quantity)}
                                             </span>
                                         </div>
@@ -138,7 +138,7 @@ export function CartDrawer() {
                                         type="button"
                                         aria-label={`Quitar ${item.name} del carrito`}
                                         onClick={() => removeItem(item.lineId)}
-                                        className="-mt-2 -mr-2 flex size-11 shrink-0 items-center justify-center self-start rounded-full text-ink-soft transition hover:bg-rose-50 hover:text-rose-700"
+                                        className="-mt-2 -mr-2 flex size-11 shrink-0 items-center justify-center self-start rounded-full text-fg-soft transition hover:bg-elevated hover:text-accent"
                                     >
                                         <Trash2 aria-hidden="true" className="size-4" />
                                     </button>

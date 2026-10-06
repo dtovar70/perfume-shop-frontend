@@ -80,7 +80,7 @@ export function TagInput({
             <div
                 className={cn(
                     FIELD_BASE_CLASS,
-                    'flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl px-2 py-1.5 focus-within:border-gold-500 focus-within:ring-4 focus-within:ring-gold-200/60',
+                    'flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl px-2 py-1.5 focus-within:border-cherry-500/50 focus-within:ring-4 focus-within:ring-cherry-500/30',
                     error && FIELD_ERROR_CLASS,
                     disabled && 'opacity-60',
                 )}
@@ -88,7 +88,7 @@ export function TagInput({
                 {value.map((tag) => (
                     <span
                         key={tag}
-                        className="inline-flex items-center gap-1 rounded-full bg-gold-50 py-1 pr-1 pl-3 text-sm font-semibold text-ink ring-1 ring-gold-200"
+                        className="inline-flex items-center gap-1 rounded-full bg-elevated py-1 pr-1 pl-3 text-sm font-semibold text-fg ring-1 ring-cherry-500/30"
                     >
                         {tag}
                         <button
@@ -96,7 +96,7 @@ export function TagInput({
                             disabled={disabled}
                             onClick={() => onChange(value.filter((item) => item !== tag))}
                             aria-label={`Quitar ${tag}`}
-                            className="relative flex size-6 items-center justify-center rounded-full text-ink-soft transition after:absolute after:-inset-2.5 after:content-[''] hover:bg-rose-100 hover:text-rose-700"
+                            className="relative flex size-6 items-center justify-center rounded-full text-fg-soft transition after:absolute after:-inset-2.5 after:content-[''] hover:bg-cherry-tint hover:text-accent"
                         >
                             <X aria-hidden="true" className="size-3.5" />
                         </button>
@@ -117,7 +117,7 @@ export function TagInput({
                     onBlur={() => commit(draft)}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : hint ? hintId : undefined}
-                    className="min-w-32 flex-1 bg-transparent px-2 py-1 text-base outline-none placeholder:text-ink-soft/70 focus-visible:outline-none"
+                    className="min-w-32 flex-1 bg-transparent px-2 py-1 text-base outline-none placeholder:text-fg-muted focus-visible:outline-none"
                 />
             </div>
             {error ? (

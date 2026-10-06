@@ -84,7 +84,7 @@ export const DEV_ROUTES = {
     loaderPreview: '/dev/loader',
 } as const
 
-/** The customer's private order page: `/pedido/MR-000123?t=<token>`. */
+/** The customer's private order page: `/pedido/KZ-000123?t=<token>`. */
 export function orderPath(code: string, token: string): string {
     return `/pedido/${encodeURIComponent(code)}?t=${encodeURIComponent(token)}`
 }

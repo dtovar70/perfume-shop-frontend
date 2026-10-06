@@ -12,7 +12,7 @@ import { formatDateTime } from '@/utils/formatDate'
 import { forgetOrder, readRecentOrders, type RecentOrder } from '@/utils/recentOrders'
 
 const LOOKUP_LINK_CLASS =
-    'font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-rose-400'
+    'font-semibold text-accent underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-accent'
 
 /** Orders placed from this browser (their private links are kept in local storage). */
 export function MyOrdersView() {
@@ -26,14 +26,14 @@ export function MyOrdersView() {
     return (
         <div className={cn(CONTAINER, 'space-y-8 py-12 lg:py-16')}>
             <div className="space-y-2">
-                <h1 className="font-display text-4xl tracking-tight text-ink uppercase sm:text-5xl">
-                    Mis <span className="text-rose-500">pedidos</span>
+                <h1 className="font-display text-[2.4rem] leading-none font-semibold text-fg sm:text-5xl">
+                    Mis <span className="text-accent">pedidos</span>
                 </h1>
-                <p className="max-w-2xl text-ink-soft">
+                <p className="max-w-2xl text-fg-soft">
                     Los pedidos que hiciste desde este dispositivo. Si cambias de navegador o de
                     teléfono, usa el enlace de tu pedido para volver a verlo.
                 </p>
-                <p className="max-w-2xl text-ink-soft">
+                <p className="max-w-2xl text-fg-soft">
                     ¿No ves tu pedido?{' '}
                     <Link to={ROUTES.orderLookup} className={LOOKUP_LINK_CLASS}>
                         Consúltalo con tu código y correo
@@ -67,10 +67,10 @@ export function MyOrdersView() {
                             <Card padding="sm" className="flex items-center gap-3">
                                 <Link
                                     to={orderPath(order.code, order.token)}
-                                    className="min-w-0 flex-1 rounded-2xl px-2 py-1 transition hover:bg-rose-50"
+                                    className="min-w-0 flex-1 rounded-2xl px-2 py-1 transition hover:bg-elevated"
                                 >
-                                    <p className="font-display text-lg text-ink">{order.code}</p>
-                                    <p className="text-sm text-ink-soft">
+                                    <p className="font-display text-lg text-fg">{order.code}</p>
+                                    <p className="text-sm text-fg-soft">
                                         {formatDateTime(order.createdAt)} ·{' '}
                                         {formatCurrency(order.totalUsd)}
                                     </p>
@@ -80,7 +80,7 @@ export function MyOrdersView() {
                                         type="button"
                                         onClick={() => remove(order.code)}
                                         aria-label={`Quitar ${order.code} de la lista`}
-                                        className="flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700"
+                                        className="flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent"
                                     >
                                         <Trash2 aria-hidden="true" className="size-4" />
                                     </button>

@@ -58,8 +58,8 @@ export function AboutSection(props: SectionFormProps<'about'>) {
                     registration={register('title')}
                 />
                 <div className="space-y-2">
-                    <p className="text-sm font-semibold text-ink">Párrafos</p>
-                    <p className="text-xs text-ink-soft">
+                    <p className="text-sm font-semibold text-fg">Párrafos</p>
+                    <p className="text-xs text-fg-soft">
                         El primero se muestra más grande.{' '}
                         {placeholderHint(ABOUT_PLACEHOLDERS, placeholders)}
                     </p>

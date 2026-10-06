@@ -9,7 +9,7 @@ import { useSetMobilePrefixActive } from '@/views/admin/hooks/useAdminCatalogs'
 
 /** `aria-disabled` instead of `disabled` keeps keyboard focus on the button while saving. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 const CONTENT_FIELD_LABELS: Record<ContentPhoneField, string> = {
     'payment.phone': 'Pago Móvil de la tienda',
@@ -59,13 +59,13 @@ export function MobilePrefixRow({
         <li
             data-prefix-code={prefix.code}
             className={cn(
-                'rounded-3xl border border-line bg-white shadow-soft',
-                !prefix.isActive && 'bg-ivory/60',
+                'rounded-3xl border border-line bg-surface shadow-soft',
+                !prefix.isActive && 'bg-canvas/60',
             )}
         >
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:p-4">
                 <div className="flex min-w-0 flex-1 basis-48 items-center gap-3">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-bold text-ink">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-canvas text-sm font-bold text-fg">
                         <span className="sr-only">Posición </span>
                         {index + 1}
                     </span>
@@ -74,7 +74,7 @@ export function MobilePrefixRow({
                             <h3
                                 className={cn(
                                     'font-display text-lg tabular-nums',
-                                    prefix.isActive ? 'text-ink' : 'text-ink-soft',
+                                    prefix.isActive ? 'text-fg' : 'text-fg-soft',
                                 )}
                             >
                                 {prefix.code}
@@ -85,7 +85,7 @@ export function MobilePrefixRow({
                                 </Badge>
                             )}
                         </div>
-                        <p className="text-xs text-ink-soft">
+                        <p className="text-xs text-fg-soft">
                             {usage ?? 'Ningún pedido en curso ni dato de la tienda lo usa'}
                         </p>
                     </div>

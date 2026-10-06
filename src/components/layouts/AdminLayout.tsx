@@ -21,9 +21,11 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router'
 import type { AuthUser, UserRole } from '@/@types/admin'
 import { RailTooltip } from '@/components/layouts/AdminRailTooltip'
 import { Monogram, Wordmark } from '@/components/layouts/BrandLogo'
+import { ThemeToggle } from '@/components/layouts/ThemeToggle'
 import { ScrollToTop } from '@/components/route/ScrollToTop'
 import { Drawer, Spinner } from '@/components/ui'
 import { ADMIN_ROUTES, ROUTES } from '@/constants/route.constant'
+import { themeToggleLabel, useTheme } from '@/store/themeStore'
 import { cn } from '@/utils/cn'
 import { useSiteContent } from '@/utils/hooks/useSiteContent'
 import { useAdminOrdersSummary } from '@/views/admin/hooks/useAdminOrders'
@@ -56,7 +58,7 @@ const NAV_LINKS: readonly {
 const SIDEBAR_ID = 'admin-sidebar'
 /** Rail tooltips start past the sidebar's edge, so a card never covers the other column. */
 const RAIL_EDGE = `#${SIDEBAR_ID}`
-const SIDEBAR_STORAGE_KEY = 'mr-admin-sidebar-collapsed'
+const SIDEBAR_STORAGE_KEY = 'kaizen-admin-sidebar-collapsed'
 /** Tailwind's `lg`: the sidebar (and so the collapse) only exists from here up. */
 const DESKTOP_QUERY = '(min-width: 64rem)'
 
@@ -65,10 +67,10 @@ const RAIL_SQUARE_CLASS =
     'flex size-11 shrink-0 items-center justify-center rounded-2xl transition duration-200'
 
 const navLinkVariants = cva(
-    'flex items-center rounded-2xl font-display text-base whitespace-nowrap transition duration-200',
+    'flex items-center rounded-2xl text-sm font-semibold whitespace-nowrap transition duration-200',
     {
         variants: {
-            isActive: { true: '', false: 'text-ink' },
+            isActive: { true: '', false: 'text-fg' },
             isCollapsed: {
                 true: RAIL_SQUARE_CLASS,
                 // 44px rows on short windows, so the ten admin links never need a scrollbar.
@@ -76,10 +78,10 @@ const navLinkVariants = cva(
             },
         },
         compoundVariants: [
-            { isCollapsed: false, isActive: true, class: 'bg-rose-100 text-rose-700' },
-            { isCollapsed: false, isActive: false, class: 'hover:bg-rose-50' },
-            { isCollapsed: true, isActive: true, class: 'bg-rose-200 text-rose-800' },
-            { isCollapsed: true, isActive: false, class: 'hover:bg-rose-100/80' },
+            { isCollapsed: false, isActive: true, class: 'bg-cherry-tint text-accent' },
+            { isCollapsed: false, isActive: false, class: 'hover:bg-elevated' },
+            { isCollapsed: true, isActive: true, class: 'bg-cherry-500/20 text-accent-strong' },
+            { isCollapsed: true, isActive: false, class: 'hover:bg-cherry-tint' },
         ],
         defaultVariants: { isActive: false, isCollapsed: false },
     },
@@ -89,16 +91,16 @@ const navLinkVariants = cva(
  * Hover and keyboard focus of the controls in the tinted top and bottom zones: a deeper pink
  * of the zone itself, never a white tile.
  */
-const ZONE_HOVER_CLASS = 'hover:bg-rose-200/60 focus-visible:bg-rose-200/60'
+const ZONE_HOVER_CLASS = 'hover:bg-cherry-500/20 focus-visible:bg-cherry-500/20'
 
 /** Icon-only buttons in the rail's tinted top and bottom zones. */
-const RAIL_BUTTON_CLASS = cn(RAIL_SQUARE_CLASS, 'text-ink', ZONE_HOVER_CLASS)
+const RAIL_BUTTON_CLASS = cn(RAIL_SQUARE_CLASS, 'text-fg', ZONE_HOVER_CLASS)
 
 /**
  * The sidebar's header and user zones: a touch pinker than the menu between them, so the
  * brand and the session never read as menu items.
  */
-const SIDEBAR_ZONE_CLASS = 'shrink-0 border-line bg-rose-100/70'
+const SIDEBAR_ZONE_CLASS = 'shrink-0 border-line bg-surface'
 
 /** The account link is a `group` for its avatar, and hands its focus ring to the circle. */
 const ACCOUNT_LINK_CLASS = 'group outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
@@ -162,16 +164,16 @@ function RailTip({ title, accent, shortcut, detail }: RailTipProps) {
             <span className="flex items-center gap-1.5">
                 <span className="font-display font-semibold">{title}</span>
                 {accent ? (
-                    <span className="font-display font-semibold text-rose-700">· {accent}</span>
+                    <span className="font-display font-semibold text-accent">· {accent}</span>
                 ) : null}
                 {shortcut ? (
-                    <kbd className="rounded-md border border-line bg-ivory px-1.5 py-0.5 font-sans text-[11px] font-semibold text-ink-soft">
+                    <kbd className="rounded-md border border-line bg-canvas px-1.5 py-0.5 font-sans text-[11px] font-semibold text-fg-soft">
                         {shortcut}
                     </kbd>
                 ) : null}
             </span>
             {detail ? (
-                <span className="flex flex-col gap-0.5 text-xs text-ink-soft">{detail}</span>
+                <span className="flex flex-col gap-0.5 text-xs text-fg-soft">{detail}</span>
             ) : null}
         </span>
     )
@@ -194,7 +196,7 @@ function AdminBrand({ compact = false }: { compact?: boolean }) {
             {compact ? null : (
                 <span className="flex flex-col leading-none whitespace-nowrap">
                     <Wordmark className="text-xl" />
-                    <span className="mt-0.5 text-[0.6rem] font-bold tracking-[0.3em] text-gold-700 uppercase">
+                    <span className="mt-0.5 text-[0.6rem] font-bold tracking-[0.3em] text-accent uppercase">
                         Panel
                     </span>
                 </span>
@@ -230,13 +232,28 @@ function SidebarToggle({ isCollapsed, onToggle }: SidebarToggleProps) {
                     isCollapsed
                         ? RAIL_BUTTON_CLASS
                         : cn(
-                              'flex size-10 shrink-0 items-center justify-center rounded-xl text-ink-soft transition duration-200 hover:text-ink',
+                              'flex size-10 shrink-0 items-center justify-center rounded-xl text-fg-soft transition duration-200 hover:text-fg',
                               ZONE_HOVER_CLASS,
                           )
                 }
             >
                 <Icon aria-hidden="true" className="size-5" />
             </button>
+        </RailTooltip>
+    )
+}
+
+/** The theme switch in the rail header; its tooltip names the theme it switches to. */
+function AdminThemeToggle() {
+    const { isDark } = useTheme()
+
+    return (
+        <RailTooltip
+            enabled
+            sideEdge={RAIL_EDGE}
+            content={<RailTip title={themeToggleLabel(isDark)} />}
+        >
+            <ThemeToggle />
         </RailTooltip>
     )
 }
@@ -300,7 +317,7 @@ function AdminNav({ user, onNavigate, isCollapsed = false }: AdminNavProps) {
                                         {isCollapsed && count > 0 ? (
                                             <span
                                                 aria-hidden="true"
-                                                className="absolute -top-2 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-700 px-1 text-[10px] leading-none font-bold text-white tabular-nums ring-2 ring-ivory"
+                                                className="absolute -top-2 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-cherry-500 px-1 text-[10px] leading-none font-bold text-on-cherry tabular-nums ring-2 ring-canvas"
                                             >
                                                 {count > 99 ? '99+' : count}
                                             </span>
@@ -313,7 +330,7 @@ function AdminNav({ user, onNavigate, isCollapsed = false }: AdminNavProps) {
                                                 <>
                                                     <span
                                                         aria-hidden="true"
-                                                        className="flex min-w-6 items-center justify-center rounded-full bg-rose-700 px-1.5 text-xs font-bold text-white tabular-nums"
+                                                        className="flex min-w-6 items-center justify-center rounded-full bg-cherry-500 px-1.5 text-xs font-bold text-on-cherry tabular-nums"
                                                     >
                                                         {count}
                                                     </span>
@@ -386,11 +403,11 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
             title={user.name}
             detail={
                 <>
-                    <span className="text-[0.65rem] font-bold tracking-[0.18em] text-rose-700 uppercase">
+                    <span className="text-[0.65rem] font-bold tracking-[0.18em] text-accent uppercase">
                         {roleLabel}
                     </span>
                     <span>{user.email}</span>
-                    <span className="font-semibold text-rose-700">
+                    <span className="font-semibold text-accent">
                         Mi cuenta: datos, contraseña y permisos
                     </span>
                 </>
@@ -408,10 +425,10 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
         <span
             aria-hidden="true"
             className={cn(
-                'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-semibold ring-1 transition duration-200 group-hover:scale-105 group-hover:ring-2 group-hover:ring-rose-300 group-focus-visible:ring-2 group-focus-visible:ring-gold-500 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-rose-50 motion-reduce:transform-none',
+                'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-semibold ring-1 transition duration-200 group-hover:scale-105 group-hover:ring-2 group-hover:ring-cherry-500/40 group-focus-visible:ring-2 group-focus-visible:ring-cherry-500 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-cherry-500 motion-reduce:transform-none',
                 isActive
-                    ? 'bg-rose-200 text-rose-800 ring-rose-300'
-                    : 'bg-rose-100 text-rose-700 ring-rose-200',
+                    ? 'bg-cherry-500/20 text-accent-strong ring-cherry-500/40'
+                    : 'bg-cherry-tint text-accent ring-cherry-500/30',
             )}
         >
             {initialOf(user.name)}
@@ -432,7 +449,7 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
                 aria-busy={logout.isPending || undefined}
                 aria-label="Cerrar sesión"
                 className={cn(
-                    'text-ink-soft hover:text-rose-700 disabled:pointer-events-none disabled:opacity-60',
+                    'text-fg-soft hover:text-accent disabled:pointer-events-none disabled:opacity-60',
                     className,
                 )}
             >
@@ -466,7 +483,7 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
 
     // Same pink family as its zone (no white card), a shade deeper so the row still reads as one block.
     return (
-        <div className="flex items-center gap-1 rounded-2xl border border-rose-200/80 bg-rose-200/30 p-1.5 pl-2">
+        <div className="flex items-center gap-1 rounded-2xl border border-cherry-500/30 bg-cherry-500/20 p-1.5 pl-2">
             {/* The row is narrow: the role, and the email when it truncates, live in a tooltip. */}
             <RailTooltip enabled placement="top" content={userTip} className="flex min-w-0 flex-1">
                 {/* The name/avatar area opens "Mi cuenta"; logout stays a separate button. Like
@@ -479,7 +496,7 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
                         cn(
                             ACCOUNT_LINK_CLASS,
                             'flex min-w-0 flex-1 items-center gap-2.5 rounded-xl py-0.5 pr-1.5 transition duration-200',
-                            isActive && 'bg-rose-200/40',
+                            isActive && 'bg-cherry-500/20',
                         )
                     }
                 >
@@ -487,10 +504,10 @@ function AdminUserBlock({ user, onNavigate, isCollapsed = false }: AdminUserBloc
                         <>
                             {avatar(isActive)}
                             <span className="flex min-w-0 flex-col">
-                                <span className="truncate font-display text-sm leading-5 font-semibold text-ink transition-colors duration-200 group-hover:text-rose-700">
+                                <span className="truncate font-display text-sm leading-5 font-semibold text-fg transition-colors duration-200 group-hover:text-accent">
                                     {user.name}
                                 </span>
-                                <span className="truncate text-xs leading-4 text-ink-soft">
+                                <span className="truncate text-xs leading-4 text-fg-soft">
                                     {user.email}
                                 </span>
                             </span>
@@ -525,13 +542,13 @@ export function AdminLayout() {
     const closeMenu = () => setIsMenuOpen(false)
 
     return (
-        <div className="min-h-screen overflow-x-clip bg-ivory">
+        <div className="min-h-screen overflow-x-clip bg-canvas">
             <ScrollToTop />
 
             <aside
                 id={SIDEBAR_ID}
                 className={cn(
-                    'fixed inset-y-0 left-0 hidden flex-col overflow-hidden border-r border-line bg-rose-50/60 transition-[width] duration-300 ease-out motion-reduce:transition-none lg:flex',
+                    'fixed inset-y-0 left-0 hidden flex-col overflow-hidden border-r border-line bg-surface transition-[width] duration-300 ease-out motion-reduce:transition-none lg:flex',
                     // Collapsed, the rail holds two 44px columns of icons.
                     isCollapsed ? 'w-32' : 'w-72',
                 )}
@@ -546,10 +563,18 @@ export function AdminLayout() {
                     )}
                 >
                     <AdminBrand compact={isCollapsed} />
-                    <SidebarToggle
-                        isCollapsed={isCollapsed}
-                        onToggle={() => setIsCollapsed((value) => !value)}
-                    />
+                    <div
+                        className={cn(
+                            'flex items-center',
+                            isCollapsed ? 'flex-col gap-2' : 'gap-1',
+                        )}
+                    >
+                        <AdminThemeToggle />
+                        <SidebarToggle
+                            isCollapsed={isCollapsed}
+                            onToggle={() => setIsCollapsed((value) => !value)}
+                        />
+                    </div>
                 </div>
                 {/* Scrolls only as a last resort, on very short windows. The padding keeps
                     focus outlines clear of the scroll box's clipping edge. */}
@@ -573,29 +598,32 @@ export function AdminLayout() {
                 </div>
             </aside>
 
-            <header className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-line bg-ivory/90 px-4 py-3 backdrop-blur lg:hidden">
+            <header className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur lg:hidden">
                 <AdminBrand />
-                <button
-                    type="button"
-                    onClick={() => setIsMenuOpen(true)}
-                    aria-label={
-                        pending > 0
-                            ? `Abrir menú de administración (${pending} pedidos por verificar)`
-                            : 'Abrir menú de administración'
-                    }
-                    aria-expanded={isMenuOpen}
-                    className="relative flex size-11 items-center justify-center rounded-full text-ink transition hover:bg-rose-100 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
-                >
-                    <Menu aria-hidden="true" className="size-6" />
-                    {pending > 0 ? (
-                        <span
-                            aria-hidden="true"
-                            className="absolute top-0.5 right-0.5 flex min-w-5 items-center justify-center rounded-full bg-rose-700 px-1 text-[11px] font-bold text-white tabular-nums"
-                        >
-                            {pending}
-                        </span>
-                    ) : null}
-                </button>
+                <div className="flex items-center gap-1">
+                    <ThemeToggle />
+                    <button
+                        type="button"
+                        onClick={() => setIsMenuOpen(true)}
+                        aria-label={
+                            pending > 0
+                                ? `Abrir menú de administración (${pending} pedidos por verificar)`
+                                : 'Abrir menú de administración'
+                        }
+                        aria-expanded={isMenuOpen}
+                        className="relative flex size-11 items-center justify-center rounded-full text-fg transition hover:bg-cherry-tint focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2"
+                    >
+                        <Menu aria-hidden="true" className="size-6" />
+                        {pending > 0 ? (
+                            <span
+                                aria-hidden="true"
+                                className="absolute top-0.5 right-0.5 flex min-w-5 items-center justify-center rounded-full bg-cherry-500 px-1 text-[11px] font-bold text-on-cherry tabular-nums"
+                            >
+                                {pending}
+                            </span>
+                        ) : null}
+                    </button>
+                </div>
             </header>
 
             <Drawer isOpen={isMenuOpen} onClose={closeMenu} title="Administración" side="left">

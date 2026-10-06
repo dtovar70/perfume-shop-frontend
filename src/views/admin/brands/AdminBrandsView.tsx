@@ -18,7 +18,7 @@ import {
 import { useSession } from '@/views/admin/hooks/useSession'
 
 const iconButtonClass =
-    'flex size-11 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-50 hover:text-rose-700 disabled:pointer-events-none disabled:opacity-40'
+    'flex size-11 items-center justify-center rounded-full text-fg-soft transition hover:bg-elevated hover:text-accent disabled:pointer-events-none disabled:opacity-40'
 
 /** `/admin/marcas`: the perfume houses, with logo, order and visibility. */
 export function AdminBrandsView() {
@@ -99,7 +99,7 @@ export function AdminBrandsView() {
                         {brands.data.map((brand) => (
                             <li key={brand.slug}>
                                 <Card padding="sm" className="flex h-full items-center gap-4">
-                                    <div className="flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-white p-2">
+                                    <div className="flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-surface p-2">
                                         {brand.logoUrl ? (
                                             <img
                                                 src={brand.logoUrl}
@@ -108,16 +108,16 @@ export function AdminBrandsView() {
                                                 className="max-h-full max-w-full object-contain"
                                             />
                                         ) : (
-                                            <span className="font-display text-2xl font-semibold text-rose-700">
+                                            <span className="font-display text-2xl font-semibold text-accent">
                                                 {brand.name.charAt(0)}
                                             </span>
                                         )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate font-display text-xl font-semibold text-ink">
+                                        <p className="truncate font-display text-xl font-semibold text-fg">
                                             {brand.name}
                                         </p>
-                                        <p className="truncate text-xs text-ink-soft">
+                                        <p className="truncate text-xs text-fg-soft">
                                             /{brand.slug} · {brand.totalProductCount}{' '}
                                             {brand.totalProductCount === 1
                                                 ? 'producto'
@@ -181,7 +181,7 @@ export function AdminBrandsView() {
                 description={
                     pendingDelete ? (
                         <>
-                            <strong className="font-semibold text-ink">{pendingDelete.name}</strong>{' '}
+                            <strong className="font-semibold text-fg">{pendingDelete.name}</strong>{' '}
                             dejará de aparecer en la tienda. Solo se puede eliminar si no tiene
                             productos. No se puede deshacer.
                         </>

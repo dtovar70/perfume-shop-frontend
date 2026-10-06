@@ -9,7 +9,7 @@ import { CategoryForm } from '@/views/admin/categories/components/CategoryForm'
 
 /** `aria-disabled` instead of `disabled` keeps keyboard focus on the button while saving. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 function plural(count: number, singular: string, pluralForm: string): string {
     return `${count} ${count === 1 ? singular : pluralForm}`
@@ -109,8 +109,8 @@ export function CategoryRow({
                 onDropOnRow(category.slug)
             }}
             className={cn(
-                'rounded-card border bg-white shadow-soft transition',
-                isDropTarget ? 'border-rose-400 bg-rose-50' : 'border-line',
+                'rounded-card border bg-surface shadow-soft transition',
+                isDropTarget ? 'border-accent/60 bg-elevated' : 'border-line',
                 isDragged && 'opacity-50',
             )}
         >
@@ -123,26 +123,26 @@ export function CategoryRow({
                         title="Arrastra para cambiar el orden"
                         aria-hidden="true"
                         className={cn(
-                            'flex h-10 w-6 shrink-0 items-center justify-center rounded-full text-ink-soft',
+                            'flex h-10 w-6 shrink-0 items-center justify-center rounded-full text-fg-soft',
                             isBusy
                                 ? 'opacity-40'
-                                : 'cursor-grab hover:text-ink active:cursor-grabbing',
+                                : 'cursor-grab hover:text-fg active:cursor-grabbing',
                         )}
                     >
                         <GripVertical className="size-5" />
                     </span>
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-bold text-ink">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-canvas text-sm font-bold text-fg">
                         <span className="sr-only">Posición </span>
                         {position}
                     </span>
                     <span
                         aria-hidden="true"
-                        className="size-4 shrink-0 rounded-full border border-ink/10"
+                        className="size-4 shrink-0 rounded-full border border-line"
                         style={{ backgroundColor: toColorInputValue(category.colorHex) }}
                     />
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                            <h2 className="min-w-0 font-display text-lg break-words text-ink">
+                            <h2 className="min-w-0 font-display text-lg break-words text-fg">
                                 {category.name}
                             </h2>
                             {isInMenu ? (
@@ -151,7 +151,7 @@ export function CategoryRow({
                                 </Badge>
                             ) : null}
                         </div>
-                        <p className="text-xs break-words text-ink-soft">
+                        <p className="text-xs break-words text-fg-soft">
                             /{category.slug} · {plural(productTotal, 'producto', 'productos')},{' '}
                             {plural(category.productCount, 'visible', 'visibles')}
                         </p>
@@ -196,7 +196,7 @@ export function CategoryRow({
                             aria-expanded={isExpanded}
                             aria-controls={panelId}
                             aria-label={`Editar ${category.name}`}
-                            className={cn(actionClass, isExpanded && 'bg-rose-100 text-rose-700')}
+                            className={cn(actionClass, isExpanded && 'bg-cherry-tint text-accent')}
                         >
                             <Pencil aria-hidden="true" className="size-4" />
                         </button>
@@ -233,7 +233,7 @@ export function CategoryRow({
                     className="space-y-4 border-t border-line p-4 sm:p-6"
                 >
                     {onDelete && !canDelete ? (
-                        <p className="text-xs text-ink-soft">
+                        <p className="text-xs text-fg-soft">
                             Tiene {plural(productTotal, 'producto', 'productos')}, contando los
                             ocultos. Muévelos a otra categoría o elimínalos para poder borrarla.
                         </p>

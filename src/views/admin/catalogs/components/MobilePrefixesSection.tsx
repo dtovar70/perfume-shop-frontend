@@ -61,8 +61,8 @@ function NewMobilePrefixForm({
         <Card>
             <form onSubmit={submit} noValidate className="space-y-5">
                 <div>
-                    <h3 className="font-display text-xl text-ink">Nuevo código</h3>
-                    <p className="text-xs text-ink-soft">
+                    <h3 className="font-display text-xl text-fg">Nuevo código</h3>
+                    <p className="text-xs text-fg-soft">
                         Se añade al final de la lista, activo. El código no se puede cambiar
                         después.
                     </p>
@@ -140,7 +140,7 @@ export function MobilePrefixesSection() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <p className="text-sm text-ink-soft">
+                <p className="text-sm text-fg-soft">
                     Los códigos activos aparecen, en este orden, al escribir un celular: WhatsApp y
                     Pago Móvil de la tienda, el teléfono del cliente y el del pagador. Desactiva un
                     código para dejar de aceptarlo; los números ya guardados se siguen mostrando.
@@ -236,7 +236,7 @@ export function MobilePrefixesSection() {
                 description={
                     pendingDelete ? (
                         <>
-                            <strong className="font-semibold text-ink">{pendingDelete.code}</strong>{' '}
+                            <strong className="font-semibold text-fg">{pendingDelete.code}</strong>{' '}
                             dejará de aparecer en los campos de celular. Los números ya guardados no
                             cambian. No se puede deshacer; si solo quieres ocultarlo, desactívalo.
                         </>

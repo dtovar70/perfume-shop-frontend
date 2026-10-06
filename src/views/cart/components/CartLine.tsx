@@ -27,16 +27,16 @@ export function CartLine({ item, stock }: CartLineProps) {
             <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="min-w-0 flex-1 space-y-0.5">
                     {item.brandName ? (
-                        <p className="truncate text-[10px] font-bold tracking-[0.2em] text-gold-700 uppercase">
+                        <p className="truncate text-[10px] font-bold tracking-[0.2em] text-accent uppercase">
                             {item.brandName}
                         </p>
                     ) : null}
-                    <h2 className="font-display text-xl leading-tight font-semibold text-ink">
-                        <Link to={productPath(item.slug)} className="rounded-sm hover:text-rose-700">
+                    <h2 className="font-display text-xl leading-tight font-semibold text-fg">
+                        <Link to={productPath(item.slug)} className="rounded-sm hover:text-accent">
                             {item.name}
                         </Link>
                     </h2>
-                    <p className="text-sm text-ink-soft">
+                    <p className="text-sm text-fg-soft">
                         {item.variantLabel} · {formatCurrency(item.unitPrice)} c/u
                     </p>
                     {stock?.issue ? (
@@ -56,7 +56,7 @@ export function CartLine({ item, stock }: CartLineProps) {
                         onChange={(quantity) => updateQuantity(item.lineId, quantity, max)}
                     />
 
-                    <p className="text-right font-bold text-ink tabular-nums sm:w-24">
+                    <p className="text-right font-bold text-fg tabular-nums sm:w-24">
                         {formatCurrency(item.unitPrice * item.quantity)}
                     </p>
 
@@ -64,7 +64,7 @@ export function CartLine({ item, stock }: CartLineProps) {
                         type="button"
                         aria-label={`Quitar ${item.name} del carrito`}
                         onClick={() => removeItem(item.lineId)}
-                        className="-mr-2 flex size-11 shrink-0 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-50 hover:text-rose-700"
+                        className="-mr-2 flex size-11 shrink-0 items-center justify-center rounded-full text-fg-soft transition hover:bg-elevated hover:text-accent"
                     >
                         <Trash2 aria-hidden="true" className="size-4" />
                     </button>

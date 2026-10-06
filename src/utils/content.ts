@@ -1,8 +1,10 @@
 import {
     CONTENT_SECTIONS,
+    HERO_MEDIA_TYPES,
     type ContactContent,
     type ContentPlaceholder,
     type ContentSection,
+    type HeroMedia,
     type SiteContent,
 } from '@/@types/content'
 import { DEFAULT_SITE_CONTENT } from '@/configs/content.defaults'
@@ -15,6 +17,20 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 function sameKind(value: unknown, fallback: unknown): boolean {
     if (Array.isArray(fallback)) return Array.isArray(value)
     return typeof value === typeof fallback && value !== null
+}
+
+/** A hero media with the expected shape, or null (same rule as the API's `sanitizeHeroMedia`). */
+export function sanitizeHeroMedia(value: unknown): HeroMedia | null {
+    if (!isPlainObject(value)) return null
+    const { type, url, posterUrl, alt } = value
+    if (!(HERO_MEDIA_TYPES as readonly unknown[]).includes(type)) return null
+    if (typeof url !== 'string' || url === '') return null
+    return {
+        type: type as HeroMedia['type'],
+        url,
+        posterUrl: typeof posterUrl === 'string' && posterUrl !== '' ? posterUrl : null,
+        alt: typeof alt === 'string' ? alt : '',
+    }
 }
 
 /** One section over its defaults, field by field (same rule as the API's `mergeSection`). */
@@ -30,6 +46,7 @@ export function resolveSection<K extends ContentSection>(
         const value = stored[field]
         if (value !== undefined && sameKind(value, fallback)) merged[field] = value
     }
+    if (section === 'home') merged.heroMedia = sanitizeHeroMedia(stored.heroMedia)
     return merged as unknown as SiteContent[K]
 }
 

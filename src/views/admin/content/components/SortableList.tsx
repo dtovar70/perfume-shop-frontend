@@ -7,7 +7,7 @@ import { cn } from '@/utils/cn'
 
 /** Same look as the category rows' actions. */
 const actionClass =
-    'flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-rose-100 hover:text-rose-700 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink-soft'
+    'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 export interface SortableListProps {
     /** Accessible name of the list: "Mensajes de la cinta". */
@@ -86,7 +86,7 @@ export function SortableList({
                 {announcement}
             </p>
 
-            {total === 0 && emptyText ? <p className="text-sm text-ink-soft">{emptyText}</p> : null}
+            {total === 0 && emptyText ? <p className="text-sm text-fg-soft">{emptyText}</p> : null}
 
             <ol className="space-y-3" aria-label={label}>
                 {itemIds.map((id, index) => {
@@ -115,11 +115,11 @@ export function SortableList({
                                 move(from, index)
                             }}
                             className={cn(
-                                'rounded-card border bg-white p-3 transition sm:p-4',
+                                'rounded-card border bg-surface p-3 transition sm:p-4',
                                 draggedIndex !== null &&
                                     overIndex === index &&
                                     draggedIndex !== index
-                                    ? 'border-rose-400 bg-rose-50'
+                                    ? 'border-accent/60 bg-elevated'
                                     : 'border-line',
                                 draggedIndex === index && 'opacity-50',
                             )}
@@ -131,11 +131,11 @@ export function SortableList({
                                     onDragEnd={endDrag}
                                     title="Arrastra para cambiar el orden"
                                     aria-hidden="true"
-                                    className="flex h-9 w-6 shrink-0 cursor-grab items-center justify-center rounded-full text-ink-soft hover:text-ink active:cursor-grabbing"
+                                    className="flex h-9 w-6 shrink-0 cursor-grab items-center justify-center rounded-full text-fg-soft hover:text-fg active:cursor-grabbing"
                                 >
                                     <GripVertical className="size-5" />
                                 </span>
-                                <span className="min-w-0 flex-1 truncate font-display text-sm text-ink">
+                                <span className="min-w-0 flex-1 truncate font-display text-sm text-fg">
                                     {name}
                                 </span>
                                 <div className="flex shrink-0 items-center gap-1">
@@ -206,7 +206,7 @@ export function SortableList({
                 >
                     {addLabel}
                 </Button>
-                <span className="text-xs text-ink-soft">
+                <span className="text-xs text-fg-soft">
                     {total} de {maxItems} como máximo
                 </span>
             </div>

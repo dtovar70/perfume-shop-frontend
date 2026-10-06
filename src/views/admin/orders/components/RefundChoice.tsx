@@ -35,10 +35,10 @@ export function RefundChoice({ value, onChange, reference, onReferenceChange }: 
                 <label
                     key={option.value}
                     className={cn(
-                        'flex cursor-pointer items-start gap-3 rounded-2xl border bg-white px-4 py-3 transition',
+                        'flex cursor-pointer items-start gap-3 rounded-2xl border bg-surface px-4 py-3 transition',
                         value === option.value
-                            ? 'border-rose-400'
-                            : 'border-line hover:border-rose-200',
+                            ? 'border-accent/60'
+                            : 'border-line hover:border-cherry-500/30',
                     )}
                 >
                     <input
@@ -47,11 +47,11 @@ export function RefundChoice({ value, onChange, reference, onReferenceChange }: 
                         value={option.value}
                         checked={value === option.value}
                         onChange={() => onChange(option.value)}
-                        className="mt-0.5 size-4 shrink-0 accent-rose-500"
+                        className="mt-0.5 size-4 shrink-0 accent-cherry-500"
                     />
                     <span className="min-w-0">
-                        <span className="block text-sm font-semibold text-ink">{option.label}</span>
-                        <span className="block text-xs text-ink-soft">{option.hint}</span>
+                        <span className="block text-sm font-semibold text-fg">{option.label}</span>
+                        <span className="block text-xs text-fg-soft">{option.hint}</span>
                     </span>
                 </label>
             ))}
