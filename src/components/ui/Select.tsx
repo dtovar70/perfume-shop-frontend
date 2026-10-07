@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/field.styles'
 import { OptionalMark } from '@/components/ui/OptionalMark'
 import { cn } from '@/utils/cn'
+import { SelectSheet } from '@/components/ui/SelectSheet'
 import { useMediaQuery } from '@/utils/hooks/useMediaQuery'
 
 /**
@@ -93,9 +94,9 @@ export interface SelectProps extends Omit<ComponentPropsWithRef<'select'>, 'id'>
  * `register()` and `event.target.value` keep working untouched at every call site — the
  * custom UI only drives that element and never becomes the source of truth.
  *
- * On touch screens (`pointer: coarse`) that real <select> is laid invisibly over the trigger
- * and takes the taps itself: the phone's own picker is bigger, scrolls better and never ends
- * up under the on-screen keyboard. The trigger then only paints the chosen value.
+ * On phones and touch screens the list opens as a bottom sheet (`SelectSheet`) with big rows,
+ * instead of the operating system's picker, which ignores the store's design (and on desktop
+ * browsers emulating a phone shows a bare white list).
  */
 export function Select({
     label,
@@ -131,7 +132,8 @@ export function Select({
     })
 
     const isDisabled = rest.disabled === true
-    const isTouch = useMediaQuery('(pointer: coarse)')
+    // Phones and touch screens get the bottom sheet; desktop keeps the anchored dropdown.
+    const isSheet = useMediaQuery('(max-width: 767px), (pointer: coarse)')
     const describedBy = error ? errorId : hint ? hintId : undefined
     const selectedOption = options.find((option) => option.value === selectedValue)
 
@@ -245,14 +247,15 @@ export function Select({
     useEffect(() => () => window.clearTimeout(typeahead.current.timer), [])
 
     /* Pointer down rather than click: the list should be gone before the next widget reacts. */
+    // The sheet is portaled outside this root and handles its own dismissal.
     useEffect(() => {
-        if (!isOpen) return
+        if (!isOpen || isSheet) return
         const onPointerDown = (event: PointerEvent) => {
             if (!rootRef.current?.contains(event.target as Node)) closeList()
         }
         document.addEventListener('pointerdown', onPointerDown)
         return () => document.removeEventListener('pointerdown', onPointerDown)
-    }, [closeList, isOpen])
+    }, [closeList, isOpen, isSheet])
 
     /*
      * Measured rather than stretched: callers size the control through `className`, so the
@@ -352,21 +355,9 @@ export function Select({
                         setSelectedValue(event.target.value)
                         rest.onChange?.(event)
                     }}
-                    {...(isTouch
-                        ? {
-                              'aria-labelledby': labelId,
-                              'aria-describedby': describedBy,
-                              'aria-invalid': error ? true : undefined,
-                              // 16px text: iOS zooms into smaller focused fields.
-                              className:
-                                  'peer absolute inset-0 z-10 size-full cursor-pointer appearance-none rounded-xl text-base opacity-0 disabled:cursor-not-allowed',
-                          }
-                        : {
-                              tabIndex: -1,
-                              'aria-hidden': true,
-                              className:
-                                  'pointer-events-none absolute bottom-0 left-4 size-0 opacity-0',
-                          })}
+                    tabIndex={-1}
+                    aria-hidden
+                    className="pointer-events-none absolute bottom-0 left-4 size-0 opacity-0"
                 >
                     {placeholder ? (
                         <option value="" hidden>
@@ -383,19 +374,18 @@ export function Select({
                 <button
                     ref={triggerRef}
                     type="button"
-                    // On touch screens the native <select> above takes focus and taps.
-                    tabIndex={isTouch ? -1 : undefined}
-                    aria-hidden={isTouch || undefined}
                     role="combobox"
                     disabled={rest.disabled}
                     aria-labelledby={labelId}
                     aria-controls={listboxId}
                     aria-expanded={isOpen}
-                    aria-haspopup="listbox"
+                    aria-haspopup={isSheet ? 'dialog' : 'listbox'}
                     aria-required={rest.required}
                     aria-invalid={error ? true : undefined}
                     aria-activedescendant={
-                        isOpen && activeIndex >= 0 ? `${fieldId}-option-${activeIndex}` : undefined
+                        isOpen && !isSheet && activeIndex >= 0
+                            ? `${fieldId}-option-${activeIndex}`
+                            : undefined
                     }
                     aria-describedby={describedBy}
                     onClick={() => (isOpen ? closeList() : openList())}
@@ -405,8 +395,6 @@ export function Select({
                         'flex h-11 items-center justify-between gap-3 rounded-xl px-4 text-left outline-none',
                         'enabled:hover:border-cherry-500/30',
                         isOpen && 'border-cherry-500/50 ring-4 ring-cherry-500/30',
-                        isTouch &&
-                            'pointer-events-none peer-focus-visible:border-cherry-500/50 peer-focus-visible:ring-4 peer-focus-visible:ring-cherry-500/30',
                         error && FIELD_ERROR_CLASS,
                         className,
                     )}
@@ -423,7 +411,17 @@ export function Select({
                     />
                 </button>
 
-                {isOpen ? (
+                {isOpen && isSheet ? (
+                    <SelectSheet
+                        title={label}
+                        options={options}
+                        selectedValue={selectedValue}
+                        onSelect={commit}
+                        onClose={closeList}
+                    />
+                ) : null}
+
+                {isOpen && !isSheet ? (
                     <ul
                         ref={listRef}
                         id={listboxId}
