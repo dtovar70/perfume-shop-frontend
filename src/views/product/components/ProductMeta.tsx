@@ -30,17 +30,23 @@ export interface ProductMetaProps {
     product: Product
 }
 
-/** Description, highlights and the FAQ under the product summary. */
-export function ProductMeta({ product }: ProductMetaProps) {
-    const faqItems = useProductFaq()
+export interface ProductSectionProps {
+    product: Product
+    /** Inside a tab the tab already names the section: the heading is kept for screen readers. */
+    hideHeading?: boolean
+}
 
+/** The description and the "Por qué te va a encantar" highlights. */
+export function ProductDescription({ product, hideHeading = false }: ProductSectionProps) {
     return (
         <div className="space-y-10">
             {product.description ? (
                 <section aria-labelledby="description-heading" className="space-y-3">
                     <h2
                         id="description-heading"
-                        className="font-display text-3xl font-semibold text-fg"
+                        className={
+                            hideHeading ? 'sr-only' : 'font-display text-3xl font-semibold text-fg'
+                        }
                     >
                         Descripción
                     </h2>
@@ -73,13 +79,33 @@ export function ProductMeta({ product }: ProductMetaProps) {
                     </ul>
                 </section>
             ) : null}
+        </div>
+    )
+}
 
-            <section aria-labelledby="faq-heading" className="space-y-3">
-                <h2 id="faq-heading" className="font-display text-2xl font-semibold text-fg">
-                    Preguntas frecuentes
-                </h2>
-                <Accordion items={faqItems} />
-            </section>
+/** Shipping, payment and authenticity questions. */
+export function ProductFaq({ hideHeading = false }: { hideHeading?: boolean }) {
+    const faqItems = useProductFaq()
+
+    return (
+        <section aria-labelledby="faq-heading" className="space-y-3">
+            <h2
+                id="faq-heading"
+                className={hideHeading ? 'sr-only' : 'font-display text-2xl font-semibold text-fg'}
+            >
+                Preguntas frecuentes
+            </h2>
+            <Accordion items={faqItems} />
+        </section>
+    )
+}
+
+/** Description, highlights and the FAQ under the product summary (stacked, phones). */
+export function ProductMeta({ product }: ProductMetaProps) {
+    return (
+        <div className="space-y-10">
+            <ProductDescription product={product} />
+            <ProductFaq />
         </div>
     )
 }

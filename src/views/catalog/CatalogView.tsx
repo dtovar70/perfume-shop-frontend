@@ -6,8 +6,9 @@ import { ProductGrid } from '@/components/shared/ProductGrid'
 import { Button, ButtonLink, Drawer } from '@/components/ui'
 import { GENDER_LABELS } from '@/constants/product.constant'
 import { CONTAINER } from '@/constants/layout.constant'
-import { ROUTES } from '@/constants/route.constant'
+import { brandCatalogPath, categoryPath, ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
+import { useSeo } from '@/utils/hooks/useSeo'
 import { useMediaQuery } from '@/utils/hooks/useMediaQuery'
 import { CatalogFilters } from '@/views/catalog/components/CatalogFilters'
 import { CatalogPagination } from '@/views/catalog/components/CatalogPagination'
@@ -15,6 +16,7 @@ import { CatalogSearch } from '@/views/catalog/components/CatalogSearch'
 import { CatalogToolbar } from '@/views/catalog/components/CatalogToolbar'
 import { CategoryChips } from '@/views/catalog/components/CategoryChips'
 import { CATALOG_PAGE_SIZE, useCatalogFilters } from '@/views/catalog/hooks/useCatalogFilters'
+import { useCatalogView } from '@/views/catalog/hooks/useCatalogView'
 import { useCategories } from '@/views/catalog/hooks/useCategories'
 import { useFacets } from '@/views/catalog/hooks/useFacets'
 import { useProducts } from '@/views/catalog/hooks/useProducts'
@@ -30,6 +32,7 @@ export function CatalogView() {
     // Phones and tablets get the filters in a drawer; the sidebar only fits from `lg`.
     const isDesktop = useMediaQuery('(min-width: 64rem)')
     const [filtersOpen, setFiltersOpen] = useState(false)
+    const [view, setView] = useCatalogView()
 
     const activeCategory = (categories ?? []).find((category) => category.slug === filters.category)
     /** A deleted category, or a mistyped link: known only once the categories have loaded. */
@@ -47,6 +50,34 @@ export function CatalogView() {
             ? facets?.brands.find((brand) => brand.slug === filters.brands[0])?.name
             : undefined
 
+    const title =
+        activeCategory?.name ??
+        brandName ??
+        (filters.gender
+            ? `Perfumes para ${GENDER_LABELS[filters.gender].toLowerCase()}`
+            : 'Perfumes')
+    const brandOnly =
+        filters.brands.length === 1 && !filters.category ? filters.brands[0] : undefined
+    useSeo(
+        isUnknownCategory
+            ? { title: 'Colección no encontrada', noIndex: true }
+            : {
+                  title: brandName ? `Perfumes ${brandName}` : title,
+                  description:
+                      activeCategory?.description ||
+                      (brandName
+                          ? `Perfumes originales de ${brandName}: precios en dólares con referencia BCV y envíos a toda Venezuela.`
+                          : 'Catálogo de perfumes originales para mujer y hombre: filtra por marca, familia olfativa o concentración.'),
+                  // Filtered and sorted variants point at the listing they refine.
+                  canonical: activeCategory
+                      ? categoryPath(activeCategory.slug)
+                      : brandOnly
+                        ? brandCatalogPath(brandOnly)
+                        : ROUTES.catalog,
+                  noIndex: filters.search !== '',
+              },
+    )
+
     const filterPanel = (
         <CatalogFilters
             filters={filters}
@@ -56,7 +87,7 @@ export function CatalogView() {
             onGenderChange={catalog.setGender}
             onConcentrationChange={catalog.setConcentration}
             onFamilyChange={catalog.setFamily}
-            onPriceBracketChange={catalog.setPriceBracket}
+            onPriceChange={catalog.setPriceRange}
             onTagToggle={catalog.toggleTag}
             onClear={catalog.clearFilters}
         />
@@ -78,13 +109,6 @@ export function CatalogView() {
             </div>
         )
     }
-
-    const title =
-        activeCategory?.name ??
-        brandName ??
-        (filters.gender
-            ? `Perfumes para ${GENDER_LABELS[filters.gender].toLowerCase()}`
-            : 'Perfumes')
 
     return (
         <div className="pb-12 lg:pb-16">
@@ -123,6 +147,8 @@ export function CatalogView() {
                         onSortChange={catalog.setSort}
                         onOpenFilters={isDesktop ? undefined : () => setFiltersOpen(true)}
                         activeFilterCount={catalog.activeFilterCount}
+                        view={view}
+                        onViewChange={setView}
                     />
                 </div>
             </div>
@@ -221,6 +247,7 @@ export function CatalogView() {
                                 isPending={isPending}
                                 skeletonCount={CATALOG_PAGE_SIZE}
                                 priorityCount={4}
+                                view={view}
                                 className="lg:grid-cols-3"
                             />
                         )}

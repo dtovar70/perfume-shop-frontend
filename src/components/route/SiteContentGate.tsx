@@ -7,20 +7,23 @@ import {
     useSiteContent,
     useSiteContentQuery,
 } from '@/utils/hooks/useSiteContent'
+import { setSeoDefaults } from '@/utils/hooks/useSeo'
 
-/** Keeps `document.title` and the meta description in line with the editable content. */
+/**
+ * Keeps the site-wide title and meta description in line with the editable content. They are
+ * the SEO defaults: a page that sets its own (`useSeo`) wins while it is on screen.
+ */
 function useDocumentMeta() {
     const content = useSiteContent()
     const { brandName, titleSuffix, metaDescription } = content.general
 
     useEffect(() => {
-        document.title = titleSuffix ? `${brandName} | ${titleSuffix}` : brandName
-    }, [brandName, titleSuffix])
-
-    useEffect(() => {
-        const description = fillPlaceholders(metaDescription, placeholderValues(content))
-        document.querySelector('meta[name="description"]')?.setAttribute('content', description)
-    }, [content, metaDescription])
+        setSeoDefaults({
+            title: titleSuffix ? `${brandName} | ${titleSuffix}` : brandName,
+            siteName: `${brandName} Perfumería`,
+            description: fillPlaceholders(metaDescription, placeholderValues(content)),
+        })
+    }, [brandName, titleSuffix, metaDescription, content])
 }
 
 export interface SiteContentGateProps {

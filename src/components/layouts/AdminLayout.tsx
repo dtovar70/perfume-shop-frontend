@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { cva } from 'class-variance-authority'
 import {
+    BellRing,
     Gem,
     ClipboardList,
     ExternalLink,
@@ -53,6 +54,8 @@ const NAV_LINKS: readonly {
     // Before Telegram: chats are linked on behalf of a user, and deactivating one mutes them.
     { label: 'Usuarios', to: ADMIN_ROUTES.users, icon: Users, roles: ['ADMIN'] },
     { label: 'Telegram', to: ADMIN_ROUTES.telegram, icon: Send, roles: ['ADMIN'] },
+    // Emails and Telegram messages that could not be delivered, with "Reintentar".
+    { label: 'Avisos', to: ADMIN_ROUTES.notifications, icon: BellRing, roles: ['ADMIN'] },
 ]
 
 const SIDEBAR_ID = 'admin-sidebar'

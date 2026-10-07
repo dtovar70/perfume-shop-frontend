@@ -4,8 +4,10 @@ import { Link } from 'react-router'
 import type { Product } from '@/@types/product'
 import { BsApproximation } from '@/components/shared/BsApproximation'
 import { CardCartControl } from '@/components/shared/CardCartControl'
+import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { ProductMedia } from '@/components/shared/ProductMedia'
+import { QuickViewButton } from '@/components/shared/QuickViewButton'
 import { Badge } from '@/components/ui'
 import { formatPerfumeSpec } from '@/constants/product.constant'
 import { productPath } from '@/constants/route.constant'
@@ -17,14 +19,16 @@ import { productDetailQueryOptions } from '@/views/product/hooks/useProduct'
 export interface ProductCardProps {
     product: Product
     /**
-     * Layout of the card. Only `grid` exists today; `list` (one row per product) is the seam for
-     * the catalog's grid/list toggle.
+     * `grid`: the tall card of every product grid. `list`: one horizontal row per product
+     * (photo, details, price and cart control), for the catalog's list view.
      */
-    variant?: 'grid'
+    variant?: ProductCardVariant
     /** The first row of a page: its photos load eagerly. */
     priority?: boolean
     className?: string
 }
+
+export type ProductCardVariant = 'grid' | 'list'
 
 /** "-25%" when the product shows a "before" price; null otherwise. */
 function discountPercent(price: number, compareAt: number | undefined): number | null {
@@ -34,10 +38,15 @@ function discountPercent(price: number, compareAt: number | undefined): number |
 
 /**
  * The one product card used everywhere (catalog, home rails, related products). The whole card
- * is a link through the name's stretched `::after`; the cart control is a sibling above it, so
- * there are no nested interactive elements.
+ * is a link through the name's stretched `::after`; the cart control, the heart and the quick
+ * view button are siblings above it, so there are no nested interactive elements.
  */
-export function ProductCard({ product, priority = false, className }: ProductCardProps) {
+export function ProductCard({
+    product,
+    variant = 'grid',
+    priority = false,
+    className,
+}: ProductCardProps) {
     const queryClient = useQueryClient()
     // First version in stock; when all are sold out the card shows "Agotado".
     const defaultVariant = pickDefaultVariant(product)
@@ -62,6 +71,91 @@ export function ProductCard({ product, priority = false, className }: ProductCar
     }
     if (product.tags.includes('nuevo'))
         badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'overlay' })
+
+    const nameLink = (
+        <Link
+            to={productPath(product.slug)}
+            className="rounded-sm transition-colors group-hover:text-accent-strong after:absolute after:inset-0 after:content-['']"
+        >
+            {product.name}
+        </Link>
+    )
+
+    if (variant === 'list') {
+        const badge = badges.at(0)
+        return (
+            <article
+                data-fly-scope=""
+                onMouseEnter={prefetchDetail}
+                onFocus={prefetchDetail}
+                className={cn(
+                    'group relative flex h-full gap-3 rounded-xl2 border border-line bg-surface p-2.5 shadow-soft transition duration-300 hover:border-cherry-500/30 hover:shadow-lift sm:gap-5 sm:p-3.5',
+                    className,
+                )}
+            >
+                <div className="relative aspect-[4/5] w-24 shrink-0 self-start overflow-hidden rounded-xl border border-line bg-surface sm:w-32">
+                    <ProductMedia
+                        image={coverImage}
+                        fallbackAlt={product.name}
+                        brandName={product.brand?.name}
+                        loading={priority ? 'eager' : 'lazy'}
+                        sizes="8rem"
+                        muted={isSoldOut}
+                        className="transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transform-none"
+                    />
+                    {badge ? (
+                        <Badge
+                            tone={badge.tone}
+                            size="sm"
+                            className="pointer-events-none absolute top-1.5 left-1.5 px-2"
+                        >
+                            {badge.label}
+                        </Badge>
+                    ) : null}
+                </div>
+
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5 py-0.5 sm:gap-1 sm:py-1">
+                    {product.brand ? (
+                        <p className="truncate text-[11px] font-semibold tracking-[0.12em] text-accent uppercase sm:text-xs sm:tracking-[0.15em]">
+                            {product.brand.name}
+                        </p>
+                    ) : null}
+                    <h3 className="line-clamp-2 font-display text-base leading-snug font-semibold text-fg sm:text-lg">
+                        {nameLink}
+                    </h3>
+                    {spec || product.olfactoryFamily ? (
+                        <p className="truncate text-xs text-fg-soft sm:text-sm">
+                            {[spec, product.olfactoryFamily].filter(Boolean).join(' · ')}
+                        </p>
+                    ) : null}
+
+                    <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 pt-2">
+                        <div className="min-w-0 space-y-0.5">
+                            <PriceTag
+                                price={fromPrice}
+                                isFromPrice={fromPrice !== toPrice}
+                                compareAtPrice={product.compareAtPrice}
+                                size="sm"
+                            />
+                            <BsApproximation usd={fromPrice} compact />
+                        </div>
+                        {isSoldOut ? (
+                            <Badge tone="neutral" size="sm">
+                                Agotado
+                            </Badge>
+                        ) : (
+                            <CardCartControl product={product} variant={defaultVariant} />
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex shrink-0 flex-col gap-2">
+                    <FavoriteButton product={product} />
+                    <QuickViewButton product={product} />
+                </div>
+            </article>
+        )
+    }
 
     return (
         <article
@@ -96,6 +190,15 @@ export function ProductCard({ product, priority = false, className }: ProductCar
                     </ul>
                 ) : null}
 
+                {/* Phones (touch): always shown, small. Mouse: they appear on hover or focus. */}
+                <div className="absolute top-2.5 right-2.5 flex flex-col gap-2 sm:top-3.5 sm:right-3.5">
+                    <FavoriteButton product={product} />
+                    <QuickViewButton
+                        product={product}
+                        className="pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:focus-visible:opacity-100"
+                    />
+                </div>
+
                 {!isSoldOut ? (
                     <CardCartControl
                         product={product}
@@ -113,12 +216,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
                 ) : null}
 
                 <h3 className="line-clamp-2 font-display text-base leading-snug font-semibold text-fg sm:text-lg">
-                    <Link
-                        to={productPath(product.slug)}
-                        className="rounded-sm transition-colors group-hover:text-accent-strong after:absolute after:inset-0 after:content-['']"
-                    >
-                        {product.name}
-                    </Link>
+                    {nameLink}
                 </h3>
 
                 {spec ? <p className="text-xs text-fg-soft sm:text-sm">{spec}</p> : null}

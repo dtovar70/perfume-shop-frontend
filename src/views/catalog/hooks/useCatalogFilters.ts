@@ -16,7 +16,9 @@ export const CATALOG_SEARCH_PARAM = 'search'
 export const CATALOG_PAGE_SIZE = 12
 
 const SORT_PARAM = 'sort'
-const PRICE_PARAM = 'price'
+/** Price range in USD; either end may be missing (`?minPrice=20`). Same names as the API's. */
+const MIN_PRICE_PARAM = 'minPrice'
+const MAX_PRICE_PARAM = 'maxPrice'
 const TAGS_PARAM = 'tags'
 const PAGE_PARAM = 'page'
 /** Repeatable: `?brand=dior&brand=lattafa`. */
@@ -24,6 +26,8 @@ export const BRAND_PARAM = 'brand'
 const GENDER_PARAM = 'gender'
 const CONCENTRATION_PARAM = 'concentration'
 const FAMILY_PARAM = 'family'
+/** Not a filter: the layout (`?vista=lista`), kept across filter changes. See useCatalogView. */
+export const VIEW_PARAM = 'vista'
 
 export const SORT_OPTIONS = [
     'relevance',
@@ -39,29 +43,12 @@ export const PRODUCT_TAGS = [
     'oferta',
 ] as const satisfies readonly ProductTag[]
 
-export type PriceBracketId = 'all' | 'under-10' | '10-to-20' | 'over-20'
-
-export interface PriceBracket {
-    id: PriceBracketId
-    label: string
-    minPrice?: number
-    maxPrice?: number
-}
-
-export const PRICE_BRACKETS: readonly PriceBracket[] = [
-    { id: 'all', label: 'Todos los precios' },
-    { id: 'under-10', label: 'Menos de $10', maxPrice: 10 },
-    { id: '10-to-20', label: 'Entre $10 y $20', minPrice: 10, maxPrice: 20 },
-    { id: 'over-20', label: 'Más de $20', minPrice: 20 },
-]
-
-const PRICE_BRACKET_IDS = PRICE_BRACKETS.map((bracket) => bracket.id)
-
 export interface CatalogFilters {
     category?: CategorySlug
     search: string
     sort: SortOption
-    priceBracket: PriceBracketId
+    minPrice?: number
+    maxPrice?: number
     tags: ProductTag[]
     brands: string[]
     gender?: ProductGender
@@ -77,7 +64,8 @@ export interface UseCatalogFiltersResult {
     setCategory: (category?: CategorySlug) => void
     setSearch: (search: string) => void
     setSort: (sort: SortOption) => void
-    setPriceBracket: (bracket: PriceBracketId) => void
+    /** Either end undefined means "no limit" on that side. */
+    setPriceRange: (minPrice?: number, maxPrice?: number) => void
     toggleTag: (tag: ProductTag) => void
     toggleBrand: (slug: string) => void
     setGender: (gender?: ProductGender) => void
@@ -93,9 +81,21 @@ function isMember<T extends string>(allowed: readonly T[], value: string | null)
     return value !== null && (allowed as readonly string[]).includes(value)
 }
 
+/** A non-negative price from the query string, or undefined. */
+function parsePrice(raw: string | null): number | undefined {
+    if (raw === null || raw.trim() === '') return undefined
+    const value = Number(raw)
+    return Number.isFinite(value) && value >= 0 ? value : undefined
+}
+
 function parseFilters(categoryParam: string | undefined, params: URLSearchParams): CatalogFilters {
     const rawSort = params.get(SORT_PARAM)
-    const rawPrice = params.get(PRICE_PARAM)
+    let minPrice = parsePrice(params.get(MIN_PRICE_PARAM))
+    let maxPrice = parsePrice(params.get(MAX_PRICE_PARAM))
+    // A reversed range (an edited link) is read the way it was meant.
+    if (minPrice !== undefined && maxPrice !== undefined && minPrice > maxPrice) {
+        ;[minPrice, maxPrice] = [maxPrice, minPrice]
+    }
     const rawPage = Number.parseInt(params.get(PAGE_PARAM) ?? '1', 10)
     const rawGender = params.get(GENDER_PARAM)
     const rawConcentration = params.get(CONCENTRATION_PARAM)
@@ -106,7 +106,8 @@ function parseFilters(categoryParam: string | undefined, params: URLSearchParams
         category: categoryParam || undefined,
         search: params.get(CATALOG_SEARCH_PARAM)?.trim() ?? '',
         sort: isMember(SORT_OPTIONS, rawSort) ? rawSort : 'relevance',
-        priceBracket: isMember(PRICE_BRACKET_IDS, rawPrice) ? rawPrice : 'all',
+        minPrice,
+        maxPrice,
         tags: (params.get(TAGS_PARAM)?.split(',') ?? []).filter((tag): tag is ProductTag =>
             isMember(PRODUCT_TAGS, tag),
         ),
@@ -123,7 +124,8 @@ function serializeFilters(filters: CatalogFilters): string {
 
     if (filters.search) params.set(CATALOG_SEARCH_PARAM, filters.search)
     if (filters.sort !== 'relevance') params.set(SORT_PARAM, filters.sort)
-    if (filters.priceBracket !== 'all') params.set(PRICE_PARAM, filters.priceBracket)
+    if (filters.minPrice !== undefined) params.set(MIN_PRICE_PARAM, String(filters.minPrice))
+    if (filters.maxPrice !== undefined) params.set(MAX_PRICE_PARAM, String(filters.maxPrice))
     if (filters.tags.length > 0) params.set(TAGS_PARAM, filters.tags.join(','))
     for (const brand of filters.brands) params.append(BRAND_PARAM, brand)
     if (filters.gender) params.set(GENDER_PARAM, filters.gender)
@@ -136,14 +138,12 @@ function serializeFilters(filters: CatalogFilters): string {
 }
 
 function toQueryParams(filters: CatalogFilters): ProductQueryParams {
-    const bracket = PRICE_BRACKETS.find((candidate) => candidate.id === filters.priceBracket)
-
     return {
         category: filters.category,
         search: filters.search || undefined,
         sort: filters.sort,
-        minPrice: bracket?.minPrice,
-        maxPrice: bracket?.maxPrice,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
         tags: filters.tags.length > 0 ? filters.tags : undefined,
         brands: filters.brands.length > 0 ? filters.brands : undefined,
         gender: filters.gender,
@@ -164,6 +164,17 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const rawQuery = searchParams.toString()
+    const view = searchParams.get(VIEW_PARAM)
+    /** The layout param rides along with every filter change. */
+    const withView = useCallback(
+        (query: string) => {
+            if (!view) return query
+            const params = new URLSearchParams(query)
+            params.set(VIEW_PARAM, view)
+            return `?${params}`
+        },
+        [view],
+    )
 
     const filters = useMemo(
         () => parseFilters(categoryParam, new URLSearchParams(rawQuery)),
@@ -175,13 +186,13 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
             const next: CatalogFilters = { ...filters, ...patch }
             const pathname = next.category ? categoryPath(next.category) : ROUTES.catalog
 
-            void navigate(`${pathname}${serializeFilters(next)}`, { replace: true })
+            void navigate(`${pathname}${withView(serializeFilters(next))}`, { replace: true })
         },
-        [filters, navigate],
+        [filters, navigate, withView],
     )
 
     const activeFilterCount =
-        (filters.priceBracket !== 'all' ? 1 : 0) +
+        (filters.minPrice !== undefined || filters.maxPrice !== undefined ? 1 : 0) +
         filters.tags.length +
         filters.brands.length +
         (filters.gender ? 1 : 0) +
@@ -200,7 +211,7 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
         setCategory: (category) => applyFilters({ category, page: 1 }),
         setSearch: (search) => applyFilters({ search, page: 1 }),
         setSort: (sort) => applyFilters({ sort, page: 1 }),
-        setPriceBracket: (priceBracket) => applyFilters({ priceBracket, page: 1 }),
+        setPriceRange: (minPrice, maxPrice) => applyFilters({ minPrice, maxPrice, page: 1 }),
         toggleTag: (tag) =>
             applyFilters({
                 tags: filters.tags.includes(tag)
@@ -219,6 +230,6 @@ export function useCatalogFilters(): UseCatalogFiltersResult {
         setConcentration: (concentration) => applyFilters({ concentration, page: 1 }),
         setFamily: (family) => applyFilters({ family, page: 1 }),
         setPage: (page) => applyFilters({ page }),
-        clearFilters: () => void navigate(ROUTES.catalog, { replace: true }),
+        clearFilters: () => void navigate(`${ROUTES.catalog}${withView('')}`, { replace: true }),
     }
 }

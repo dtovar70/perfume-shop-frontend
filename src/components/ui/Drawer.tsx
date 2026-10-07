@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { ChevronLeft, X } from 'lucide-react'
 
+import { useModalPresence } from '@/store/uiStore'
 import { useLockBodyScroll } from '@/utils/hooks/useLockBodyScroll'
 import { cn } from '@/utils/cn'
 
@@ -76,6 +77,7 @@ export function Drawer({
     const titleId = useId()
 
     useLockBodyScroll(isOpen)
+    useModalPresence(isOpen)
 
     useEffect(() => {
         if (!isOpen) return

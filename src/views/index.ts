@@ -40,6 +40,12 @@ export const OrderLookupView = lazy(() =>
     })),
 )
 
+export const FavoritesView = lazy(() =>
+    import('@/views/favorites/FavoritesView').then((module) => ({
+        default: module.FavoritesView,
+    })),
+)
+
 export const BrandsView = lazy(() =>
     import('@/views/brands/BrandsView').then((module) => ({ default: module.BrandsView })),
 )
@@ -120,6 +126,12 @@ export const AdminCatalogsView = lazy(() =>
 export const AdminTelegramView = lazy(() =>
     import('@/views/admin/telegram/AdminTelegramView').then((module) => ({
         default: module.AdminTelegramView,
+    })),
+)
+
+export const AdminOutboxView = lazy(() =>
+    import('@/views/admin/outbox/AdminOutboxView').then((module) => ({
+        default: module.AdminOutboxView,
     })),
 )
 

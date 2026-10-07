@@ -50,6 +50,8 @@
     --theme-warning: #fbbf24;
     --theme-danger: #f87171;
     --theme-danger-hover: #fb8c8c;
+    /* WhatsApp glyphs on the page (not on the green button): the brand green, legible here. */
+    --theme-whatsapp-ink: #25d366;
 
     /* Modal backdrops and drawer overlays. */
     --theme-scrim: rgb(0 0 0 / 0.6);
@@ -115,6 +117,7 @@
     --theme-warning: #9a4a06;
     --theme-danger: #b91c1c;
     --theme-danger-hover: #991b1b;
+    --theme-whatsapp-ink: #0e7a6d;
 
     --theme-scrim: rgb(24 24 27 / 0.32);
 
@@ -178,6 +181,7 @@
     /* WhatsApp's teal, deepened so white text on it reads 5.2:1 in both themes. */
     --color-whatsapp: #0e7a6d;
     --color-whatsapp-hover: #0b6157;
+    --color-whatsapp-ink: var(--theme-whatsapp-ink);
 
     --shadow-soft: var(--theme-shadow-soft);
     --shadow-lift: var(--theme-shadow-lift);

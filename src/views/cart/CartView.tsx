@@ -3,6 +3,7 @@ import { ShoppingBag } from 'lucide-react'
 import { ClearCartButton } from '@/components/shared/ClearCartButton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { BsApproximation } from '@/components/shared/BsApproximation'
+import { CartWhatsAppButton } from '@/components/shared/CartWhatsAppButton'
 import { FreeShippingProgress } from '@/components/shared/FreeShippingProgress'
 import { Button, ButtonLink, Card } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
@@ -113,7 +114,8 @@ export function CartView() {
                                     Finalizar compra
                                 </ButtonLink>
                             )}
-                            <ButtonLink to={ROUTES.catalog} variant="secondary" fullWidth>
+                            <CartWhatsAppButton />
+                            <ButtonLink to={ROUTES.catalog} variant="ghost" fullWidth>
                                 Seguir comprando
                             </ButtonLink>
                         </div>

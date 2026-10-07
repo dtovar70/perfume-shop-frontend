@@ -10,6 +10,8 @@ export const ROUTES = {
     checkout: '/checkout',
     order: '/pedido/:code',
     myOrders: '/mis-pedidos',
+    /** Saved perfumes (kept in this browser only). */
+    favorites: '/favoritos',
     /** "Consultar mi pedido": code + email, the API emails a fresh private link. */
     orderLookup: '/consultar-pedido',
     about: '/nosotros',
@@ -39,6 +41,8 @@ export const ADMIN_ROUTES = {
     content: '/admin/contenido',
     catalogs: '/admin/catalogos',
     telegram: '/admin/telegram',
+    /** Notifications that could not be delivered (the outbox), with "Reintentar". */
+    notifications: '/admin/avisos',
     users: '/admin/usuarios',
     account: '/admin/cuenta',
 } as const

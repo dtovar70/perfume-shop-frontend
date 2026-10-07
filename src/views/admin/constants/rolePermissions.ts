@@ -81,6 +81,7 @@ export const ROLE_CAPABILITIES: readonly RoleCapabilityGroup[] = [
             { action: 'Catálogos: estados, bancos y prefijos', roles: ADMIN_ONLY },
             { action: 'Usuarios: crear, editar y desactivar cuentas', roles: ADMIN_ONLY },
             { action: 'Telegram: vincular chats y notificaciones', roles: ADMIN_ONLY },
+            { action: 'Avisos: ver y reintentar correos y mensajes fallidos', roles: ADMIN_ONLY },
         ],
     },
 ]

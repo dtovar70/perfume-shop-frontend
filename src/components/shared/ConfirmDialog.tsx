@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 
 import { Alert, Button, type ButtonProps } from '@/components/ui'
+import { useModalPresence } from '@/store/uiStore'
 import { cn } from '@/utils/cn'
 
 export interface ConfirmDialogProps {
@@ -56,6 +57,7 @@ export function ConfirmDialog({
     const dialogRef = useRef<HTMLDialogElement>(null)
     const titleId = useId()
     const descriptionId = useId()
+    useModalPresence(isOpen)
 
     useEffect(() => {
         const dialog = dialogRef.current

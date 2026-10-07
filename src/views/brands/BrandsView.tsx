@@ -5,12 +5,20 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { Button, Skeleton } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
+import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
+import { useSeo } from '@/utils/hooks/useSeo'
 import { useBrands } from '@/views/catalog/hooks/useBrands'
 
 /** `/marcas`: every brand with products, alphabetically; each opens the filtered catalog. */
 export function BrandsView() {
     const { data: brands, isPending, isError, refetch } = useBrands()
+    useSeo({
+        title: 'Marcas',
+        description:
+            'Casas de perfumería originales: diseñador y árabes. Elige una marca y descubre todas sus fragancias.',
+        canonical: ROUTES.brands,
+    })
     const visible = [...(brands ?? [])]
         .filter((brand) => brand.productCount > 0)
         .sort((a, b) => a.name.localeCompare(b.name, 'es'))

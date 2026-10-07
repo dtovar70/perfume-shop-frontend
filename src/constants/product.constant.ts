@@ -2,11 +2,12 @@ import type { Concentration, ProductGender, ProductTag } from '@/@types/product'
 
 /**
  * How each tag reads in the store. The stored value stays `bestseller` (it drives the
- * relevance sort); customers see "favorito", which everyone understands.
+ * relevance sort); customers see "más vendido", so it never clashes with their own favorites
+ * (the heart / wishlist).
  */
 export const PRODUCT_TAG_LABELS: Record<ProductTag, string> = {
     nuevo: 'nuevo',
-    bestseller: 'favorito',
+    bestseller: 'más vendido',
     oferta: 'oferta',
 }
 

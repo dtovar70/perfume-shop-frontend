@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router'
 import { AddToCartButton } from '@/components/shared/AddToCartButton'
 import { BsApproximation } from '@/components/shared/BsApproximation'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { SocialIcon } from '@/components/shared/SocialIcon'
 import { Button, QuantityStepper } from '@/components/ui'
@@ -13,24 +14,24 @@ import { formatPerfumeSpec, GENDER_LABELS } from '@/constants/product.constant'
 import { brandCatalogPath, categoryPath, ROUTES } from '@/constants/route.constant'
 import { NotFoundError } from '@/services/ProductService'
 import { MAX_LINE_QUANTITY, useCartItems } from '@/store/cartStore'
-import { cartUnitsOf } from '@/utils/cartAvailability'
 import { cn } from '@/utils/cn'
 import { whatsappUrl } from '@/utils/content'
-import { hasVariablePrice, variantPrice } from '@/utils/productPrice'
-import { defaultVariant, isVariantSoldOut, stockOf } from '@/utils/productStock'
+import { hasVariablePrice } from '@/utils/productPrice'
+import { resolvePurchase } from '@/utils/productPurchase'
+import { useSeo } from '@/utils/hooks/useSeo'
 import { useShippingContent, useSiteContent } from '@/utils/hooks/useSiteContent'
 import { useCategory } from '@/views/catalog/hooks/useCategories'
 import { NotFoundView } from '@/views/others/NotFoundView'
-import { OlfactoryPyramid } from '@/views/product/components/OlfactoryPyramid'
 import { ProductDetailSkeleton } from '@/views/product/components/ProductDetailSkeleton'
+import { ProductDetailsSections } from '@/views/product/components/ProductDetailsSections'
 import { ProductGallery } from '@/views/product/components/ProductGallery'
-import { ProductMeta } from '@/views/product/components/ProductMeta'
 import { RelatedProducts } from '@/views/product/components/RelatedProducts'
 import { StickyAddToCartBar } from '@/views/product/components/StickyAddToCartBar'
 import { StockState } from '@/views/product/components/StockState'
 import { VariantPicker } from '@/views/product/components/VariantPicker'
 import { variantDisplayLabel } from '@/utils/variantLabel'
 import { useProduct } from '@/views/product/hooks/useProduct'
+import { productSeo } from '@/views/product/utils/productSeo'
 
 const pageClass = 'space-y-16 py-6 sm:py-10 lg:space-y-24 lg:py-8'
 const breadcrumbLinkClass =
@@ -46,6 +47,7 @@ export function ProductDetailView() {
     const cartItems = useCartItems()
     const category = useCategory(product?.category)
     const addRowRef = useRef<HTMLDivElement>(null)
+    useSeo(product ? productSeo(product, category) : {})
 
     if (error instanceof NotFoundError) return <NotFoundView />
 
@@ -76,19 +78,17 @@ export function ProductDetailView() {
         )
     }
 
-    // A sold-out version is never selected; with every version sold out the first one is
-    // shown and the button reads "Agotado".
-    const chosenVariant = product.variants.find((variant) => variant.id === chosenVariantId)
-    const selectedVariant =
-        chosenVariant && !isVariantSoldOut(chosenVariant) ? chosenVariant : defaultVariant(product)
-    const unitPrice = variantPrice(product, selectedVariant)
+    const {
+        selectedVariant,
+        variantId,
+        unitPrice,
+        stockLeft,
+        inCart,
+        addable,
+        maxQuantity,
+        quantity: safeQuantity,
+    } = resolvePurchase(product, chosenVariantId, quantity, cartItems)
     const isVariablePrice = hasVariablePrice(product)
-    const stockLeft = stockOf(product, selectedVariant)
-    const variantId = selectedVariant?.id ?? ''
-    const inCart = cartUnitsOf(cartItems, product.id, variantId)
-    const addable = Math.max(0, stockLeft - inCart)
-    const maxQuantity = Math.max(1, Math.min(addable, MAX_LINE_QUANTITY))
-    const safeQuantity = Math.min(quantity, maxQuantity)
     const volumeMl = selectedVariant?.volumeMl ?? product.volumeMl
     const specParts = [
         formatPerfumeSpec(product.concentration, volumeMl ?? null, true) || null,
@@ -160,9 +160,12 @@ export function ProductDetailView() {
                                     </Link>
                                 ) : null}
 
-                                <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(1.75rem,2.1vw,2.5rem)]">
-                                    {product.name}
-                                </h1>
+                                <div className="flex items-start justify-between gap-4">
+                                    <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(1.75rem,2.1vw,2.5rem)]">
+                                        {product.name}
+                                    </h1>
+                                    <FavoriteButton product={product} appearance="inline" />
+                                </div>
 
                                 {specParts.length > 0 ? (
                                     <p className="text-[15px] text-fg-soft">
@@ -279,14 +282,7 @@ export function ProductDetailView() {
                     </div>
                 </div>
 
-                <div className="grid gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20">
-                    <OlfactoryPyramid
-                        notes={product.notes}
-                        family={product.olfactoryFamily}
-                        className="lg:self-start"
-                    />
-                    <ProductMeta product={product} />
-                </div>
+                <ProductDetailsSections product={product} />
 
                 <RelatedProducts slug={product.slug} />
             </div>

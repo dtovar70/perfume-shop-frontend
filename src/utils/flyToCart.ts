@@ -11,6 +11,8 @@ import { useUiStore } from '@/store/uiStore'
  * - `data-fly-scope` on a container whose picture belongs to the trigger inside it (cards);
  * - `data-fly-source="<productId>"` around a page-level picture (the detail gallery);
  * - `data-cart-target` on the header cart button.
+ * - `data-fly-overlay` on a modal that closes as the flight starts (the quick view), so it is
+ *   not taken for something covering the cart button.
  */
 
 /** Diameter of the clone when it reaches the cart. */
@@ -102,15 +104,17 @@ function visibleShare(rect: DOMRect): number {
 /**
  * Center of the visible header cart button. A button that is hidden, off screen or covered
  * (e.g. by a sticky bar) is skipped; without one the clone heads for the top-right corner.
+ * `overlay` (a dialog that closes as the flight starts, marked `data-fly-overlay`) does not
+ * count as covering it.
  */
-function findCartTarget(): Point {
+function findCartTarget(overlay: Element | null): Point {
     const candidates = document.querySelectorAll<HTMLElement>('[data-cart-target]')
     for (const candidate of candidates) {
         const rect = candidate.getBoundingClientRect()
         if (visibleShare(rect) < 0.99) continue
         const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
         const topmost = document.elementFromPoint(center.x, center.y)
-        if (topmost && !candidate.contains(topmost)) continue
+        if (topmost && !candidate.contains(topmost) && !overlay?.contains(topmost)) continue
         return center
     }
     return { x: window.innerWidth - 28, y: 28 }
@@ -242,7 +246,7 @@ export function flyToCart({ trigger, productId, productName, onLand }: FlyToCart
         x: source.rect.left + source.rect.width / 2,
         y: source.rect.top + source.rect.height / 2,
     }
-    const end = findCartTarget()
+    const end = findCartTarget(trigger?.closest('[data-fly-overlay]') ?? null)
     const distance = Math.hypot(end.x - start.x, end.y - start.y)
     const duration = BASE_DURATION_MS + Math.min(MAX_EXTRA_DURATION_MS, distance / 8)
     // Rises first, then glides into the cart: the bend sits above both ends, near the start.

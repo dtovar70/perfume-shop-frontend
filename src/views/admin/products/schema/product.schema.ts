@@ -17,7 +17,7 @@ export const PRODUCT_TAGS = [
 
 export const PRODUCT_TAG_LABELS: Record<ProductTag, string> = {
     nuevo: 'Nuevo',
-    bestseller: 'Favorito',
+    bestseller: 'Más vendido',
     oferta: 'Oferta',
 }
 

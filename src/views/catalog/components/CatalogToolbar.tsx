@@ -1,7 +1,9 @@
-import { SlidersHorizontal } from 'lucide-react'
+import { LayoutGrid, List, SlidersHorizontal } from 'lucide-react'
 
 import type { SortOption } from '@/@types/common'
+import type { ProductCardVariant } from '@/components/shared/ProductCard'
 import { Select } from '@/components/ui'
+import { cn } from '@/utils/cn'
 import { SORT_SELECT_OPTIONS } from '@/views/catalog/constants/sort.constant'
 
 const SORT_VALUES = SORT_SELECT_OPTIONS.map((option) => option.value)
@@ -18,9 +20,56 @@ export interface CatalogToolbarProps {
     /** Phones and tablets: opens the filter drawer. Omitted on desktop (sidebar). */
     onOpenFilters?: () => void
     activeFilterCount: number
+    view: ProductCardVariant
+    onViewChange: (view: ProductCardVariant) => void
 }
 
-/** Result count, sort and (below `lg`) the filters button. */
+const VIEW_OPTIONS = [
+    { value: 'grid', label: 'Ver en cuadrícula', icon: LayoutGrid },
+    { value: 'list', label: 'Ver en lista', icon: List },
+] as const satisfies readonly { value: ProductCardVariant; label: string; icon: typeof List }[]
+
+/** Grid / list segmented control: two 44px toggle buttons (`aria-pressed`). */
+function ViewToggle({
+    view,
+    onChange,
+}: {
+    view: ProductCardVariant
+    onChange: (view: ProductCardVariant) => void
+}) {
+    return (
+        <div
+            role="group"
+            aria-label="Vista de los productos"
+            className="flex shrink-0 overflow-hidden rounded-xl border border-line bg-surface"
+        >
+            {VIEW_OPTIONS.map(({ value, label, icon: Icon }) => {
+                const isActive = view === value
+                return (
+                    <button
+                        key={value}
+                        type="button"
+                        aria-pressed={isActive}
+                        aria-label={label}
+                        title={label}
+                        onClick={() => onChange(value)}
+                        className={cn(
+                            // 42px inside the 1px border; the pseudo-element brings the hit area to 44px.
+                            "relative flex h-[2.625rem] w-11 items-center justify-center transition duration-200 after:absolute after:-inset-px after:content-['']",
+                            isActive
+                                ? 'bg-cherry-tint text-accent-strong'
+                                : 'text-fg-soft hover:bg-elevated hover:text-fg',
+                        )}
+                    >
+                        <Icon aria-hidden="true" className="size-4.5" />
+                    </button>
+                )
+            })}
+        </div>
+    )
+}
+
+/** Result count, sort, grid/list toggle and (below `lg`) the filters button. */
 export function CatalogToolbar({
     total,
     sort,
@@ -28,6 +77,8 @@ export function CatalogToolbar({
     onSortChange,
     onOpenFilters,
     activeFilterCount,
+    view,
+    onViewChange,
 }: CatalogToolbarProps) {
     return (
         <div className="flex items-center gap-2 sm:gap-3">
@@ -76,6 +127,8 @@ export function CatalogToolbar({
                     className="text-sm"
                 />
             </div>
+
+            <ViewToggle view={view} onChange={onViewChange} />
         </div>
     )
 }

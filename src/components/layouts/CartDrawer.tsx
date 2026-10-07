@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 
 import { CartLineMedia } from '@/components/shared/CartLineMedia'
 import { CartLineStockNotice } from '@/components/shared/CartLineStockNotice'
+import { CartWhatsAppButton } from '@/components/shared/CartWhatsAppButton'
 import { CheckoutCta } from '@/components/shared/CheckoutCta'
 import { ClearCartButton } from '@/components/shared/ClearCartButton'
 import { FreeShippingProgress } from '@/components/shared/FreeShippingProgress'
@@ -52,6 +53,7 @@ export function CartDrawer() {
                             disabled={availability.hasIssues}
                             onClick={close}
                         />
+                        <CartWhatsAppButton />
                         <Link
                             to={ROUTES.cart}
                             onClick={close}

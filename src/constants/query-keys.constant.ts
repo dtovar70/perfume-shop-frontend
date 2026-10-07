@@ -1,6 +1,7 @@
 import type { AdminProductQueryParams } from '@/@types/admin'
 import type { ProductQueryParams } from '@/@types/common'
 import type { AdminOrderQueryParams } from '@/@types/order'
+import type { AdminOutboxQueryParams } from '@/@types/outbox'
 import type { AdminUserQueryParams } from '@/@types/user'
 
 /**
@@ -73,6 +74,12 @@ export const queryKeys = {
         mobilePrefixes: () => [...queryKeys.admin.all, 'mobile-prefixes'] as const,
         /** The status catalog with the WhatsApp templates (Catálogos). */
         orderStatuses: () => [...queryKeys.admin.all, 'order-statuses'] as const,
+        /** Notification delivery (`GET /admin/outbox`), ADMIN only. */
+        outbox: {
+            all: () => [...queryKeys.admin.all, 'outbox'] as const,
+            list: (params: AdminOutboxQueryParams) =>
+                [...queryKeys.admin.outbox.all(), 'list', params] as const,
+        },
         /** Telegram bot status and linked chats (`GET /admin/telegram`). */
         telegram: () => [...queryKeys.admin.all, 'telegram'] as const,
         /** Panel accounts (`GET /admin/users`), ADMIN only. */

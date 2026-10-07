@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode, type RefObject } from 'react'
 
 import { PriceTag } from '@/components/shared/PriceTag'
+import { useUiStore } from '@/store/uiStore'
 import { cn } from '@/utils/cn'
 
 /** Matches the bar's height below `lg` (where the bar is shown). */
@@ -29,6 +30,7 @@ export function StickyAddToCartBar({
     children,
 }: StickyAddToCartBarProps) {
     const [isVisible, setIsVisible] = useState(false)
+    const setStickyBarVisible = useUiStore((state) => state.setStickyBarVisible)
 
     useEffect(() => {
         const anchor = anchorRef.current
@@ -42,12 +44,17 @@ export function StickyAddToCartBar({
         return () => observer.disconnect()
     }, [anchorRef])
 
-    // While the bar is up, the page gets room at the bottom so it never hides the footer.
+    // While the bar is up, the page gets room at the bottom so it never hides the footer, and
+    // the floating WhatsApp button rises above it.
     useEffect(() => {
         if (!isVisible) return
         document.body.classList.add(BODY_PADDING_CLASS)
-        return () => document.body.classList.remove(BODY_PADDING_CLASS)
-    }, [isVisible])
+        setStickyBarVisible(true)
+        return () => {
+            document.body.classList.remove(BODY_PADDING_CLASS)
+            setStickyBarVisible(false)
+        }
+    }, [isVisible, setStickyBarVisible])
 
     return (
         <div
