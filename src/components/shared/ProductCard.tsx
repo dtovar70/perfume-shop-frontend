@@ -4,10 +4,8 @@ import { Link } from 'react-router'
 import type { Product } from '@/@types/product'
 import { BsApproximation } from '@/components/shared/BsApproximation'
 import { CardCartControl } from '@/components/shared/CardCartControl'
-import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { ProductMedia } from '@/components/shared/ProductMedia'
-import { QuickViewButton } from '@/components/shared/QuickViewButton'
 import { Badge } from '@/components/ui'
 import { formatPerfumeSpec } from '@/constants/product.constant'
 import { productPath } from '@/constants/route.constant'
@@ -38,8 +36,8 @@ function discountPercent(price: number, compareAt: number | undefined): number |
 
 /**
  * The one product card used everywhere (catalog, home rails, related products). The whole card
- * is a link through the name's stretched `::after`; the cart control, the heart and the quick
- * view button are siblings above it, so there are no nested interactive elements.
+ * is a link through the name's stretched `::after`; the cart control is a sibling above it, so
+ * there are no nested interactive elements.
  */
 export function ProductCard({
     product,
@@ -148,11 +146,6 @@ export function ProductCard({
                         )}
                     </div>
                 </div>
-
-                <div className="flex shrink-0 flex-col gap-2">
-                    <FavoriteButton product={product} />
-                    <QuickViewButton product={product} />
-                </div>
             </article>
         )
     }
@@ -189,15 +182,6 @@ export function ProductCard({
                         ))}
                     </ul>
                 ) : null}
-
-                {/* Phones (touch): always shown, small. Mouse: they appear on hover or focus. */}
-                <div className="absolute top-2.5 right-2.5 flex flex-col gap-2 sm:top-3.5 sm:right-3.5">
-                    <FavoriteButton product={product} />
-                    <QuickViewButton
-                        product={product}
-                        className="pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:focus-visible:opacity-100"
-                    />
-                </div>
 
                 {!isSoldOut ? (
                     <CardCartControl

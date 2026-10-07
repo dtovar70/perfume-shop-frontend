@@ -10,8 +10,6 @@ export const ROUTES = {
     checkout: '/checkout',
     order: '/pedido/:code',
     myOrders: '/mis-pedidos',
-    /** Saved perfumes (kept in this browser only). */
-    favorites: '/favoritos',
     /** "Consultar mi pedido": code + email, the API emails a fresh private link. */
     orderLookup: '/consultar-pedido',
     about: '/nosotros',

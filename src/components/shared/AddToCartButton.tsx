@@ -20,10 +20,6 @@ export interface AddToCartButtonProps extends Pick<
     variantId: string
     quantity?: number
     label?: string
-    /** Opening the drawer is the default success feedback; cards can opt out. */
-    openDrawerOnAdd?: boolean
-    /** Called after the line was added. */
-    onAdded?: () => void
     /** Blocks adding for a reason of the caller. */
     disabled?: boolean
 }
@@ -33,8 +29,6 @@ export function AddToCartButton({
     variantId,
     quantity = 1,
     label = 'Agregar al carrito',
-    openDrawerOnAdd = true,
-    onAdded,
     disabled = false,
     ...buttonProps
 }: AddToCartButtonProps) {
@@ -48,16 +42,15 @@ export function AddToCartButton({
     useEffect(() => () => clearTimeout(timeoutRef.current), [])
 
     const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-        // Measured before the cart changes; the drawer (when it opens) waits for the landing,
-        // otherwise it would cover the flight.
+        // Measured before the cart changes; the drawer waits for the landing, otherwise it
+        // would cover the flight.
         flyToCart({
             trigger: event.currentTarget,
             productId: product.id,
             productName: product.name,
-            onLand: openDrawerOnAdd ? open : undefined,
+            onLand: open,
         })
         addItem(product, variantId, quantity)
-        onAdded?.()
         setIsConfirming(true)
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => setIsConfirming(false), CONFIRMATION_MS)

@@ -5,7 +5,6 @@ import { Link, useParams } from 'react-router'
 import { AddToCartButton } from '@/components/shared/AddToCartButton'
 import { BsApproximation } from '@/components/shared/BsApproximation'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PriceTag } from '@/components/shared/PriceTag'
 import { SocialIcon } from '@/components/shared/SocialIcon'
 import { Button, QuantityStepper } from '@/components/ui'
@@ -160,12 +159,9 @@ export function ProductDetailView() {
                                     </Link>
                                 ) : null}
 
-                                <div className="flex items-start justify-between gap-4">
-                                    <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(1.75rem,2.1vw,2.5rem)]">
-                                        {product.name}
-                                    </h1>
-                                    <FavoriteButton product={product} appearance="inline" />
-                                </div>
+                                <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(1.75rem,2.1vw,2.5rem)]">
+                                    {product.name}
+                                </h1>
 
                                 {specParts.length > 0 ? (
                                     <p className="text-[15px] text-fg-soft">

@@ -32,16 +32,31 @@ export function StickyAddToCartBar({
     const [isVisible, setIsVisible] = useState(false)
     const setStickyBarVisible = useUiStore((state) => state.setStickyBarVisible)
 
+    // Measured on scroll (once per frame) rather than with an IntersectionObserver: an observer
+    // only reports *changes*, so jumping straight past a row that started below the fold (End
+    // key, a restored scroll position) never fires and the bar would stay hidden.
     useEffect(() => {
         const anchor = anchorRef.current
-        if (!anchor || typeof IntersectionObserver === 'undefined') return
-        const observer = new IntersectionObserver(([entry]) => {
-            if (!entry) return
-            // Only once it is above the viewport: before reaching it, it is still ahead.
-            setIsVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0)
-        })
-        observer.observe(anchor)
-        return () => observer.disconnect()
+        if (!anchor) return
+        let frame = 0
+
+        const measure = () => {
+            frame = 0
+            // Only once the row is entirely above the viewport: before reaching it, it is ahead.
+            setIsVisible(anchor.getBoundingClientRect().bottom < 0)
+        }
+        const schedule = () => {
+            if (!frame) frame = window.requestAnimationFrame(measure)
+        }
+
+        measure()
+        window.addEventListener('scroll', schedule, { passive: true })
+        window.addEventListener('resize', schedule)
+        return () => {
+            window.removeEventListener('scroll', schedule)
+            window.removeEventListener('resize', schedule)
+            if (frame) window.cancelAnimationFrame(frame)
+        }
     }, [anchorRef])
 
     // While the bar is up, the page gets room at the bottom so it never hides the footer, and

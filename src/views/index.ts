@@ -40,12 +40,6 @@ export const OrderLookupView = lazy(() =>
     })),
 )
 
-export const FavoritesView = lazy(() =>
-    import('@/views/favorites/FavoritesView').then((module) => ({
-        default: module.FavoritesView,
-    })),
-)
-
 export const BrandsView = lazy(() =>
     import('@/views/brands/BrandsView').then((module) => ({ default: module.BrandsView })),
 )

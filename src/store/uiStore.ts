@@ -11,10 +11,6 @@ interface UiState {
      */
     cartPulse: number
     pulseCart: () => void
-    /** Slug of the product shown in the quick view dialog; null when it is closed. */
-    quickViewSlug: string | null
-    openQuickView: (slug: string) => void
-    closeQuickView: () => void
     /** The product page's phone sticky add-to-cart bar is on screen (floating buttons clear it). */
     isStickyBarVisible: boolean
     setStickyBarVisible: (isVisible: boolean) => void
@@ -37,11 +33,6 @@ export const useUiStore = create<UiState>()((set) => ({
     cartPulse: 0,
 
     pulseCart: () => set((state) => ({ cartPulse: state.cartPulse + 1 })),
-
-    quickViewSlug: null,
-    openQuickView: (slug) =>
-        set({ quickViewSlug: slug, isCartOpen: false, isMobileMenuOpen: false }),
-    closeQuickView: () => set({ quickViewSlug: null }),
 
     isStickyBarVisible: false,
     setStickyBarVisible: (isVisible) => set({ isStickyBarVisible: isVisible }),
@@ -66,7 +57,7 @@ export const useUiStore = create<UiState>()((set) => ({
     toggleMobileMenu: () =>
         set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen, isCartOpen: false })),
 
-    closeAll: () => set({ isCartOpen: false, isMobileMenuOpen: false, quickViewSlug: null }),
+    closeAll: () => set({ isCartOpen: false, isMobileMenuOpen: false }),
 }))
 
 export function useCartDrawer() {
@@ -91,24 +82,10 @@ export function useMobileMenu() {
     )
 }
 
-export function useQuickView() {
-    return useUiStore(
-        useShallow((state) => ({
-            slug: state.quickViewSlug,
-            open: state.openQuickView,
-            close: state.closeQuickView,
-        })),
-    )
-}
-
-/** Any overlay that covers the page: cart drawer, mobile menu, quick view or another modal. */
+/** Any overlay that covers the page: cart drawer, mobile menu or a modal dialog. */
 export function useIsOverlayOpen(): boolean {
     return useUiStore(
-        (state) =>
-            state.isCartOpen ||
-            state.isMobileMenuOpen ||
-            state.quickViewSlug !== null ||
-            state.openModalCount > 0,
+        (state) => state.isCartOpen || state.isMobileMenuOpen || state.openModalCount > 0,
     )
 }
 

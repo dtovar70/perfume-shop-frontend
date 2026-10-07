@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { cva } from 'class-variance-authority'
-import { Heart, Menu, Package, Search, ShoppingBag, X } from 'lucide-react'
+import { Menu, Package, Search, ShoppingBag, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { NavLink, useNavigate } from 'react-router'
 
@@ -13,7 +13,6 @@ import { Tooltip } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { useCartCount } from '@/store/cartStore'
-import { useFavoritesCount } from '@/store/favoritesStore'
 import { themeToggleLabel, useTheme } from '@/store/themeStore'
 import { useCartDrawer, useCartPulse, useMobileMenu } from '@/store/uiStore'
 import { cn } from '@/utils/cn'
@@ -103,7 +102,6 @@ function useCartLanding() {
 
 export function Header() {
     const cartCount = useCartCount()
-    const favoritesCount = useFavoritesCount()
     const {
         iconRef: cartIconRef,
         badgeRef: cartBadgeRef,
@@ -184,27 +182,6 @@ export function Header() {
                             onClick={() => navigate(ROUTES.myOrders)}
                             label="Mis pedidos"
                             icon={<Package aria-hidden="true" className="size-5" />}
-                        />
-                    </Tooltip>
-
-                    {/* Like "Mis pedidos": phones reach it from the menu drawer. */}
-                    <Tooltip label="Favoritos" className="hidden sm:inline-flex">
-                        <HeaderIconButton
-                            onClick={() => navigate(ROUTES.favorites)}
-                            label={
-                                favoritesCount > 0 ? `Favoritos (${favoritesCount})` : 'Favoritos'
-                            }
-                            icon={<Heart aria-hidden="true" className="size-5" />}
-                            badge={
-                                favoritesCount > 0 ? (
-                                    <span
-                                        aria-hidden="true"
-                                        className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-elevated px-1 text-[11px] font-bold text-accent-strong tabular-nums ring-2 ring-canvas"
-                                    >
-                                        {favoritesCount > 99 ? '99+' : favoritesCount}
-                                    </span>
-                                ) : null
-                            }
                         />
                     </Tooltip>
 

@@ -2,7 +2,6 @@ User-agent: *
 Disallow: /admin
 Disallow: /pedido
 Disallow: /mis-pedidos
-Disallow: /favoritos
 
 # The API serves the sitemap at its root: <API origin>/sitemap.xml (outside /api). `npm run
 # build` rewrites this line from VITE_API_URL (vite.config.ts, robotsSitemap); the value here is

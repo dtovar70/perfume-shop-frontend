@@ -9,6 +9,14 @@ import { createQueryClient } from '@/configs/query.config'
 import '@/store/themeStore'
 import '@/index.css'
 
+// The favorites list was removed; drop what it left in returning visitors' browsers. Storage
+// can throw (private mode, blocked site data), which must never stop the app from starting.
+try {
+    localStorage.removeItem('kaizen-favorites')
+} catch {
+    // Nothing to clean up without storage access.
+}
+
 const rootElement = document.getElementById('root')
 
 if (!rootElement) {

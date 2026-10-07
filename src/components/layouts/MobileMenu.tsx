@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority'
-import { ChevronRight, Heart, Package, Search } from 'lucide-react'
+import { ChevronRight, Package, Search } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router'
 
 import { SearchField } from '@/components/layouts/SearchField'
@@ -7,7 +7,6 @@ import { ThemeToggle } from '@/components/layouts/ThemeToggle'
 import { SocialIcon } from '@/components/shared/SocialIcon'
 import { ButtonLink, Drawer } from '@/components/ui'
 import { ROUTES } from '@/constants/route.constant'
-import { useFavoritesCount } from '@/store/favoritesStore'
 import { useTheme } from '@/store/themeStore'
 import { useMobileMenu } from '@/store/uiStore'
 import { socialLinks } from '@/utils/content'
@@ -30,7 +29,6 @@ const mobileLinkVariants = cva(
 const ORDER_LINKS = [
     { label: 'Mis pedidos', to: ROUTES.myOrders, icon: Package },
     { label: 'Consultar un pedido', to: ROUTES.orderLookup, icon: Search },
-    { label: 'Favoritos', to: ROUTES.favorites, icon: Heart },
 ] as const
 
 const sectionLabelClass = 'px-3 text-[11px] font-bold tracking-[0.22em] text-accent uppercase'
@@ -42,7 +40,6 @@ export function MobileMenu() {
     const { freeShippingText } = useShippingContent()
     const { contact } = useSiteContent()
     const { isDark } = useTheme()
-    const favoritesCount = useFavoritesCount()
 
     const location = useLocation()
     const activeGender = new URLSearchParams(location.search).get('gender')
@@ -125,10 +122,7 @@ export function MobileMenu() {
                     </ul>
                 </nav>
 
-                <nav
-                    aria-label="Tus pedidos y favoritos"
-                    className="space-y-2 border-t border-line pt-4"
-                >
+                <nav aria-label="Tus pedidos" className="space-y-2 border-t border-line pt-4">
                     <p className={sectionLabelClass}>Tus pedidos</p>
                     <ul>
                         {ORDER_LINKS.map((link) => (
@@ -141,11 +135,6 @@ export function MobileMenu() {
                                 >
                                     <link.icon aria-hidden="true" className="size-4 text-accent" />
                                     {link.label}
-                                    {link.to === ROUTES.favorites && favoritesCount > 0 ? (
-                                        <span className="ml-auto min-w-6 rounded-full bg-elevated px-1.5 py-0.5 text-center text-xs font-bold text-accent-strong tabular-nums">
-                                            {favoritesCount}
-                                        </span>
-                                    ) : null}
                                 </NavLink>
                             </li>
                         ))}

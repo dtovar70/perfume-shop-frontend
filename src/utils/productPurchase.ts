@@ -23,8 +23,8 @@ export interface ProductPurchase {
 }
 
 /**
- * What the buy box of a product shows for a chosen version and quantity (product page and
- * quick view). A sold-out version is never selected; with every version sold out the first
+ * What the buy box of a product shows for a chosen version and quantity (product page). A
+ * sold-out version is never selected; with every version sold out the first
  * one is shown and the button reads "Agotado".
  */
 export function resolvePurchase(

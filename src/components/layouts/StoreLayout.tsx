@@ -4,7 +4,6 @@ import { CartDrawer } from '@/components/layouts/CartDrawer'
 import { Footer } from '@/components/layouts/Footer'
 import { Header } from '@/components/layouts/Header'
 import { MobileMenu } from '@/components/layouts/MobileMenu'
-import { QuickViewHost } from '@/components/layouts/QuickViewHost'
 import { WhatsAppFab } from '@/components/layouts/WhatsAppFab'
 import { ScrollToTop } from '@/components/route/ScrollToTop'
 import { FlyToCartLayer } from '@/components/shared/FlyToCartLayer'
@@ -24,7 +23,6 @@ export function StoreLayout() {
             <WhatsAppFab />
             <CartDrawer />
             <MobileMenu />
-            <QuickViewHost />
             <FlyToCartLayer />
         </div>
     )

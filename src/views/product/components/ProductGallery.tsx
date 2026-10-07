@@ -5,7 +5,6 @@ import type { Product } from '@/@types/product'
 import { ProductMedia } from '@/components/shared/ProductMedia'
 import { Sticker } from '@/components/ui'
 import { cldSrcSet, cldUrl } from '@/utils/cloudinary'
-import { cn } from '@/utils/cn'
 
 const thumbVariants = cva(
     'relative flex aspect-[4/5] w-16 shrink-0 snap-start overflow-hidden rounded-xl border bg-surface transition duration-200 sm:w-20',
@@ -22,12 +21,10 @@ const thumbVariants = cva(
 
 export interface ProductGalleryProps {
     product: Product
-    /** A square frame of its own size (the quick view) instead of the page's tall one. */
-    compact?: boolean
 }
 
 /** Main photo (whole bottle, `object-contain`) with thumbnails; the placeholder without photos. */
-export function ProductGallery({ product, compact = false }: ProductGalleryProps) {
+export function ProductGallery({ product }: ProductGalleryProps) {
     const [chosenImageId, setChosenImageId] = useState<string | null>(null)
     const activeImage =
         product.images.find((image) => image.id === chosenImageId) ?? product.images.at(0)
@@ -37,15 +34,8 @@ export function ProductGallery({ product, compact = false }: ProductGalleryProps
     return (
         <div className="space-y-3 sm:space-y-4">
             <div
-                // The quick view is its own fly-to-cart scope; only the page gallery is the
-                // page-level source.
-                data-fly-source={compact ? undefined : product.id}
-                className={cn(
-                    'relative overflow-hidden rounded-xl2 border border-line bg-surface',
-                    compact
-                        ? 'aspect-square'
-                        : 'aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-[min(calc(100svh-13rem),40rem)] lg:min-h-[24rem] lg:rounded-blob',
-                )}
+                data-fly-source={product.id}
+                className="relative aspect-[4/5] overflow-hidden rounded-xl2 border border-line bg-surface sm:aspect-square lg:aspect-auto lg:h-[min(calc(100svh-13rem),40rem)] lg:min-h-[24rem] lg:rounded-blob"
             >
                 <ProductMedia
                     image={activeImage}
@@ -53,12 +43,8 @@ export function ProductGallery({ product, compact = false }: ProductGalleryProps
                     brandName={product.brand?.name}
                     size="lg"
                     loading="eager"
-                    fetchPriority={compact ? undefined : 'high'}
-                    sizes={
-                        compact
-                            ? '(min-width: 640px) 26rem, 100vw'
-                            : '(min-width: 1024px) 40rem, 100vw'
-                    }
+                    fetchPriority="high"
+                    sizes="(min-width: 1024px) 40rem, 100vw"
                 />
 
                 {hasDiscount ? (
