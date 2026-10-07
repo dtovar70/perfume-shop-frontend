@@ -1,6 +1,6 @@
 import { HighlightedText } from '@/components/shared/HighlightedText'
 import { SocialIcon } from '@/components/shared/SocialIcon'
-import { BottleArt } from '@/components/shared/BottleArt'
+import { SprayBottleArt } from '@/components/shared/SprayBottleArt'
 import { ButtonLink, Sticker } from '@/components/ui'
 import { buttonVariants } from '@/components/ui/Button.variants'
 import { CONTAINER } from '@/constants/layout.constant'
@@ -23,11 +23,7 @@ export function CtaBanner() {
                         aria-hidden="true"
                         className="absolute -right-16 -bottom-24 -z-10 size-80 rounded-full bg-cherry-500/15 blur-3xl"
                     />
-                    <BottleArt
-                        shape="tall"
-                        className="absolute right-10 -bottom-6 -z-10 h-56 w-auto text-fg/10 max-lg:hidden"
-                        strokeWidth={1}
-                    />
+                    <SprayBottleArt className="absolute right-6 bottom-6 -z-10 h-64 w-auto max-lg:hidden xl:right-10" />
 
                     <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:pr-40">
                         <div className="max-w-2xl space-y-6">

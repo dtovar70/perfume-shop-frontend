@@ -16,6 +16,9 @@ const badgeVariants = cva(
                 lilac: 'bg-elevated text-accent-strong ring-1 ring-cherry-500/30',
                 solid: 'bg-cherry-500 text-on-cherry',
                 neutral: 'bg-elevated text-fg-soft ring-1 ring-line',
+                // Over photos and art: an opaque card-coloured pill that reads on white plates too.
+                overlay:
+                    'bg-surface/95 text-accent ring-1 ring-cherry-500/45 shadow-soft backdrop-blur-sm',
             },
             size: {
                 sm: 'px-2.5 py-0.5 text-[11px]',

@@ -33,6 +33,21 @@ function brandBody(input: Partial<BrandInput>): FormData | Partial<BrandInput> {
     return form
 }
 
+/** JSON body, or multipart when a cover image is attached (fields travel as text). */
+function categoryBody(
+    input: Partial<CategoryCreateInput>,
+): FormData | Partial<CategoryCreateInput> {
+    const { image, ...fields } = input
+    if (!image) return fields
+    const form = new FormData()
+    for (const [key, value] of Object.entries(fields)) {
+        if (value === undefined || value === null) continue
+        form.append(key, String(value))
+    }
+    form.append('image', image)
+    return form
+}
+
 function categoryPath(slug: CategorySlug, suffix = ''): string {
     return `${CATEGORIES}/${encodeURIComponent(slug)}${suffix}`
 }
@@ -74,9 +89,9 @@ export const AdminService = {
 
     getCategories: () => apiClient.get<AdminCategory[]>(CATEGORIES),
     createCategory: (input: CategoryCreateInput) =>
-        apiClient.post<AdminCategory>(CATEGORIES, input),
+        apiClient.post<AdminCategory>(CATEGORIES, categoryBody(input)),
     updateCategory: (slug: CategorySlug, input: CategoryInput) =>
-        apiClient.patch<AdminCategory>(categoryPath(slug), input),
+        apiClient.patch<AdminCategory>(categoryPath(slug), categoryBody(input)),
     /** `slugs` must list every category exactly once; returns the list in its new order. */
     reorderCategories: (slugs: CategorySlug[]) =>
         apiClient.patch<AdminCategory[]>(`${CATEGORIES}/order`, { slugs }),

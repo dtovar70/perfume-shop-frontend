@@ -9,6 +9,7 @@ import { NOTICE_DISMISS_MS } from '@/constants/ui.constant'
 import { getErrorMessage, isApiError } from '@/services/errors'
 import { toColorInputValue } from '@/utils/color'
 import { slugify } from '@/utils/slugify'
+import { CategoryImageField } from '@/views/admin/categories/components/CategoryImageField'
 import {
     CATEGORY_DESCRIPTION_MAX_LENGTH,
     CATEGORY_SLUG_MAX_LENGTH,
@@ -43,6 +44,17 @@ function toInput(values: CategoryFormValues): CategoryCreateInput {
 function toUpdateInput(values: CategoryFormValues): CategoryInput {
     const { name, tagline, description, colorHex } = toInput(values)
     return { name, tagline, description, colorHex }
+}
+
+/** What the form does to the cover on save: nothing, send a new file, or remove it. */
+type ImageEdit = { kind: 'keep' } | { kind: 'file'; file: File } | { kind: 'remove' }
+
+const KEEP_IMAGE: ImageEdit = { kind: 'keep' }
+
+function imageInput(edit: ImageEdit): Pick<CategoryInput, 'image' | 'removeImage'> {
+    if (edit.kind === 'file') return { image: edit.file }
+    if (edit.kind === 'remove') return { removeImage: true }
+    return {}
 }
 
 /** Pins API validation errors (and a taken slug) on their fields. */
@@ -87,6 +99,7 @@ export function CategoryForm(props: CategoryFormProps) {
     const [isSaved, setIsSaved] = useState(false)
     /** Once the slug is typed by hand, the name stops rewriting it. */
     const [isSlugCustom, setIsSlugCustom] = useState(false)
+    const [imageEdit, setImageEdit] = useState<ImageEdit>(KEEP_IMAGE)
 
     const {
         control,
@@ -107,14 +120,21 @@ export function CategoryForm(props: CategoryFormProps) {
         const onError = (error: unknown) => applyServerErrors(error, values, setError)
 
         if (props.mode === 'create') {
-            createCategory.mutate(toInput(values), { onSuccess: props.onCreated, onError })
+            createCategory.mutate(
+                { ...toInput(values), ...imageInput(imageEdit) },
+                { onSuccess: props.onCreated, onError },
+            )
             return
         }
         updateCategory.mutate(
-            { slug: props.category.slug, input: toUpdateInput(values) },
+            {
+                slug: props.category.slug,
+                input: { ...toUpdateInput(values), ...imageInput(imageEdit) },
+            },
             {
                 onSuccess: (updated) => {
                     reset(toFormValues(updated))
+                    setImageEdit(KEEP_IMAGE)
                     setIsSaved(true)
                 },
                 onError,
@@ -220,6 +240,14 @@ export function CategoryForm(props: CategoryFormProps) {
                 </div>
             </div>
 
+            <CategoryImageField
+                savedUrl={imageEdit.kind === 'remove' ? null : (category?.imageUrl ?? null)}
+                file={imageEdit.kind === 'file' ? imageEdit.file : null}
+                onFileChange={(file) => setImageEdit({ kind: 'file', file })}
+                onRemove={() => setImageEdit(category?.imageUrl ? { kind: 'remove' } : KEEP_IMAGE)}
+                disabled={mutation.isPending}
+            />
+
             {mutation.isError ? <Alert>{getErrorMessage(mutation.error)}</Alert> : null}
             {isSaved ? (
                 <Alert
@@ -243,7 +271,10 @@ export function CategoryForm(props: CategoryFormProps) {
                 ) : null}
                 <Button
                     type="submit"
-                    disabled={(props.mode === 'edit' && !isDirty) || mutation.isPending}
+                    disabled={
+                        (props.mode === 'edit' && !isDirty && imageEdit.kind === 'keep') ||
+                        mutation.isPending
+                    }
                     isLoading={mutation.isPending}
                     leadingIcon={
                         props.mode === 'create' ? (

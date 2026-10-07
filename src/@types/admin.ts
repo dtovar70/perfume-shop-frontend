@@ -132,7 +132,10 @@ export interface AdminCategory extends Category {
     totalProductCount: number
 }
 
-/** Body of `POST /admin/categories`. Without `slug` the API derives it from the name. */
+/**
+ * Body of `POST /admin/categories`. Without `slug` the API derives it from the name. With an
+ * `image` file it is sent as multipart/form-data.
+ */
 export interface CategoryCreateInput {
     name: string
     slug?: string
@@ -140,6 +143,12 @@ export interface CategoryCreateInput {
     description: string
     colorHex: string
     sortOrder?: number
+    /** New cover image (JPG, PNG, WebP or AVIF, at most 5 MB); wins over the other two. */
+    image?: File | null
+    /** External cover URL; `null` removes the cover. */
+    imageUrl?: string | null
+    /** `true` removes the current cover. */
+    removeImage?: boolean
 }
 
 /** Body of `PATCH /admin/categories/:slug`; the slug itself cannot change. */

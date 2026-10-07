@@ -67,6 +67,8 @@
     --theme-shadow-up: 0 -12px 32px -18px rgb(0 0 0 / 0.6);
     --theme-shadow-thumb: 0 2px 6px rgb(0 0 0 / 0.6);
     --theme-shadow-hairline: 0 1px 0 rgb(0 0 0 / 0.2);
+    /* Where a category cover starts fading into the card: a long melt reads well on black. */
+    --theme-cover-fade-start: 45%;
 
     /*
      * The "plate" under product photos: near-white in both themes, because product shots come
@@ -126,6 +128,8 @@
     --theme-shadow-up: 0 -10px 28px -20px rgb(24 24 27 / 0.22);
     --theme-shadow-thumb: 0 1px 4px rgb(24 24 27 / 0.25);
     --theme-shadow-hairline: 0 1px 0 rgb(24 24 27 / 0.06);
+    /* On a light card a long fade washes the photo out, so only its last edge melts. */
+    --theme-cover-fade-start: 82%;
 
     --theme-plate-from: #ffffff;
     --theme-plate-to: #f1f1f3;
@@ -491,4 +495,237 @@
 ::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
+}
+
+/*
+ * Spray bottle (SprayBottleArt): the juice sways in two waves and, every 4.8s, the cap dips and
+ * a puff of mist leaves the nozzle and fades. Transforms on SVG elements use viewBox units.
+ */
+.spray-wave-front,
+.spray-wave-back {
+    animation: spray-wave 3.2s linear infinite;
+}
+.spray-wave-back {
+    animation-duration: 5s;
+    animation-direction: reverse;
+}
+.spray-sway {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: spray-sway 6s ease-in-out infinite;
+}
+.spray-cap {
+    animation: spray-press 4.8s ease-in-out infinite;
+}
+.spray-droplet {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: spray-droplet 4.8s cubic-bezier(0.15, 0.6, 0.3, 1) infinite;
+}
+.spray-cloud {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: 85% 60%;
+    animation: spray-cloud 4.8s ease-out infinite;
+}
+
+@keyframes spray-wave {
+    to {
+        transform: translateX(-40px);
+    }
+}
+@keyframes spray-sway {
+    0%,
+    100% {
+        transform: rotate(-2.5deg);
+    }
+    50% {
+        transform: rotate(2.5deg);
+    }
+}
+@keyframes spray-press {
+    0%,
+    8%,
+    100% {
+        transform: translateY(0);
+    }
+    3% {
+        transform: translateY(2px);
+    }
+}
+@keyframes spray-droplet {
+    0%,
+    2% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.4);
+    }
+    5% {
+        opacity: 0.9;
+    }
+    32% {
+        opacity: 0;
+        transform: translate(var(--spray-dx), var(--spray-dy)) scale(var(--spray-scale));
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--spray-dx), var(--spray-dy)) scale(var(--spray-scale));
+    }
+}
+@keyframes spray-cloud {
+    0%,
+    3% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    9% {
+        opacity: 0.45;
+    }
+    40%,
+    100% {
+        opacity: 0;
+        transform: translateX(-14px) scale(1.5);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spray-wave-front,
+    .spray-wave-back,
+    .spray-sway,
+    .spray-cap,
+    .spray-droplet,
+    .spray-cloud {
+        animation: none;
+    }
+}
+
+/*
+ * Brand beams (home "Nuestras marcas"): a cherry light laps each tile's border, one beam from
+ * the first brand and one from the last; where they meet, the border glows and turns to dust.
+ * The outline is an SVG rect (pathLength 100) whose dash travels around it.
+ */
+.brand-beams {
+    border-radius: var(--radius-card);
+}
+.brand-beam-lap {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 0 4px var(--theme-cherry-500))
+        drop-shadow(0 0 10px var(--theme-glow-strong));
+    animation: brand-beam-in var(--beam-ms, 900ms) ease-in-out forwards;
+}
+.brand-beam-head,
+.brand-beam-tail,
+.brand-beam-glow,
+.brand-beam-fade {
+    fill: none;
+    stroke-linecap: round;
+}
+.brand-beam-head {
+    stroke: var(--theme-accent-strong);
+    stroke-width: 2.5;
+    stroke-dasharray: 9 91;
+    animation: brand-beam-run var(--beam-ms, 900ms) linear forwards;
+}
+.brand-beam-tail {
+    stroke: var(--theme-cherry-500);
+    stroke-width: 2;
+    stroke-dasharray: 30 70;
+    stroke-dashoffset: 21;
+    opacity: 0.55;
+    animation: brand-beam-run-tail var(--beam-ms, 900ms) linear forwards;
+}
+.brand-beam-reverse .brand-beam-head {
+    animation-direction: reverse;
+}
+/* Running backwards, the tail has to trail on the other side of the head. */
+.brand-beam-reverse .brand-beam-tail {
+    stroke-dashoffset: 0;
+    animation-name: brand-beam-run;
+    animation-direction: reverse;
+}
+.brand-beam-glow {
+    stroke: var(--theme-cherry-500);
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 8px var(--theme-cherry-500));
+    animation: brand-beam-glow 900ms ease-in forwards;
+}
+.brand-beam-fade {
+    stroke: var(--theme-cherry-500);
+    stroke-width: 2.5;
+    animation: brand-beam-fade 700ms ease-out forwards;
+}
+.brand-dust {
+    position: absolute;
+    border-radius: 9999px;
+    background: var(--theme-accent-strong);
+    box-shadow: 0 0 8px var(--theme-cherry-500);
+    translate: -50% -50%;
+    opacity: 0;
+    animation: brand-dust 1100ms cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+
+@keyframes brand-beam-in {
+    0% {
+        opacity: 0;
+    }
+    12%,
+    85% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes brand-beam-run {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: -100;
+    }
+}
+@keyframes brand-beam-run-tail {
+    from {
+        stroke-dashoffset: 21;
+    }
+    to {
+        stroke-dashoffset: -79;
+    }
+}
+@keyframes brand-beam-glow {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes brand-beam-fade {
+    from {
+        opacity: 1;
+        filter: drop-shadow(0 0 8px var(--theme-cherry-500)) blur(0);
+    }
+    to {
+        opacity: 0;
+        filter: drop-shadow(0 0 8px var(--theme-cherry-500)) blur(4px);
+    }
+}
+@keyframes brand-dust {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--dust-x), var(--dust-y)) scale(0.2);
+        filter: blur(2px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-beams {
+        display: none;
+    }
 }

@@ -52,7 +52,7 @@ export function AdminCategoriesView() {
         <>
             <AdminPageHeader
                 title="Categorías"
-                description="Nombre, frase, color y orden de cada categoría, tal como se ven en la tienda."
+                description="Nombre, frase, color, imagen y orden de cada categoría, tal como se ven en la tienda."
                 actions={
                     isCreating ? null : (
                         <Button

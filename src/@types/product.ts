@@ -75,6 +75,13 @@ export interface Category {
     tagline: string
     description: string
     colorHex: string
+    /** Cover uploaded from the admin (fills the card's media area); null when there is none. */
+    imageUrl: string | null
+    /**
+     * Without a cover, the first photo of the category's best active product (featured first),
+     * shown on the product plate. Null when no product has a photo: the card draws a bottle.
+     */
+    previewImageUrl: string | null
     productCount: number
 }
 

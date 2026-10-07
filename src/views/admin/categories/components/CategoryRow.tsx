@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUp, GripVertical, Pencil, Trash2 } from 'lucide-react'
 
 import type { AdminCategory } from '@/@types/admin'
 import { Badge, Tooltip } from '@/components/ui'
+import { cldUrl } from '@/utils/cloudinary'
 import { cn } from '@/utils/cn'
 import { toColorInputValue } from '@/utils/color'
 import { CategoryForm } from '@/views/admin/categories/components/CategoryForm'
@@ -135,11 +136,7 @@ export function CategoryRow({
                         <span className="sr-only">Posición </span>
                         {position}
                     </span>
-                    <span
-                        aria-hidden="true"
-                        className="size-4 shrink-0 rounded-full border border-line"
-                        style={{ backgroundColor: toColorInputValue(category.colorHex) }}
-                    />
+                    <CategoryThumbnail category={category} />
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                             <h2 className="min-w-0 font-display text-lg break-words text-fg">
@@ -242,5 +239,53 @@ export function CategoryRow({
                 </div>
             ) : null}
         </li>
+    )
+}
+
+/**
+ * What the storefront card shows: the cover, else the product photo it falls back to (on the
+ * plate), else the category color. The color dot sits on the corner in every case.
+ */
+function CategoryThumbnail({ category }: { category: AdminCategory }) {
+    const color = toColorInputValue(category.colorHex)
+    const image = category.imageUrl ?? category.previewImageUrl
+
+    return (
+        <span
+            aria-hidden="true"
+            className={cn(
+                'relative h-10 w-16 shrink-0 overflow-hidden rounded-xl border border-line',
+                !category.imageUrl && category.previewImageUrl && 'product-plate p-1',
+            )}
+            style={image ? undefined : { backgroundColor: color }}
+            title={
+                category.imageUrl
+                    ? 'Imagen de portada'
+                    : category.previewImageUrl
+                      ? 'Sin portada: se usa la foto de un producto'
+                      : 'Sin imagen'
+            }
+        >
+            {image ? (
+                <img
+                    src={cldUrl(image, 160)}
+                    alt=""
+                    width={64}
+                    height={40}
+                    loading="lazy"
+                    decoding="async"
+                    className={cn(
+                        'size-full',
+                        category.imageUrl ? 'object-cover' : 'object-contain mix-blend-multiply',
+                    )}
+                />
+            ) : null}
+            {image ? (
+                <span
+                    className="absolute right-1 bottom-1 size-2.5 rounded-full ring-2 ring-surface"
+                    style={{ backgroundColor: color }}
+                />
+            ) : null}
+        </span>
     )
 }

@@ -54,13 +54,14 @@ export function ProductCard({ product, priority = false, className }: ProductCar
         void queryClient.prefetchQuery(productDetailQueryOptions(product.slug))
     }
 
-    const badges: { key: string; label: string; tone: 'solid' | 'blush' | 'neutral' }[] = []
+    const badges: { key: string; label: string; tone: 'solid' | 'overlay' | 'neutral' }[] = []
     if (isSoldOut) badges.push({ key: 'agotado', label: 'Agotado', tone: 'neutral' })
     if (discount) badges.push({ key: 'oferta', label: `-${discount}%`, tone: 'solid' })
     else if (product.tags.includes('oferta')) {
         badges.push({ key: 'oferta', label: 'Oferta', tone: 'solid' })
     }
-    if (product.tags.includes('nuevo')) badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'blush' })
+    if (product.tags.includes('nuevo'))
+        badges.push({ key: 'nuevo', label: 'Nuevo', tone: 'overlay' })
 
     return (
         <article

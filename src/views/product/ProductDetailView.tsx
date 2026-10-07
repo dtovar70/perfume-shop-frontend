@@ -32,7 +32,7 @@ import { VariantPicker } from '@/views/product/components/VariantPicker'
 import { variantDisplayLabel } from '@/utils/variantLabel'
 import { useProduct } from '@/views/product/hooks/useProduct'
 
-const pageClass = 'space-y-16 py-6 sm:py-10 lg:space-y-24 lg:py-12'
+const pageClass = 'space-y-16 py-6 sm:py-10 lg:space-y-24 lg:py-8'
 const breadcrumbLinkClass =
     'inline-flex min-h-8 items-center text-fg-soft transition hover:text-accent'
 
@@ -101,7 +101,7 @@ export function ProductDetailView() {
     return (
         <>
             <div className={cn(CONTAINER, pageClass)}>
-                <div className="space-y-5 sm:space-y-6">
+                <div className="space-y-5 sm:space-y-6 lg:space-y-5">
                     <nav aria-label="Ruta de navegación" className="text-sm">
                         <ol className="flex flex-wrap items-center gap-x-1.5">
                             <li>
@@ -149,8 +149,8 @@ export function ProductDetailView() {
                             <ProductGallery product={product} />
                         </div>
 
-                        <div className="space-y-7 lg:space-y-6">
-                            <div className="space-y-3">
+                        <div className="space-y-7 lg:space-y-4">
+                            <div className="space-y-3 lg:space-y-1.5">
                                 {product.brand ? (
                                     <Link
                                         to={brandCatalogPath(product.brand.slug)}
@@ -160,7 +160,7 @@ export function ProductDetailView() {
                                     </Link>
                                 ) : null}
 
-                                <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(2rem,2.4vw,2.75rem)]">
+                                <h1 className="font-display text-[2.25rem] leading-[1.05] font-semibold text-balance text-fg sm:text-[2.75rem] lg:text-[clamp(1.75rem,2.1vw,2.5rem)]">
                                     {product.name}
                                 </h1>
 
@@ -171,13 +171,17 @@ export function ProductDetailView() {
                                 ) : null}
                             </div>
 
-                            <div className="space-y-3 border-y border-line py-5">
+                            <div className="space-y-3 border-y border-line py-5 lg:space-y-2 lg:py-3.5">
                                 <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-                                    <PriceTag
-                                        price={unitPrice}
-                                        compareAtPrice={product.compareAtPrice}
-                                        size="lg"
-                                    />
+                                    {/* Desktop: the stock state sits beside the price to save a row. */}
+                                    <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                                        <PriceTag
+                                            price={unitPrice}
+                                            compareAtPrice={product.compareAtPrice}
+                                            size="lg"
+                                        />
+                                        <StockState stock={stockLeft} className="max-lg:hidden" />
+                                    </div>
                                     <BsApproximation
                                         usd={unitPrice}
                                         className="text-left sm:text-right"
@@ -189,7 +193,7 @@ export function ProductDetailView() {
                                         según el tamaño que elijas.
                                     </p>
                                 ) : null}
-                                <StockState stock={stockLeft} />
+                                <StockState stock={stockLeft} className="lg:hidden" />
                             </div>
 
                             <VariantPicker
@@ -207,7 +211,7 @@ export function ProductDetailView() {
                                             max={maxQuantity}
                                             disabled={addable === 0}
                                             onChange={setQuantity}
-                                            className="h-13"
+                                            className="h-13 lg:h-12"
                                         />
                                     ) : null}
 
@@ -217,7 +221,7 @@ export function ProductDetailView() {
                                         quantity={safeQuantity}
                                         size="lg"
                                         // Phones: the button takes the rest of the row.
-                                        className="flex-1 basis-48 px-5"
+                                        className="flex-1 basis-48 px-5 lg:h-12"
                                     />
                                 </div>
 
@@ -231,7 +235,7 @@ export function ProductDetailView() {
                                 ) : null}
                             </div>
 
-                            <ul className="space-y-2.5 rounded-card border border-line bg-surface p-4 text-sm text-fg-soft sm:p-5">
+                            <ul className="space-y-2.5 rounded-card border border-line bg-surface p-4 text-sm text-fg-soft sm:p-5 lg:space-y-2 lg:px-5 lg:py-3.5">
                                 <li className="flex items-start gap-3">
                                     <Truck
                                         aria-hidden="true"
