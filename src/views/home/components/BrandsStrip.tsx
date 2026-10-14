@@ -5,8 +5,8 @@ import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
 import { useBrands } from '@/views/catalog/hooks/useBrands'
-import { BrandBeamOverlay } from '@/views/home/components/BrandBeams'
-import { useBrandBeams } from '@/views/home/hooks/useBrandBeams'
+import { BrandBeamOverlay } from '@/components/shared/BrandBeams'
+import { useBrandBeams } from '@/utils/hooks/useBrandBeams'
 
 const LIMIT = 12
 

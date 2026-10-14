@@ -20,13 +20,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
             'Perfumes originales de diseñador y árabes para mujer y hombre. Pago Móvil y divisas, envío gratis desde {envioGratis} a toda Venezuela.',
         searchPlaceholder: 'Buscar perfumes, marcas…',
     },
-    announcements: {
-        messages: [
-            'Envío gratis desde {envioGratis} a toda Venezuela',
-            'Fragancias 100% originales',
-            'Paga con Pago Móvil o en divisas',
-        ],
-    },
     home: {
         heroBadge: '',
         heroTitle: 'Tu esencia, *en cada gota*',

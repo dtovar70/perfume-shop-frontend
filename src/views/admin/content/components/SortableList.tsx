@@ -10,7 +10,7 @@ const actionClass =
     'flex size-9 items-center justify-center rounded-full text-fg-soft transition hover:bg-cherry-tint hover:text-accent focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:hover:text-fg-soft'
 
 export interface SortableListProps {
-    /** Accessible name of the list: "Mensajes de la cinta". */
+    /** Accessible name of the list: "Párrafos de la historia". */
     label: string
     /** Stable ids (react-hook-form's `field.id`), in order. */
     itemIds: string[]

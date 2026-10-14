@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-import { BEAM_MEET_MS, BEAM_STEP_MS, type BeamState } from '@/views/home/hooks/useBrandBeams'
+import { BEAM_MEET_MS, BEAM_STEP_MS, type BeamState } from '@/utils/hooks/useBrandBeams'
 
 const SPECK_COUNT = 56
 

@@ -65,6 +65,11 @@ export interface ProductVariantInput {
     priceDelta: number
     volumeMl?: number | null
     stock: number
+    /**
+     * Edit only, existing variants: the stock the form was loaded with. The API keeps the
+     * current count when `stock` equals it and answers 409 `STOCK_CHANGED` when orders moved it.
+     */
+    expectedStock?: number
 }
 
 /** Body of `POST /admin/products`; `PATCH` accepts any subset of it. */
@@ -77,6 +82,8 @@ export interface ProductInput {
     compareAtPrice?: number | null
     /** Only for a product without variants; with variants the API uses their sum. */
     stock?: number
+    /** Edit only, with `stock`: the count the form was loaded with (see the variants'). */
+    expectedStock?: number
     /** `null` leaves the product without a brand. */
     brandSlug: string | null
     gender: ProductGender

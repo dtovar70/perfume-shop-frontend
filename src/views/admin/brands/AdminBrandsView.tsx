@@ -20,6 +20,13 @@ import { useSession } from '@/views/admin/hooks/useSession'
 const iconButtonClass =
     'flex size-11 items-center justify-center rounded-full text-fg-soft transition hover:bg-elevated hover:text-accent disabled:pointer-events-none disabled:opacity-40'
 
+/**
+ * Columns follow the space the admin layout actually leaves (rail included), not the viewport:
+ * each card keeps at least 26rem so names like "Jean Paul Gaultier" read whole beside the logo
+ * and the actions; a still longer name wraps to a second line instead of being cut.
+ */
+const BRAND_GRID_CLASS = 'grid gap-4 grid-cols-[repeat(auto-fill,minmax(min(100%,26rem),1fr))]'
+
 /** `/admin/marcas`: the perfume houses, with logo, order and visibility. */
 export function AdminBrandsView() {
     const brands = useAdminBrands()
@@ -71,7 +78,7 @@ export function AdminBrandsView() {
                 ) : null}
 
                 {brands.isPending ? (
-                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <div className={BRAND_GRID_CLASS}>
                         {Array.from({ length: 6 }, (_, index) => (
                             <Skeleton key={index} shape="block" className="h-28" />
                         ))}
@@ -95,7 +102,7 @@ export function AdminBrandsView() {
                         action={<Button onClick={() => openForm(null)}>Crear marca</Button>}
                     />
                 ) : (
-                    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <ul className={BRAND_GRID_CLASS}>
                         {brands.data.map((brand) => (
                             <li key={brand.slug}>
                                 <Card padding="sm" className="flex h-full items-center gap-4">
@@ -114,7 +121,7 @@ export function AdminBrandsView() {
                                         )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate font-display text-xl font-semibold text-fg">
+                                        <p className="line-clamp-2 font-display text-xl leading-tight font-semibold break-words text-fg">
                                             {brand.name}
                                         </p>
                                         <p className="truncate text-xs text-fg-soft">

@@ -32,7 +32,8 @@ export const CONTENT_LIMITS = {
     tagline: 80,
     titleSuffix: 70,
     metaDescription: 300,
-    announcement: 80,
+    /** Short one-line copy (shipping texts). */
+    shortCopy: 80,
     searchPlaceholder: 60,
     statValue: 12,
     email: 100,
@@ -50,7 +51,6 @@ export const CONTENT_LIMITS = {
 } as const
 
 export const CONTENT_LIST_SIZES = {
-    announcements: { min: 1, max: 8 },
     heroFeatures: { min: 0, max: 4 },
     steps: { min: 1, max: 6 },
     paragraphs: { min: 1, max: 6 },
@@ -187,22 +187,6 @@ export const generalSchema = z.object({
     searchPlaceholder: text(L.searchPlaceholder),
 })
 export type GeneralFormValues = z.infer<typeof generalSchema>
-
-/* ---------------------------------------------------------- Announcements */
-
-export const ANNOUNCEMENT_PLACEHOLDERS = ['envioGratis', 'tarifaEnvio'] as const
-
-export const announcementsSchema = z.object({
-    messages: textList(
-        L.announcement,
-        CONTENT_LIST_SIZES.announcements,
-        { one: 'un anuncio', the: 'el anuncio' },
-        {
-            placeholders: ANNOUNCEMENT_PLACEHOLDERS,
-        },
-    ),
-})
-export type AnnouncementsFormValues = z.infer<typeof announcementsSchema>
 
 /* ------------------------------------------------------------------- Home */
 
@@ -345,8 +329,8 @@ export type ContactPageFormValues = z.infer<typeof contactPageSchema>
 export const shippingSchema = z.object({
     freeThreshold: money('Escribe el monto para envío gratis'),
     flatRate: money('Escribe la tarifa de envío'),
-    freeShippingCopy: text(L.announcement, { placeholders: ['envioGratis'] }),
-    productionCopy: text(L.announcement),
+    freeShippingCopy: text(L.shortCopy, { placeholders: ['envioGratis'] }),
+    productionCopy: text(L.shortCopy),
 })
 export type ShippingFormValues = z.input<typeof shippingSchema>
 
@@ -385,13 +369,6 @@ function sameShape<K extends ContentSection, F>(
     }
 }
 
-const announcementsForm: SectionFormConfig<'announcements', AnnouncementsFormValues> = {
-    section: 'announcements',
-    schema: announcementsSchema,
-    toForm: (value) => ({ messages: toItems(value.messages) }),
-    toValue: (form) => ({ messages: fromItems(form.messages) }),
-}
-
 const homeForm: SectionFormConfig<'home', HomeFormValues> = {
     section: 'home',
     schema: homeSchema,
@@ -412,7 +389,6 @@ const aboutForm: SectionFormConfig<'about', AboutFormValues> = {
 
 export const SECTION_FORMS = {
     general: sameShape<'general', GeneralFormValues>('general', generalSchema),
-    announcements: announcementsForm,
     home: homeForm,
     about: aboutForm,
     contact: sameShape<'contact', ContactFormValues>('contact', contactSchema),

@@ -8,7 +8,28 @@ import {
 
 import type { AdminProduct, AdminProductQueryParams, ProductInput } from '@/@types/admin'
 import { queryKeys } from '@/constants/query-keys.constant'
+import { isApiError } from '@/services/errors'
 import { AdminService } from '@/services/AdminService'
+
+/** 409 of an edit whose stock changed since the form was loaded (orders took units). */
+export const STOCK_CHANGED = 'STOCK_CHANGED'
+
+/** Current counts the API sends with a 409 `STOCK_CHANGED`. */
+export interface StockChangedPayload {
+    /** The product's stock (the sum of its variants when it has any). */
+    stock: number
+    variants: { id: string; label: string; stock: number }[]
+}
+
+/** The current counts of a 409 `STOCK_CHANGED`, or null for any other error. */
+export function readStockChanged(error: unknown): StockChangedPayload | null {
+    if (!isApiError(error, 409) || error.code !== STOCK_CHANGED) return null
+    const { stock, variants } = error.payload
+    return {
+        stock: typeof stock === 'number' ? stock : 0,
+        variants: Array.isArray(variants) ? (variants as StockChangedPayload['variants']) : [],
+    }
+}
 
 /**
  * Any product change can alter what the storefront shows (lists, detail, featured,
@@ -62,6 +83,17 @@ export function useUpdateProduct(id: string) {
     return useMutation({
         mutationFn: (input: Partial<ProductInput>) => AdminService.updateProduct(id, input),
         onSuccess: (product) => syncProduct(queryClient, product),
+        onError: (error) => {
+            // Orders moved the stock: refetch so the page and the list show the current counts.
+            if (readStockChanged(error)) {
+                void queryClient.invalidateQueries({
+                    queryKey: queryKeys.admin.products.detail(id),
+                })
+                void queryClient.invalidateQueries({
+                    queryKey: queryKeys.admin.products.lists(),
+                })
+            }
+        },
     })
 }
 

@@ -23,6 +23,7 @@ import { formatCurrency } from '@/utils/formatCurrency'
 import { slugify } from '@/utils/slugify'
 import { useAdminBrands } from '@/views/admin/hooks/useAdminBrands'
 import { useAdminCategories } from '@/views/admin/hooks/useAdminCategories'
+import { readStockChanged, type StockChangedPayload } from '@/views/admin/hooks/useAdminProducts'
 import {
     MAX_HIGHLIGHTS,
     MAX_NOTES_PER_TIER,
@@ -60,6 +61,7 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
         control,
         register,
         handleSubmit,
+        getValues,
         setError,
         setValue,
         formState: { errors, isSubmitting },
@@ -104,6 +106,37 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
         })),
     ]
 
+    /**
+     * After a 409 `STOCK_CHANGED`: puts the current counts in the stock inputs (and as the new
+     * loaded counts), marking the ones that moved; every other edit stays as typed.
+     */
+    const refreshStock = (current: StockChangedPayload) => {
+        const byId = new Map(current.variants.map((variant) => [variant.id, variant.stock]))
+        getValues('variants').forEach((variant, index) => {
+            const stock = variant.variantId ? byId.get(variant.variantId) : undefined
+            if (stock === undefined) return
+            const moved = variant.stock !== stock
+            setValue(`variants.${index}.stock`, stock)
+            setValue(`variants.${index}.expectedStock`, stock)
+            if (moved) {
+                setError(`variants.${index}.stock`, {
+                    type: 'server',
+                    message: `Cambió por pedidos; ahora hay ${stock}.`,
+                })
+            }
+        })
+        if (current.variants.length === 0) {
+            if (getValues('stock') !== current.stock) {
+                setError('stock', {
+                    type: 'server',
+                    message: `Cambió por pedidos; ahora hay ${current.stock}.`,
+                })
+            }
+            setValue('stock', current.stock)
+        }
+        setValue('expectedStock', current.stock)
+    }
+
     const submit = handleSubmit(async (values) => {
         setServerError(null)
 
@@ -112,6 +145,14 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
         try {
             await onSubmit(toProductInput(values, mode))
         } catch (error) {
+            const stockChanged = readStockChanged(error)
+            if (stockChanged) {
+                refreshStock(stockChanged)
+                setServerError(
+                    'El stock cambió mientras editabas (entraron pedidos). Actualizamos el stock con el valor actual; revísalo y vuelve a guardar.',
+                )
+                return
+            }
             setServerError(applyServerErrors(error, setError))
         }
     })

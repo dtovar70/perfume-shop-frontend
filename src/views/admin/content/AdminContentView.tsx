@@ -11,7 +11,6 @@ import { ADMIN_ROUTES } from '@/constants/route.constant'
 import { getErrorMessage } from '@/services/errors'
 import { cn } from '@/utils/cn'
 import { AboutSection } from '@/views/admin/content/sections/AboutSection'
-import { AnnouncementsSection } from '@/views/admin/content/sections/AnnouncementsSection'
 import { ContactPageSection } from '@/views/admin/content/sections/ContactPageSection'
 import { ContactSection } from '@/views/admin/content/sections/ContactSection'
 import { GeneralSection } from '@/views/admin/content/sections/GeneralSection'
@@ -47,10 +46,6 @@ function SectionPanel({
     switch (section) {
         case 'general':
             return <GeneralSection saved={content.general} onDirtyChange={onDirtyChange} />
-        case 'announcements':
-            return (
-                <AnnouncementsSection saved={content.announcements} onDirtyChange={onDirtyChange} />
-            )
         case 'home':
             return <HomeSection saved={content.home} onDirtyChange={onDirtyChange} />
         case 'about':

@@ -134,6 +134,8 @@ export const productFormSchema = z
         compareAtPrice: money('Escribe el precio anterior').optional(),
         /** Only used (and required) when the product has no variants. */
         stock: stockCount('Escribe el stock disponible').optional(),
+        /** Edit only: the stock the form was loaded with (no input; sent as `expectedStock`). */
+        expectedStock: z.number().optional(),
         /** "" means no brand. */
         brandSlug: z.string(),
         gender: z.enum(PRODUCT_GENDERS, { error: 'Elige para quién es' }),
@@ -180,6 +182,8 @@ export const productFormSchema = z
                     priceDelta: money('Escribe el ajuste de precio (0 si no cambia)', -MAX_PRICE),
                     volumeMl: volumeMl().optional(),
                     stock: stockCount('Escribe el stock (0 si está agotada)'),
+                    /** Existing variants: the stock the form was loaded with (no input). */
+                    expectedStock: z.number().optional(),
                 }),
             )
             .max(MAX_VARIANTS, `Máximo ${MAX_VARIANTS} variantes`),
@@ -238,6 +242,7 @@ export function toProductFormValues(product: AdminProduct): ProductFormValues {
         price: product.price,
         compareAtPrice: product.compareAtPrice,
         stock: product.stock,
+        expectedStock: product.stock,
         brandSlug: product.brand?.slug ?? '',
         gender: product.gender,
         concentration: product.concentration ?? '',
@@ -257,6 +262,7 @@ export function toProductFormValues(product: AdminProduct): ProductFormValues {
             priceDelta: variant.priceDelta,
             volumeMl: variant.volumeMl ?? undefined,
             stock: variant.stock,
+            expectedStock: variant.stock,
         })),
         isActive: product.isActive,
     }
@@ -264,7 +270,9 @@ export function toProductFormValues(product: AdminProduct): ProductFormValues {
 
 /**
  * Form values to request body. On update a cleared "before" price is sent as `null`,
- * which is how the API removes it; on create it is simply omitted.
+ * which is how the API removes it; on create it is simply omitted. On update every stock goes
+ * with the count it was loaded with (`expectedStock`), so the API never overwrites units that
+ * orders took meanwhile.
  */
 export function toProductInput(values: ProductFormValues, mode: 'create' | 'edit'): ProductInput {
     const slug = values.slug.trim()
@@ -281,6 +289,9 @@ export function toProductInput(values: ProductFormValues, mode: 'create' | 'edit
               : {}),
         // With variants the API stores the sum of theirs.
         ...(values.variants.length === 0 ? { stock: values.stock ?? 0 } : {}),
+        ...(mode === 'edit' && values.variants.length === 0 && values.expectedStock !== undefined
+            ? { expectedStock: values.expectedStock }
+            : {}),
         brandSlug: values.brandSlug || null,
         gender: values.gender,
         concentration: values.concentration || null,
@@ -300,6 +311,9 @@ export function toProductInput(values: ProductFormValues, mode: 'create' | 'edit
             priceDelta: variant.priceDelta,
             volumeMl: variant.volumeMl ?? null,
             stock: variant.stock,
+            ...(mode === 'edit' && variant.variantId && variant.expectedStock !== undefined
+                ? { expectedStock: variant.expectedStock }
+                : {}),
         })),
         isActive: values.isActive,
     }

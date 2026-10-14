@@ -615,7 +615,7 @@
 }
 
 /*
- * Brand beams (home "Nuestras marcas"): a cherry light laps each tile's border, one beam from
+ * Brand beams (home "Nuestras marcas" and /marcas): a cherry light laps each tile's border, one beam from
  * the first brand and one from the last; where they meet, the border glows and turns to dust.
  * The outline is an SVG rect (pathLength 100) whose dash travels around it.
  */

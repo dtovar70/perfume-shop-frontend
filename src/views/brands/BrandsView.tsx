@@ -1,5 +1,6 @@
 import { Gem } from 'lucide-react'
 
+import { BrandBeamOverlay } from '@/components/shared/BrandBeams'
 import { BrandTile } from '@/components/shared/BrandTile'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { SectionHeading } from '@/components/shared/SectionHeading'
@@ -7,6 +8,7 @@ import { Button, Skeleton } from '@/components/ui'
 import { CONTAINER } from '@/constants/layout.constant'
 import { ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
+import { useBrandBeams } from '@/utils/hooks/useBrandBeams'
 import { useSeo } from '@/utils/hooks/useSeo'
 import { useBrands } from '@/views/catalog/hooks/useBrands'
 
@@ -22,6 +24,8 @@ export function BrandsView() {
     const visible = [...(brands ?? [])]
         .filter((brand) => brand.productCount > 0)
         .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+    // The same converging cherry beams as the home brands strip.
+    const { listRef, state: beams } = useBrandBeams(isPending ? 0 : visible.length)
 
     return (
         <div className={cn(CONTAINER, 'space-y-10 py-12 lg:py-16')}>
@@ -50,16 +54,20 @@ export function BrandsView() {
                     icon={<Gem className="size-6" />}
                 />
             ) : (
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+                <ul
+                    ref={listRef}
+                    className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5"
+                >
                     {isPending
                         ? Array.from({ length: 10 }, (_, index) => (
                               <li key={index}>
                                   <Skeleton shape="block" className="h-28 w-full" />
                               </li>
                           ))
-                        : visible.map((brand) => (
-                              <li key={brand.slug}>
+                        : visible.map((brand, index) => (
+                              <li key={brand.slug} className="relative">
                                   <BrandTile brand={brand} showCount />
+                                  <BrandBeamOverlay index={index} state={beams} />
                               </li>
                           ))}
                 </ul>
