@@ -44,7 +44,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
                     size="lg"
                     loading="eager"
                     fetchPriority="high"
-                    sizes="(min-width: 1024px) 40rem, 100vw"
+                    sizes="(min-width: 1024px) 52rem, 100vw"
                 />
 
                 {hasDiscount ? (

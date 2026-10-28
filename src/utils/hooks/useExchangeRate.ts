@@ -4,7 +4,8 @@ import { queryKeys } from '@/constants/query-keys.constant'
 import { ExchangeRateService } from '@/services/ExchangeRateService'
 
 /**
- * The BCV rate the checkout would use now. The storefront only shows approximate bolívar
+ * The rate the checkout would use now (the BCV dollar, the BCV euro or USDT, as the business
+ * chose; `currency` says which). The storefront only shows approximate bolívar
  * amounts with it; the exact amount is fixed by the API when the order is created.
  */
 export function useExchangeRate() {

@@ -28,8 +28,8 @@ export function OrderAlerts({ order }: { order: AdminOrder }) {
                     </p>
                     <p className="font-normal">
                         La fecha de pago indicada es posterior al plazo (vencía el{' '}
-                        {formatDateTime(order.paymentDueAt)}), así que se pagó con una tasa BCV
-                        distinta a la del pedido. Revisa el banco y el monto antes de confirmarlo.
+                        {formatDateTime(order.paymentDueAt)}), así que se pagó con una tasa distinta
+                        a la del pedido. Revisa el banco y el monto antes de confirmarlo.
                     </p>
                 </Alert>
             ) : null}

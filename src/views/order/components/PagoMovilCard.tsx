@@ -6,6 +6,7 @@ import { CopyButton } from '@/components/shared/CopyButton'
 import { formatBolivares, formatRate, formatVeNumber } from '@/utils/formatBolivares'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { formatDay } from '@/utils/formatDate'
+import { RATE_NAMES, RATE_UNITS } from '@/utils/rateCurrency'
 
 interface Row {
     label: string
@@ -40,6 +41,7 @@ export interface PagoMovilCardProps {
 /** Where and how much to pay, each value one tap away from the clipboard. */
 export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
     const { totals } = order
+    const currency = totals.exchangeRateCurrency ?? 'USD'
     const rows = rowsFor(pagoMovil, totals.totalBs)
     const everything = [
         'Pago Móvil',
@@ -95,9 +97,10 @@ export function PagoMovilCard({ order, pagoMovil }: PagoMovilCardProps) {
             </dl>
 
             <p className="text-xs text-fg-soft">
-                Total {formatCurrency(totals.totalUsd)} · Tasa BCV del{' '}
-                {formatDay(totals.exchangeRateDate)}: {formatRate(totals.exchangeRate)} Bs/$. El
-                monto en bolívares se mantiene durante todo el plazo de pago.
+                Total {formatCurrency(totals.totalUsd)} · {RATE_NAMES[currency]} del{' '}
+                {formatDay(totals.exchangeRateDate)}: {formatRate(totals.exchangeRate)}{' '}
+                {RATE_UNITS[currency]}. El monto en bolívares se mantiene durante todo el plazo de
+                pago.
             </p>
             {pagoMovil.instructions ? (
                 <p className="text-sm break-words whitespace-pre-line text-fg-soft">

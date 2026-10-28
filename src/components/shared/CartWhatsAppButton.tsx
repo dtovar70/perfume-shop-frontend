@@ -51,6 +51,7 @@ export function CartWhatsAppButton({ className }: CartWhatsAppButtonProps) {
         items,
         subtotal,
         rate: rate?.available ? rate.rate : undefined,
+        currency: rate?.currency,
         shipping,
         freeShippingText: shipping.freeShippingText,
         brandName: general.brandName,

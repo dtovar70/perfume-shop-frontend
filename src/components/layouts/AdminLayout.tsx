@@ -45,7 +45,7 @@ const NAV_LINKS: readonly {
     roles?: readonly UserRole[]
 }[] = [
     { label: 'Pedidos', to: ADMIN_ROUTES.orders, icon: ClipboardList },
-    { label: 'Tasa BCV', to: ADMIN_ROUTES.exchangeRate, icon: Landmark },
+    { label: 'Tasa de cambio', to: ADMIN_ROUTES.exchangeRate, icon: Landmark },
     { label: 'Productos', to: ADMIN_ROUTES.products, icon: Package },
     { label: 'Categorías', to: ADMIN_ROUTES.categories, icon: Tags },
     { label: 'Marcas', to: ADMIN_ROUTES.brands, icon: Gem },

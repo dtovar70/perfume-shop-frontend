@@ -68,9 +68,10 @@ export const ROLE_CAPABILITIES: readonly RoleCapabilityGroup[] = [
         ],
     },
     {
-        area: 'Tasa BCV',
+        area: 'Tasa de cambio',
         capabilities: [
-            { action: 'Ver la tasa y usar «Actualizar ahora»', roles: BOTH },
+            { action: 'Ver las tasas y usar «Actualizar ahora»', roles: BOTH },
+            { action: 'Elegir la tasa que usa el negocio', roles: ADMIN_ONLY },
             { action: 'Fijar una tasa manual', roles: ADMIN_ONLY },
         ],
     },

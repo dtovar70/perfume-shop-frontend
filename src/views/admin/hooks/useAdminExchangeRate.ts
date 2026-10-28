@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import type { AdminExchangeRate } from '@/@types/exchange-rate'
+import type { AdminExchangeRate, RateCurrency } from '@/@types/exchange-rate'
 import { queryKeys } from '@/constants/query-keys.constant'
 import { ExchangeRateService } from '@/services/ExchangeRateService'
 
@@ -24,8 +24,23 @@ function useSync() {
 export function useSetManualRate() {
     const sync = useSync()
     return useMutation({
-        mutationFn: ({ rate, effectiveDate }: { rate: number; effectiveDate?: string }) =>
-            ExchangeRateService.setManual(rate, effectiveDate),
+        mutationFn: ({
+            currency,
+            rate,
+            effectiveDate,
+        }: {
+            currency: RateCurrency
+            rate: number
+            effectiveDate?: string
+        }) => ExchangeRateService.setManual(currency, rate, effectiveDate),
+        onSuccess: sync,
+    })
+}
+
+export function useSetActiveCurrency() {
+    const sync = useSync()
+    return useMutation({
+        mutationFn: (currency: RateCurrency) => ExchangeRateService.setActiveCurrency(currency),
         onSuccess: sync,
     })
 }

@@ -7,10 +7,12 @@ import { adminProductPath } from '@/constants/route.constant'
 import { formatBolivares, formatRate } from '@/utils/formatBolivares'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { formatDay } from '@/utils/formatDate'
+import { RATE_NAMES, RATE_UNITS } from '@/utils/rateCurrency'
 
-/** The ordered lines as frozen at checkout, the totals and the BCV rate used. */
+/** The ordered lines as frozen at checkout, the totals and the rate used (dollar, euro, USDT). */
 export function OrderItemsTable({ order }: { order: AdminOrder }) {
     const { totals } = order
+    const currency = totals.exchangeRateCurrency ?? 'USD'
     return (
         <Card padding="md" className="space-y-4">
             <h2 className="font-display text-xl text-fg">Productos</h2>
@@ -69,8 +71,12 @@ export function OrderItemsTable({ order }: { order: AdminOrder }) {
                     </dd>
                 </div>
                 <p className="text-xs text-fg-soft">
-                    Tasa {totals.exchangeRateSourceLabel} del {formatDay(totals.exchangeRateDate)}:{' '}
-                    {formatRate(totals.exchangeRate)} Bs/$ (
+                    {/* "Tasa BCV (bcv.org.ve) del …" for dollar orders, as always. */}
+                    {currency === 'USD'
+                        ? `Tasa ${totals.exchangeRateSourceLabel}`
+                        : `${RATE_NAMES[currency]} · ${totals.exchangeRateSourceLabel}`}{' '}
+                    del {formatDay(totals.exchangeRateDate)}: {formatRate(totals.exchangeRate)}{' '}
+                    {RATE_UNITS[currency]} (
                     {totals.exchangeRate.toLocaleString('es-VE', { maximumFractionDigits: 4 })})
                 </p>
             </dl>

@@ -1,8 +1,10 @@
 import type { CartItem } from '@/@types/cart'
+import type { RateCurrency } from '@/@types/exchange-rate'
 import type { ShippingContent } from '@/@types/content'
 import { formatShortMoney, shippingCost } from '@/utils/content'
 import { formatBolivares, formatRate, usdToBolivares } from '@/utils/formatBolivares'
 import { formatCurrency } from '@/utils/formatCurrency'
+import { RATE_NAMES, RATE_UNITS } from '@/utils/rateCurrency'
 
 /**
  * Budget for the URL-encoded message. wa.me links far longer than this get cut or refused by
@@ -13,8 +15,10 @@ export const WHATSAPP_MESSAGE_MAX_ENCODED = 3000
 export interface CartWhatsappInput {
     items: readonly CartItem[]
     subtotal: number
-    /** Current BCV rate (Bs per USD), when the API has a usable one. */
+    /** Current rate (Bs per unit of `currency`), when the API has a usable one. */
     rate?: number
+    /** The rate's currency; the BCV dollar when absent. */
+    currency?: RateCurrency
     shipping: ShippingContent
     /** "Envío gratis desde $35", already filled from the CMS. */
     freeShippingText: string
@@ -43,6 +47,7 @@ export function buildCartWhatsappMessage({
     items,
     subtotal,
     rate,
+    currency = 'USD',
     shipping,
     freeShippingText,
     brandName,
@@ -52,7 +57,7 @@ export function buildCartWhatsappMessage({
     const totals = ['', `Subtotal: ${formatCurrency(subtotal)}`]
     if (rate && rate > 0) {
         totals.push(
-            `≈ ${formatBolivares(usdToBolivares(subtotal, rate))} (tasa BCV ${formatRate(rate)} Bs/$)`,
+            `≈ ${formatBolivares(usdToBolivares(subtotal, rate))} (${RATE_NAMES[currency].toLowerCase()} ${formatRate(rate)} ${RATE_UNITS[currency]})`,
         )
     }
     const cost = shippingCost(subtotal, shipping)

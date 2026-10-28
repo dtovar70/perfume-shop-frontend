@@ -1,6 +1,6 @@
 import type { Paginated } from '@/@types/common'
 import type { PaymentContent } from '@/@types/content'
-import type { RateSource } from '@/@types/exchange-rate'
+import type { RateCurrency, RateSource } from '@/@types/exchange-rate'
 
 /** Mirrors backend-cups/src/orders/order-status.ts and order.mapper.ts. */
 export const ORDER_STATUSES = [
@@ -59,7 +59,9 @@ export interface OrderTotals {
     shippingUsd: number
     totalUsd: number
     totalBs: number
+    /** Bs per unit of `exchangeRateCurrency`, frozen when the order was placed. */
     exchangeRate: number
+    exchangeRateCurrency: RateCurrency
     exchangeRateDate: string
     exchangeRateSource: RateSource
     exchangeRateSourceLabel: string
@@ -311,6 +313,8 @@ export interface AdminOrdersSummary {
     pendingRefunds: number
     paymentConfigured: boolean
     exchangeRate: {
+        /** The currency the business converts with. */
+        currency: RateCurrency
         available: boolean
         isStale: boolean
         rate: number | null

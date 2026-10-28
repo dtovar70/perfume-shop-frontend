@@ -6,12 +6,13 @@ type MediaSize = 'sm' | 'md' | 'lg'
 
 /**
  * Candidate widths (for `srcSet`) and the default `sizes` of each slot. Phones with 2-3x screens
- * pick the larger candidates; nothing ever downloads the full-size upload.
+ * pick the larger candidates; nothing ever downloads the full-size upload. Over the backdrop the
+ * photo's CSS size comes from `sizes`, so it must be at least the frame's width.
  */
 const RESPONSIVE: Record<MediaSize, { widths: number[]; sizes: string }> = {
     sm: { widths: [96, 192, 288], sizes: '96px' },
     md: { widths: [320, 480, 640, 800], sizes: '(min-width: 1024px) 22rem, 50vw' },
-    lg: { widths: [480, 800, 1200, 1600], sizes: '(min-width: 1024px) 40rem, 100vw' },
+    lg: { widths: [480, 800, 1200, 1600], sizes: '(min-width: 1024px) 52rem, 100vw' },
 }
 
 /**
@@ -20,9 +21,19 @@ const RESPONSIVE: Record<MediaSize, { widths: number[]; sizes: string }> = {
  */
 const PLATE_PADDING: Record<MediaSize, string> = {
     sm: 'p-1.5',
-    md: 'p-[9%]',
-    lg: 'p-[7%]',
+    md: 'p-[5%]',
+    lg: 'p-[4%]',
 }
+
+/** Corners of the photo laid over the blurred backdrop, in step with its frame. */
+const PHOTO_RADIUS: Record<MediaSize, string> = {
+    sm: '',
+    md: 'rounded-xl',
+    lg: 'rounded-2xl',
+}
+
+/** Width of the blurred backdrop: blurred this much, a tiny download looks the same as a big one. */
+const BACKDROP_WIDTH = 64
 
 /** Intrinsic size hints (4:5, the frame most slots use); CSS sizes the photo to its frame. */
 const INTRINSIC: Record<MediaSize, { width: number; height: number }> = {
@@ -56,7 +67,10 @@ export interface ProductMediaProps {
 }
 
 /**
- * A product's photo on a soft light plate, whole (`object-contain`) and never cropped; or a
+ * A product's photo, whole (`object-contain`) and never cropped, over a blurred, enlarged copy
+ * of itself that fills the frame: photos with their own background (AI scenes) leave no empty
+ * bands, and white-background photos still read as a light plate. Thumbnails (`sm`) keep the
+ * plain plate. Without a photo, a
  * dark placeholder with a line-drawn bottle when it has none. Both fill the parent: the caller
  * owns the frame (aspect ratio, radius). The root carries `data-product-media`, which the
  * fly-to-cart effect clones.
@@ -84,12 +98,36 @@ export function ProductMedia({
 
     const responsive = RESPONSIVE[size]
     const srcSet = cldSrcSet(image.url, responsive.widths)
+    const hasBackdrop = size !== 'sm'
 
     return (
         <div
             data-product-media=""
-            className={cn('relative product-plate size-full', PLATE_PADDING[size], className)}
+            className={cn(
+                'relative product-plate size-full overflow-hidden',
+                // Centres the photo, which over the backdrop is sized to its own pixels.
+                hasBackdrop && 'flex items-center justify-center',
+                PLATE_PADDING[size],
+                className,
+            )}
         >
+            {hasBackdrop ? (
+                <img
+                    src={cldUrl(image.url, BACKDROP_WIDTH)}
+                    alt=""
+                    aria-hidden="true"
+                    loading={loading}
+                    decoding="async"
+                    draggable={false}
+                    className={cn(
+                        // Scaled up so the blur's soft edge falls outside the frame; important so hover zooms
+                        // that target every `img` (CategoryCard) move only the photo. Slightly
+                        // dimmed so the photo stands out; a white background stays near white.
+                        'pointer-events-none absolute inset-0 size-full scale-125! object-cover blur-2xl brightness-[0.87] select-none',
+                        muted && 'opacity-55 grayscale',
+                    )}
+                />
+            ) : null}
             <img
                 src={cldUrl(image.url, responsive.widths.at(-1) ?? 800)}
                 srcSet={srcSet}
@@ -102,8 +140,15 @@ export function ProductMedia({
                 decoding="async"
                 draggable={false}
                 className={cn(
-                    // Multiply melts the photo's white background into the plate.
-                    'size-full object-contain object-center mix-blend-multiply select-none',
+                    'relative select-none',
+                    hasBackdrop
+                        ? // Box = the photo itself (not the frame), so corners and shadow hug it.
+                          cn(
+                              'h-auto max-h-full w-auto max-w-full shadow-[0_14px_36px_-10px_rgb(0_0_0/0.5)]',
+                              PHOTO_RADIUS[size],
+                          )
+                        : // Multiply melts a white background into the plate.
+                          'size-full object-contain object-center mix-blend-multiply',
                     muted && 'opacity-55 grayscale',
                 )}
             />

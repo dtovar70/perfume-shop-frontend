@@ -90,7 +90,8 @@ const STATUS_FALLBACK_MESSAGES: Record<number, string> = {
     429: 'Demasiadas solicitudes. Espera un minuto e intenta de nuevo.',
 }
 
-function buildUrl(path: string, query?: QueryParams): string {
+/** Absolute URL of an API path, the same for `fetch` and `EventSource`. */
+export function buildUrl(path: string, query?: QueryParams): string {
     // The base may be relative (`/api` behind the dev tunnel proxy): resolve it against the page.
     const url = new URL(`${apiConfig.baseUrl}${path}`, window.location.origin)
     if (!query) return url.toString()
@@ -150,6 +151,10 @@ async function request<T>(method: string, path: string, options: RequestOptions 
             method,
             headers,
             credentials: 'include',
+            // React Query is the client cache. The catalog GETs are `public, max-age=60`, so a
+            // refetch after a live update must revalidate (a cheap 304 when unchanged) instead
+            // of taking the browser's possibly stale copy.
+            cache: 'no-cache',
             signal: requestSignal,
             body: body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
         })

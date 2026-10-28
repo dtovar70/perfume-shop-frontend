@@ -1,6 +1,6 @@
 import { useExchangeRate } from '@/utils/hooks/useExchangeRate'
-import { formatBolivares, formatRate, usdToBolivares } from '@/utils/formatBolivares'
-import { formatDay } from '@/utils/formatDate'
+import { formatBolivares, usdToBolivares } from '@/utils/formatBolivares'
+import { rateCaption } from '@/utils/rateCurrency'
 import { cn } from '@/utils/cn'
 
 export interface BsApproximationProps {
@@ -12,7 +12,8 @@ export interface BsApproximationProps {
 }
 
 /**
- * "≈ Bs 32.469,62" plus the rate it used ("Tasa BCV del 24/09/2026: 854,46 Bs/$"). Renders
+ * "≈ Bs 32.469,62" plus the rate it used ("Tasa BCV del 24/09/2026: 854,46 Bs/$", or the euro
+ * or USDT rate when the business converts with one of those). Renders
  * nothing while the rate loads or when it is unavailable (the checkout says so on its own).
  */
 export function BsApproximation({ usd, className, compact = false }: BsApproximationProps) {
@@ -32,9 +33,7 @@ export function BsApproximation({ usd, className, compact = false }: BsApproxima
             <p className="text-sm font-semibold text-fg">
                 ≈ {formatBolivares(usdToBolivares(usd, data.rate))}
             </p>
-            <p className="text-xs text-fg-soft">
-                Tasa BCV del {formatDay(data.effectiveDate)}: {formatRate(data.rate)} Bs/$
-            </p>
+            <p className="text-xs text-fg-soft">{rateCaption(data)}</p>
         </div>
     )
 }

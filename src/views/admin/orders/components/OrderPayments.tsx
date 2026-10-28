@@ -23,7 +23,7 @@ export function OrderPayments({ order }: { order: AdminOrder }) {
                 <h2 className="font-display text-xl text-fg">Pagos reportados</h2>
                 <p className="text-xs text-fg-soft">
                     El monto esperado es el total en Bs fijado al crear el pedido (
-                    {formatBolivares(order.totals.totalBs)}); no cambia aunque la tasa BCV cambie.
+                    {formatBolivares(order.totals.totalBs)}); no cambia aunque la tasa cambie.
                 </p>
             </div>
             {order.payments.length === 0 ? (

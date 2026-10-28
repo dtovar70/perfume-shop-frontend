@@ -7,8 +7,11 @@ import { MobileMenu } from '@/components/layouts/MobileMenu'
 import { WhatsAppFab } from '@/components/layouts/WhatsAppFab'
 import { ScrollToTop } from '@/components/route/ScrollToTop'
 import { FlyToCartLayer } from '@/components/shared/FlyToCartLayer'
+import { useStoreLiveUpdates } from '@/utils/hooks/useStoreLiveUpdates'
 
 export function StoreLayout() {
+    useStoreLiveUpdates()
+
     return (
         <div className="flex min-h-screen flex-col overflow-x-clip">
             <ScrollToTop />

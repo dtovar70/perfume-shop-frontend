@@ -37,6 +37,6 @@ export const SECTION_META: Record<ContentSection, SectionMeta> = {
     payment: {
         label: 'Pago Móvil',
         description:
-            'Datos para que el cliente te pague por Pago Móvil. Todavía no se muestran en la tienda: el checkout los usará más adelante.',
+            'Datos que el cliente ve para pagarte por Pago Móvil. Hasta que los 5 campos estén completos, el checkout no recibe pedidos (solo ofrece WhatsApp).',
     },
 }

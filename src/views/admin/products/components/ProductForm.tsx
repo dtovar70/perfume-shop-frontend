@@ -1,7 +1,8 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus, Save, Trash2 } from 'lucide-react'
+import { Plus, RotateCcw, Save, Trash2 } from 'lucide-react'
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { useBlocker } from 'react-router'
 
 import type { AdminProduct, ProductInput } from '@/@types/admin'
 import { CONCENTRATIONS, PRODUCT_GENDERS } from '@/@types/product'
@@ -16,8 +17,10 @@ import {
     Textarea,
     type SelectOption,
 } from '@/components/ui'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { TagInput } from '@/components/ui/TagInput'
 import { CONCENTRATION_LABELS, GENDER_LABELS } from '@/constants/product.constant'
+import { ADMIN_ROUTES } from '@/constants/route.constant'
 import { cn } from '@/utils/cn'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { slugify } from '@/utils/slugify'
@@ -64,11 +67,33 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
         getValues,
         setError,
         setValue,
-        formState: { errors, isSubmitting },
+        reset,
+        formState: { errors, isSubmitting, isDirty },
     } = useForm<ProductFormValues>({
         resolver: zodResolver(productFormSchema),
         defaultValues: initialValues,
     })
+
+    // A successful save navigates away on purpose (while still submitting), so only block
+    // leaving with edits that were never sent. Going to the login page means the session is gone.
+    const hasUnsavedChanges = isDirty && !isSubmitting
+    const blocker = useBlocker(
+        ({ currentLocation, nextLocation }) =>
+            hasUnsavedChanges &&
+            currentLocation.pathname !== nextLocation.pathname &&
+            nextLocation.pathname !== ADMIN_ROUTES.login,
+    )
+
+    useEffect(() => {
+        if (!hasUnsavedChanges) return
+        const onBeforeUnload = (event: BeforeUnloadEvent) => {
+            event.preventDefault()
+            // Older browsers only show the prompt when a value is set.
+            event.returnValue = ''
+        }
+        window.addEventListener('beforeunload', onBeforeUnload)
+        return () => window.removeEventListener('beforeunload', onBeforeUnload)
+    }, [hasUnsavedChanges])
 
     const highlights = useFieldArray({ control, name: 'highlights' })
     const isHighlightsFull = highlights.fields.length >= MAX_HIGHLIGHTS
@@ -173,517 +198,580 @@ export function ProductForm({ mode, initialValues, onSubmit }: ProductFormProps)
     })
 
     return (
-        <form
-            onSubmit={submit}
-            noValidate
-            className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]"
-        >
-            <div className="min-w-0 space-y-6">
-                <Card className="space-y-5">
-                    <h2 className={sectionTitleClass}>Información básica</h2>
-                    <Input label="Nombre" error={errors.name?.message} {...nameField} />
-                    <Input
-                        label="Slug (URL)"
-                        hint={
-                            mode === 'create'
-                                ? 'Se genera a partir del nombre; puedes cambiarlo.'
-                                : 'Cambiarlo rompe los enlaces que ya se hayan compartido.'
-                        }
-                        placeholder="good-girl-edp"
-                        autoCapitalize="none"
-                        spellCheck={false}
-                        error={errors.slug?.message}
-                        {...slugField}
-                    />
-                    {/*
-                     * Remounted once the categories arrive: the hidden <select> can only show the
-                     * saved value after its <option> exists.
-                     */}
-                    <Select
-                        key={categories ? 'loaded' : 'loading'}
-                        label="Categoría"
-                        placeholder={categories ? 'Elige una categoría' : 'Cargando categorías…'}
-                        disabled={!categories}
-                        options={categoryOptions}
-                        error={errors.categorySlug?.message}
-                        {...register('categorySlug')}
-                    />
-                    <Textarea
-                        label="Descripción"
-                        optional
-                        rows={5}
-                        error={errors.description?.message}
-                        maxLength={PRODUCT_DESCRIPTION_MAX_LENGTH}
-                        {...register('description')}
-                    />
-                </Card>
-
-                {/*
-                 * Columns follow the card's width, not the viewport's (the sidebar and the aside
-                 * eat most of it). Three only from 34rem, where every label, "(opcional)"
-                 * included, fits on one line, so the inputs stay level.
-                 */}
-                <Card className="@container space-y-5">
-                    <h2 className={sectionTitleClass}>Precio e inventario</h2>
-                    <div className="grid grid-cols-1 items-start gap-5 @md:grid-cols-2 @min-[34rem]:grid-cols-3">
+        <>
+            <form
+                onSubmit={submit}
+                noValidate
+                className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]"
+            >
+                <div className="min-w-0 space-y-6">
+                    <Card className="space-y-5">
+                        <h2 className={sectionTitleClass}>Información básica</h2>
+                        <Input label="Nombre" error={errors.name?.message} {...nameField} />
                         <Input
-                            label="Precio (USD)"
-                            type="number"
-                            inputMode="decimal"
-                            step="0.01"
-                            min={0}
-                            error={errors.price?.message}
-                            {...register('price', { setValueAs: toOptionalNumber })}
+                            label="Slug (URL)"
+                            hint={
+                                mode === 'create'
+                                    ? 'Se genera a partir del nombre; puedes cambiarlo.'
+                                    : 'Cambiarlo rompe los enlaces que ya se hayan compartido.'
+                            }
+                            placeholder="good-girl-edp"
+                            autoCapitalize="none"
+                            spellCheck={false}
+                            error={errors.slug?.message}
+                            {...slugField}
                         />
-                        <Input
-                            label="Precio anterior"
-                            optional
-                            hint="Se ve tachado en la tienda."
-                            type="number"
-                            inputMode="decimal"
-                            step="0.01"
-                            min={0}
-                            error={errors.compareAtPrice?.message}
-                            {...register('compareAtPrice', { setValueAs: toOptionalNumber })}
-                        />
-                        {variants.fields.length > 0 ? (
-                            // With variants the stock is theirs; this is only their sum.
-                            <Input
-                                label="Stock"
-                                value={`Total: ${variantsStockTotal(variantValues)}`}
-                                readOnly
-                                tabIndex={-1}
-                                hint="Suma de las variantes. Cámbialo en cada una."
-                                className="bg-canvas tabular-nums"
-                            />
-                        ) : (
-                            <Input
-                                label="Stock"
-                                type="number"
-                                inputMode="numeric"
-                                step="1"
-                                min={0}
-                                error={errors.stock?.message}
-                                {...register('stock', { setValueAs: toOptionalNumber })}
-                            />
-                        )}
-                    </div>
-                </Card>
-
-                <Card className="@container space-y-5">
-                    <h2 className={sectionTitleClass}>Ficha del perfume</h2>
-                    <div className="grid grid-cols-1 items-start gap-5 @md:grid-cols-2">
                         {/*
-                         * Remounted once the brands arrive: the hidden <select> can only show the
+                         * Remounted once the categories arrive: the hidden <select> can only show the
                          * saved value after its <option> exists.
                          */}
                         <Select
-                            key={brands ? 'brands-loaded' : 'brands-loading'}
-                            label="Marca"
-                            disabled={!brands}
-                            options={brandOptions}
-                            error={errors.brandSlug?.message}
-                            {...register('brandSlug')}
-                        />
-                        <Select
-                            label="Concentración"
-                            options={concentrationOptions}
-                            error={errors.concentration?.message}
-                            {...register('concentration')}
-                        />
-                        <Input
-                            label="Mililitros"
-                            optional
-                            hint="Tamaño del frasco base; cada variante puede tener el suyo."
-                            type="number"
-                            inputMode="numeric"
-                            step="1"
-                            min={1}
-                            error={errors.volumeMl?.message}
-                            {...register('volumeMl', { setValueAs: toOptionalNumber })}
-                        />
-                        <Input
-                            label="SKU"
-                            optional
-                            autoCapitalize="characters"
-                            spellCheck={false}
-                            error={errors.sku?.message}
-                            {...register('sku')}
-                        />
-                    </div>
-
-                    <Controller
-                        control={control}
-                        name="gender"
-                        render={({ field }) => (
-                            <fieldset className="space-y-2">
-                                <legend className="text-sm font-semibold text-fg">Para</legend>
-                                <div
-                                    role="radiogroup"
-                                    className="inline-flex rounded-xl border border-line bg-canvas p-1"
-                                >
-                                    {PRODUCT_GENDERS.map((gender) => {
-                                        const isOn = field.value === gender
-                                        return (
-                                            <button
-                                                key={gender}
-                                                type="button"
-                                                role="radio"
-                                                aria-checked={isOn}
-                                                onClick={() => field.onChange(gender)}
-                                                className={cn(
-                                                    'h-10 rounded-lg px-4 text-sm font-semibold transition',
-                                                    isOn
-                                                        ? 'bg-surface text-accent-strong shadow-soft ring-1 ring-cherry-500/30'
-                                                        : 'text-fg-soft hover:text-fg',
-                                                )}
-                                            >
-                                                {GENDER_LABELS[gender]}
-                                            </button>
-                                        )
-                                    })}
-                                </div>
-                                {errors.gender?.message ? (
-                                    <p role="alert" className="text-sm font-medium text-accent">
-                                        {errors.gender.message}
-                                    </p>
-                                ) : null}
-                            </fieldset>
-                        )}
-                    />
-                </Card>
-
-                <Card className="space-y-5">
-                    <div>
-                        <h2 className={sectionTitleClass}>Pirámide olfativa</h2>
-                        <p className="text-sm text-fg-soft">
-                            Escribe cada nota y pulsa Enter o coma. Máximo {MAX_NOTES_PER_TIER} por
-                            nivel.
-                        </p>
-                    </div>
-                    <Input
-                        label="Familia olfativa"
-                        optional
-                        placeholder="Floral oriental"
-                        error={errors.olfactoryFamily?.message}
-                        {...register('olfactoryFamily')}
-                    />
-                    <Controller
-                        control={control}
-                        name="notesTop"
-                        render={({ field }) => (
-                            <TagInput
-                                label="Notas de salida"
-                                optional
-                                placeholder="Bergamota, Pimienta rosa…"
-                                max={MAX_NOTES_PER_TIER}
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={errors.notesTop?.message}
-                            />
-                        )}
-                    />
-                    <Controller
-                        control={control}
-                        name="notesHeart"
-                        render={({ field }) => (
-                            <TagInput
-                                label="Notas de corazón"
-                                optional
-                                placeholder="Rosa, Jazmín…"
-                                max={MAX_NOTES_PER_TIER}
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={errors.notesHeart?.message}
-                            />
-                        )}
-                    />
-                    <Controller
-                        control={control}
-                        name="notesBase"
-                        render={({ field }) => (
-                            <TagInput
-                                label="Notas de fondo"
-                                optional
-                                placeholder="Vainilla, Ámbar, Almizcle…"
-                                max={MAX_NOTES_PER_TIER}
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={errors.notesBase?.message}
-                            />
-                        )}
-                    />
-                </Card>
-
-                <Card className="space-y-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <h2 className={sectionTitleClass}>Detalles destacados</h2>
-                            <p
-                                id={highlightsLimitId}
-                                className={cn(
-                                    'text-sm text-fg-soft tabular-nums',
-                                    isHighlightsFull && 'font-semibold text-accent',
-                                )}
-                            >
-                                {highlights.fields.length}/{MAX_HIGHLIGHTS} · Máximo{' '}
-                                {MAX_HIGHLIGHTS} detalles
-                            </p>
-                        </div>
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            disabled={isHighlightsFull}
-                            aria-describedby={highlightsLimitId}
-                            onClick={() => highlights.append({ value: '' })}
-                            leadingIcon={<Plus aria-hidden="true" className="size-4" />}
-                        >
-                            Agregar detalle
-                        </Button>
-                    </div>
-
-                    {highlights.fields.length === 0 ? (
-                        <p className="text-sm text-fg-soft">
-                            Sin detalles. Aparecen como lista en la página del producto.
-                        </p>
-                    ) : (
-                        <ul className="space-y-3">
-                            {highlights.fields.map((field, index) => (
-                                <li key={field.id} className="flex items-start gap-2">
-                                    <Input
-                                        label={`Detalle ${index + 1}`}
-                                        hideLabel
-                                        placeholder="Larga duración en la piel"
-                                        error={errors.highlights?.[index]?.value?.message}
-                                        {...register(`highlights.${index}.value`)}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => highlights.remove(index)}
-                                        aria-label={`Eliminar detalle ${index + 1}`}
-                                        className={iconButtonClass}
-                                    >
-                                        <Trash2 aria-hidden="true" className="size-4" />
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    {errors.highlights?.message ? (
-                        <p role="alert" className="text-sm font-medium text-accent">
-                            {errors.highlights.message}
-                        </p>
-                    ) : null}
-                </Card>
-
-                <Card className="space-y-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <h2 className={sectionTitleClass}>Variantes</h2>
-                            <p className="text-sm text-fg-soft">
-                                Opcional: una por tamaño (ml). La primera con stock es la
-                                predeterminada; las que están en 0 se ven como «Agotado». Sin
-                                variantes se vende un solo tamaño con el stock del producto.
-                            </p>
-                        </div>
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            disabled={variants.fields.length >= MAX_VARIANTS}
-                            onClick={() =>
-                                variants.append({
-                                    label: '',
-                                    priceDelta: 0,
-                                    volumeMl: undefined,
-                                    stock: 0,
-                                })
+                            key={categories ? 'loaded' : 'loading'}
+                            label="Categoría"
+                            placeholder={
+                                categories ? 'Elige una categoría' : 'Cargando categorías…'
                             }
-                            leadingIcon={<Plus aria-hidden="true" className="size-4" />}
-                        >
-                            Agregar variante
-                        </Button>
-                    </div>
+                            disabled={!categories}
+                            options={categoryOptions}
+                            error={errors.categorySlug?.message}
+                            {...register('categorySlug')}
+                        />
+                        <Textarea
+                            label="Descripción"
+                            optional
+                            rows={5}
+                            error={errors.description?.message}
+                            maxLength={PRODUCT_DESCRIPTION_MAX_LENGTH}
+                            {...register('description')}
+                        />
+                    </Card>
 
-                    {variants.fields.length === 0 ? (
-                        <p className="text-sm text-fg-soft">
-                            Sin variantes: se vende un solo tamaño con el stock y los mililitros del
-                            producto.
-                        </p>
-                    ) : (
-                        <ul className="space-y-4">
-                            {variants.fields.map((field, index) => {
-                                const rowErrors = errors.variants?.[index]
-                                return (
-                                    <li
-                                        key={field.id}
-                                        className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-canvas p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                    {/*
+                     * Columns follow the card's width, not the viewport's (the sidebar and the aside
+                     * eat most of it). Three only from 34rem, where every label, "(opcional)"
+                     * included, fits on one line, so the inputs stay level.
+                     */}
+                    <Card className="@container space-y-5">
+                        <h2 className={sectionTitleClass}>Precio e inventario</h2>
+                        <div className="grid grid-cols-1 items-start gap-5 @md:grid-cols-2 @min-[34rem]:grid-cols-3">
+                            <Input
+                                label="Precio (USD)"
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min={0}
+                                error={errors.price?.message}
+                                {...register('price', { setValueAs: toOptionalNumber })}
+                            />
+                            <Input
+                                label="Precio anterior"
+                                optional
+                                hint="Se ve tachado en la tienda."
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min={0}
+                                error={errors.compareAtPrice?.message}
+                                {...register('compareAtPrice', { setValueAs: toOptionalNumber })}
+                            />
+                            {variants.fields.length > 0 ? (
+                                // With variants the stock is theirs; this is only their sum.
+                                <Input
+                                    label="Stock"
+                                    value={`Total: ${variantsStockTotal(variantValues)}`}
+                                    readOnly
+                                    tabIndex={-1}
+                                    hint="Suma de las variantes. Cámbialo en cada una."
+                                    className="bg-canvas tabular-nums"
+                                />
+                            ) : (
+                                <Input
+                                    label="Stock"
+                                    type="number"
+                                    inputMode="numeric"
+                                    step="1"
+                                    min={0}
+                                    error={errors.stock?.message}
+                                    {...register('stock', { setValueAs: toOptionalNumber })}
+                                />
+                            )}
+                        </div>
+                    </Card>
+
+                    <Card className="@container space-y-5">
+                        <h2 className={sectionTitleClass}>Ficha del perfume</h2>
+                        <div className="grid grid-cols-1 items-start gap-5 @md:grid-cols-2">
+                            {/*
+                             * Remounted once the brands arrive: the hidden <select> can only show the
+                             * saved value after its <option> exists.
+                             */}
+                            <Select
+                                key={brands ? 'brands-loaded' : 'brands-loading'}
+                                label="Marca"
+                                disabled={!brands}
+                                options={brandOptions}
+                                error={errors.brandSlug?.message}
+                                {...register('brandSlug')}
+                            />
+                            <Select
+                                label="Concentración"
+                                options={concentrationOptions}
+                                error={errors.concentration?.message}
+                                {...register('concentration')}
+                            />
+                            <Input
+                                label="Mililitros"
+                                optional
+                                hint="Tamaño del frasco base; cada variante puede tener el suyo."
+                                type="number"
+                                inputMode="numeric"
+                                step="1"
+                                min={1}
+                                error={errors.volumeMl?.message}
+                                {...register('volumeMl', { setValueAs: toOptionalNumber })}
+                            />
+                            <Input
+                                label="SKU"
+                                optional
+                                autoCapitalize="characters"
+                                spellCheck={false}
+                                error={errors.sku?.message}
+                                {...register('sku')}
+                            />
+                        </div>
+
+                        <Controller
+                            control={control}
+                            name="gender"
+                            render={({ field }) => (
+                                <fieldset className="space-y-2">
+                                    <legend className="text-sm font-semibold text-fg">Para</legend>
+                                    <div
+                                        role="radiogroup"
+                                        className="inline-flex rounded-xl border border-line bg-canvas p-1"
                                     >
-                                        <div className="sm:col-span-2">
-                                            <Input
-                                                label="Nombre"
-                                                placeholder="100 ml"
-                                                error={rowErrors?.label?.message}
-                                                {...register(`variants.${index}.label`)}
-                                            />
-                                        </div>
+                                        {PRODUCT_GENDERS.map((gender) => {
+                                            const isOn = field.value === gender
+                                            return (
+                                                <button
+                                                    key={gender}
+                                                    type="button"
+                                                    role="radio"
+                                                    aria-checked={isOn}
+                                                    onClick={() => field.onChange(gender)}
+                                                    className={cn(
+                                                        'h-10 rounded-lg px-4 text-sm font-semibold transition',
+                                                        isOn
+                                                            ? 'bg-surface text-accent-strong shadow-soft ring-1 ring-cherry-500/30'
+                                                            : 'text-fg-soft hover:text-fg',
+                                                    )}
+                                                >
+                                                    {GENDER_LABELS[gender]}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                    {errors.gender?.message ? (
+                                        <p role="alert" className="text-sm font-medium text-accent">
+                                            {errors.gender.message}
+                                        </p>
+                                    ) : null}
+                                </fieldset>
+                            )}
+                        />
+                    </Card>
+
+                    <Card className="space-y-5">
+                        <div>
+                            <h2 className={sectionTitleClass}>Pirámide olfativa</h2>
+                            <p className="text-sm text-fg-soft">
+                                Escribe cada nota y pulsa Enter o coma. Máximo {MAX_NOTES_PER_TIER}{' '}
+                                por nivel.
+                            </p>
+                        </div>
+                        <Input
+                            label="Familia olfativa"
+                            optional
+                            placeholder="Floral oriental"
+                            error={errors.olfactoryFamily?.message}
+                            {...register('olfactoryFamily')}
+                        />
+                        <Controller
+                            control={control}
+                            name="notesTop"
+                            render={({ field }) => (
+                                <TagInput
+                                    label="Notas de salida"
+                                    optional
+                                    placeholder="Bergamota, Pimienta rosa…"
+                                    max={MAX_NOTES_PER_TIER}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.notesTop?.message}
+                                />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="notesHeart"
+                            render={({ field }) => (
+                                <TagInput
+                                    label="Notas de corazón"
+                                    optional
+                                    placeholder="Rosa, Jazmín…"
+                                    max={MAX_NOTES_PER_TIER}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.notesHeart?.message}
+                                />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="notesBase"
+                            render={({ field }) => (
+                                <TagInput
+                                    label="Notas de fondo"
+                                    optional
+                                    placeholder="Vainilla, Ámbar, Almizcle…"
+                                    max={MAX_NOTES_PER_TIER}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.notesBase?.message}
+                                />
+                            )}
+                        />
+                    </Card>
+
+                    <Card className="space-y-5">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h2 className={sectionTitleClass}>Detalles destacados</h2>
+                                <p
+                                    id={highlightsLimitId}
+                                    className={cn(
+                                        'text-sm text-fg-soft tabular-nums',
+                                        isHighlightsFull && 'font-semibold text-accent',
+                                    )}
+                                >
+                                    {highlights.fields.length}/{MAX_HIGHLIGHTS} · Máximo{' '}
+                                    {MAX_HIGHLIGHTS} detalles
+                                </p>
+                            </div>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                disabled={isHighlightsFull}
+                                aria-describedby={highlightsLimitId}
+                                onClick={() => highlights.append({ value: '' })}
+                                leadingIcon={<Plus aria-hidden="true" className="size-4" />}
+                            >
+                                Agregar detalle
+                            </Button>
+                        </div>
+
+                        {highlights.fields.length === 0 ? (
+                            <p className="text-sm text-fg-soft">
+                                Sin detalles. Aparecen como lista en la página del producto.
+                            </p>
+                        ) : (
+                            <ul className="space-y-3">
+                                {highlights.fields.map((field, index) => (
+                                    <li key={field.id} className="flex items-start gap-2">
+                                        <Input
+                                            label={`Detalle ${index + 1}`}
+                                            hideLabel
+                                            placeholder="Larga duración en la piel"
+                                            error={errors.highlights?.[index]?.value?.message}
+                                            {...register(`highlights.${index}.value`)}
+                                        />
                                         <button
                                             type="button"
-                                            onClick={() => variants.remove(index)}
-                                            aria-label={`Eliminar variante ${index + 1}`}
-                                            className={cn(iconButtonClass, 'mt-6.5')}
+                                            onClick={() => highlights.remove(index)}
+                                            aria-label={`Eliminar detalle ${index + 1}`}
+                                            className={iconButtonClass}
                                         >
                                             <Trash2 aria-hidden="true" className="size-4" />
                                         </button>
-                                        <div className="col-span-2 grid grid-cols-1 items-start gap-3 sm:grid-cols-3">
-                                            <Input
-                                                label="Ajuste de precio"
-                                                hint={finalPriceHint(index)}
-                                                type="number"
-                                                inputMode="decimal"
-                                                step="0.01"
-                                                error={rowErrors?.priceDelta?.message}
-                                                {...register(`variants.${index}.priceDelta`, {
-                                                    setValueAs: toOptionalNumber,
-                                                })}
-                                            />
-                                            <Input
-                                                label="Stock"
-                                                type="number"
-                                                inputMode="numeric"
-                                                step="1"
-                                                min={0}
-                                                error={rowErrors?.stock?.message}
-                                                {...register(`variants.${index}.stock`, {
-                                                    setValueAs: toOptionalNumber,
-                                                })}
-                                            />
-                                            <Input
-                                                label="Mililitros"
-                                                optional
-                                                type="number"
-                                                inputMode="numeric"
-                                                step="1"
-                                                min={1}
-                                                error={rowErrors?.volumeMl?.message}
-                                                {...register(`variants.${index}.volumeMl`, {
-                                                    setValueAs: toOptionalNumber,
-                                                })}
-                                            />
-                                        </div>
                                     </li>
-                                )
-                            })}
-                        </ul>
-                    )}
-                </Card>
-            </div>
-
-            <aside className="min-w-0 space-y-6 xl:sticky xl:top-6 xl:self-start">
-                <Card className="space-y-5">
-                    <h2 className={sectionTitleClass}>Publicación</h2>
-                    <Controller
-                        control={control}
-                        name="isActive"
-                        render={({ field }) => (
-                            <div className="flex items-center justify-between gap-4">
-                                <div>
-                                    <p className="text-sm font-semibold text-fg">
-                                        Visible en la tienda
-                                    </p>
-                                    <p className="text-xs text-fg-soft">
-                                        {field.value
-                                            ? 'Los clientes pueden verlo y comprarlo.'
-                                            : 'Oculto: solo se ve en el panel.'}
-                                    </p>
-                                </div>
-                                <Switch
-                                    checked={field.value}
-                                    onChange={field.onChange}
-                                    label="Visible en la tienda"
-                                />
-                            </div>
+                                ))}
+                            </ul>
                         )}
-                    />
+                        {errors.highlights?.message ? (
+                            <p role="alert" className="text-sm font-medium text-accent">
+                                {errors.highlights.message}
+                            </p>
+                        ) : null}
+                    </Card>
 
-                    <Controller
-                        control={control}
-                        name="isFeatured"
-                        render={({ field }) => (
-                            <div className="flex items-center justify-between gap-4">
-                                <div>
-                                    <p className="text-sm font-semibold text-fg">Destacado</p>
-                                    <p className="text-xs text-fg-soft">
-                                        Aparece en «Fragancias destacadas» del inicio.
-                                    </p>
-                                </div>
-                                <Switch
-                                    checked={field.value}
-                                    onChange={field.onChange}
-                                    label="Destacado en el inicio"
-                                />
+                    <Card className="space-y-5">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h2 className={sectionTitleClass}>Variantes</h2>
+                                <p className="text-sm text-fg-soft">
+                                    Opcional: una por tamaño (ml). La primera con stock es la
+                                    predeterminada; las que están en 0 se ven como «Agotado». Sin
+                                    variantes se vende un solo tamaño con el stock del producto.
+                                </p>
                             </div>
-                        )}
-                    />
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                disabled={variants.fields.length >= MAX_VARIANTS}
+                                onClick={() =>
+                                    variants.append({
+                                        label: '',
+                                        priceDelta: 0,
+                                        volumeMl: undefined,
+                                        stock: 0,
+                                    })
+                                }
+                                leadingIcon={<Plus aria-hidden="true" className="size-4" />}
+                            >
+                                Agregar variante
+                            </Button>
+                        </div>
 
-                    <Controller
-                        control={control}
-                        name="tags"
-                        render={({ field }) => (
-                            <fieldset className="space-y-2">
-                                <legend className="text-sm font-semibold text-fg">
-                                    Etiquetas
-                                    <OptionalMark />
-                                </legend>
-                                <div className="flex flex-wrap gap-2">
-                                    {PRODUCT_TAGS.map((tag) => {
-                                        const isOn = field.value.includes(tag)
-                                        return (
+                        {variants.fields.length === 0 ? (
+                            <p className="text-sm text-fg-soft">
+                                Sin variantes: se vende un solo tamaño con el stock y los mililitros
+                                del producto.
+                            </p>
+                        ) : (
+                            <ul className="space-y-4">
+                                {variants.fields.map((field, index) => {
+                                    const rowErrors = errors.variants?.[index]
+                                    return (
+                                        <li
+                                            key={field.id}
+                                            className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-2xl border border-line bg-canvas p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                                        >
+                                            <div className="sm:col-span-2">
+                                                <Input
+                                                    label="Nombre"
+                                                    placeholder="100 ml"
+                                                    error={rowErrors?.label?.message}
+                                                    {...register(`variants.${index}.label`)}
+                                                />
+                                            </div>
                                             <button
-                                                key={tag}
                                                 type="button"
-                                                aria-pressed={isOn}
-                                                onClick={() =>
-                                                    field.onChange(
-                                                        isOn
-                                                            ? field.value.filter(
-                                                                  (item) => item !== tag,
-                                                              )
-                                                            : PRODUCT_TAGS.filter(
-                                                                  (item) =>
-                                                                      item === tag ||
-                                                                      field.value.includes(item),
-                                                              ),
-                                                    )
-                                                }
-                                                className={cn(
-                                                    'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2',
-                                                    isOn
-                                                        ? 'border-cherry-500 bg-cherry-500 text-on-cherry'
-                                                        : 'border-line bg-surface text-fg-soft hover:border-cherry-500/50',
-                                                )}
+                                                onClick={() => variants.remove(index)}
+                                                aria-label={`Eliminar variante ${index + 1}`}
+                                                className={cn(iconButtonClass, 'mt-6.5')}
                                             >
-                                                {PRODUCT_TAG_LABELS[tag]}
+                                                <Trash2 aria-hidden="true" className="size-4" />
                                             </button>
-                                        )
-                                    })}
-                                </div>
-                            </fieldset>
+                                            <div className="col-span-2 grid grid-cols-1 items-start gap-3 sm:grid-cols-3">
+                                                <Input
+                                                    label="Ajuste de precio"
+                                                    hint={finalPriceHint(index)}
+                                                    type="number"
+                                                    inputMode="decimal"
+                                                    step="0.01"
+                                                    error={rowErrors?.priceDelta?.message}
+                                                    {...register(`variants.${index}.priceDelta`, {
+                                                        setValueAs: toOptionalNumber,
+                                                    })}
+                                                />
+                                                <Input
+                                                    label="Stock"
+                                                    type="number"
+                                                    inputMode="numeric"
+                                                    step="1"
+                                                    min={0}
+                                                    error={rowErrors?.stock?.message}
+                                                    {...register(`variants.${index}.stock`, {
+                                                        setValueAs: toOptionalNumber,
+                                                    })}
+                                                />
+                                                <Input
+                                                    label="Mililitros"
+                                                    optional
+                                                    type="number"
+                                                    inputMode="numeric"
+                                                    step="1"
+                                                    min={1}
+                                                    error={rowErrors?.volumeMl?.message}
+                                                    {...register(`variants.${index}.volumeMl`, {
+                                                        setValueAs: toOptionalNumber,
+                                                    })}
+                                                />
+                                            </div>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
                         )}
-                    />
-                </Card>
-
-                <div className="space-y-3">
-                    {serverError ? <Alert>{serverError}</Alert> : null}
-                    <Button
-                        type="submit"
-                        fullWidth
-                        isLoading={isSubmitting}
-                        leadingIcon={<Save aria-hidden="true" className="size-4" />}
-                    >
-                        {mode === 'create' ? 'Crear producto' : 'Guardar cambios'}
-                    </Button>
+                    </Card>
                 </div>
-            </aside>
-        </form>
+
+                <aside className="min-w-0 space-y-6 xl:sticky xl:top-6 xl:self-start">
+                    <Card className="space-y-5">
+                        <h2 className={sectionTitleClass}>Publicación</h2>
+                        <Controller
+                            control={control}
+                            name="isActive"
+                            render={({ field }) => (
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <p className="text-sm font-semibold text-fg">
+                                            Visible en la tienda
+                                        </p>
+                                        <p className="text-xs text-fg-soft">
+                                            {field.value
+                                                ? 'Los clientes pueden verlo y comprarlo.'
+                                                : 'Oculto: solo se ve en el panel.'}
+                                        </p>
+                                    </div>
+                                    <Switch
+                                        checked={field.value}
+                                        onChange={field.onChange}
+                                        label="Visible en la tienda"
+                                    />
+                                </div>
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
+                            name="isFeatured"
+                            render={({ field }) => (
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <p className="text-sm font-semibold text-fg">Destacado</p>
+                                        <p className="text-xs text-fg-soft">
+                                            Aparece en «Fragancias destacadas» del inicio.
+                                        </p>
+                                    </div>
+                                    <Switch
+                                        checked={field.value}
+                                        onChange={field.onChange}
+                                        label="Destacado en el inicio"
+                                    />
+                                </div>
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
+                            name="tags"
+                            render={({ field }) => (
+                                <fieldset className="space-y-2">
+                                    <legend className="text-sm font-semibold text-fg">
+                                        Etiquetas
+                                        <OptionalMark />
+                                    </legend>
+                                    <div className="flex flex-wrap gap-2">
+                                        {PRODUCT_TAGS.map((tag) => {
+                                            const isOn = field.value.includes(tag)
+                                            return (
+                                                <button
+                                                    key={tag}
+                                                    type="button"
+                                                    aria-pressed={isOn}
+                                                    onClick={() =>
+                                                        field.onChange(
+                                                            isOn
+                                                                ? field.value.filter(
+                                                                      (item) => item !== tag,
+                                                                  )
+                                                                : PRODUCT_TAGS.filter(
+                                                                      (item) =>
+                                                                          item === tag ||
+                                                                          field.value.includes(
+                                                                              item,
+                                                                          ),
+                                                                  ),
+                                                        )
+                                                    }
+                                                    className={cn(
+                                                        'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-cherry-500 focus-visible:ring-offset-2',
+                                                        isOn
+                                                            ? 'border-cherry-500 bg-cherry-500 text-on-cherry'
+                                                            : 'border-line bg-surface text-fg-soft hover:border-cherry-500/50',
+                                                    )}
+                                                >
+                                                    {PRODUCT_TAG_LABELS[tag]}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </fieldset>
+                            )}
+                        />
+                    </Card>
+                </aside>
+
+                {/* Floats at the bottom of the screen while the form is in view: no scroll to save. */}
+                <div className="sticky bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 space-y-3 xl:col-span-2">
+                    {serverError ? <Alert>{serverError}</Alert> : null}
+                    <div
+                        className={cn(
+                            'flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 rounded-xl2 border bg-surface/95 p-3 shadow-lg backdrop-blur sm:px-5',
+                            isDirty ? 'border-cherry-500/60' : 'border-line',
+                        )}
+                    >
+                        <p role="status" className="flex items-center gap-2 text-sm text-fg-soft">
+                            <span
+                                aria-hidden="true"
+                                className={cn(
+                                    'size-2 rounded-full',
+                                    isDirty ? 'bg-cherry-500' : 'bg-fg-soft/40',
+                                )}
+                            />
+                            {isDirty ? 'Tienes cambios sin guardar' : 'Sin cambios pendientes'}
+                        </p>
+                        {/* Phones: full-width row, equal halves and short labels so nothing overflows. */}
+                        <div
+                            className={cn(
+                                'grid w-full gap-2 sm:flex sm:w-auto sm:justify-end',
+                                isDirty && 'grid-cols-2',
+                            )}
+                        >
+                            {isDirty ? (
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    disabled={isSubmitting}
+                                    onClick={() => {
+                                        setServerError(null)
+                                        reset()
+                                    }}
+                                    leadingIcon={
+                                        <RotateCcw aria-hidden="true" className="size-4" />
+                                    }
+                                    className="min-w-0 px-4 sm:px-6"
+                                >
+                                    Descartar
+                                </Button>
+                            ) : null}
+                            <Button
+                                type="submit"
+                                isLoading={isSubmitting}
+                                leadingIcon={<Save aria-hidden="true" className="size-4" />}
+                                className="min-w-0 px-4 sm:px-6"
+                            >
+                                <span className="sm:hidden">
+                                    {mode === 'create' ? 'Crear' : 'Guardar'}
+                                </span>
+                                <span className="max-sm:hidden">
+                                    {mode === 'create' ? 'Crear producto' : 'Guardar cambios'}
+                                </span>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <ConfirmDialog
+                isOpen={blocker.state === 'blocked'}
+                title="¿Salir sin guardar?"
+                description="Tienes cambios sin guardar en este producto. Si sales ahora, se pierden."
+                confirmLabel="Salir sin guardar"
+                cancelLabel="Seguir editando"
+                onConfirm={() => blocker.proceed?.()}
+                onClose={() => blocker.reset?.()}
+            />
+        </>
     )
 }

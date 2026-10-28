@@ -25,7 +25,8 @@ npm run lint
 - **Order page** (`/pedido/:code?t=<token>`): the private link returned once by the API. It shows
   the status and timeline, the Pago Móvil card (copy buttons and "Copiar todo"), the payment
   deadline, the proof form (reference, bank, phone, date, amount, screenshot) and every later
-  status. It polls every 25 s while the payment is being verified and refetches on focus.
+  status. It refetches whenever the order's live stream (`GET /orders/:code/events?t=`) reports a
+  change, on focus, and (fallback) every 2 min while the payment is being verified.
 - **Late payments**: after the deadline, or once the order expired, the order page still shows
   the proof form ("El plazo venció, pero si ya hiciste el pago súbelo aquí y lo verificaremos")
   with a WhatsApp link; the API flags the payment as late. A cancelled order shows a WhatsApp
@@ -42,7 +43,8 @@ npm run lint
   stock is missing), "Registrar pago manualmente" (same form as the customer's) and "Marcar
   reembolso realizado"; history, internal notes) and `/admin/tasa-bcv` (current rate, last 30, manual
   rate for ADMIN, "Actualizar ahora"). The "Pedidos" nav item shows the number of payments waiting
-  for verification (polled every 30 s).
+  for verification (updated live by the admin stream, `AdminLiveUpdates`; polled every 2 min as a
+  fallback).
 
 - **Avisar por WhatsApp** (admin order detail): renders the current status's message on the API
   (with a fresh customer link), lets the owner edit it, and offers "Abrir WhatsApp" (a `wa.me`

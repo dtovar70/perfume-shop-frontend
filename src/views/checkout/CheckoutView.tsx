@@ -14,6 +14,7 @@ import { useCartActions, useCartItems, useCartSubtotal } from '@/store/cartStore
 import { cn } from '@/utils/cn'
 import { shippingCost } from '@/utils/content'
 import { useExchangeRate } from '@/utils/hooks/useExchangeRate'
+import { RATE_NAMES } from '@/utils/rateCurrency'
 import { useSiteContent } from '@/utils/hooks/useSiteContent'
 import { rememberOrder } from '@/utils/recentOrders'
 import { CheckoutForm } from '@/views/checkout/components/CheckoutForm'
@@ -53,6 +54,9 @@ export function CheckoutView() {
     const paymentReady = isPaymentConfigured(content.payment) && serverBlock !== 'payment'
     // Unknown (still loading or the request failed) is not a block: the API has the last word.
     const rateMissing = (rate.data !== undefined && !rate.data.available) || serverBlock === 'rate'
+    const rateName = RATE_NAMES[rate.data?.currency ?? 'USD']
+    const rateMissingText =
+        rate.data && !rate.data.available ? rate.data.message : RATE_UNAVAILABLE_TEXT
 
     const handleDeliveryChange = useCallback((method: DeliveryMethod) => {
         setDeliveryMethod(method)
@@ -157,8 +161,8 @@ export function CheckoutView() {
                         ) : (
                             <>
                                 {rateMissing ? (
-                                    <WhatsAppNotice title="Tasa BCV no disponible">
-                                        {RATE_UNAVAILABLE_TEXT}
+                                    <WhatsAppNotice title={`${rateName} no disponible`}>
+                                        {rateMissingText}
                                     </WhatsAppNotice>
                                 ) : null}
                                 <CheckoutForm
