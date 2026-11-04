@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { App } from '@/App'
 import { createQueryClient } from '@/configs/query.config'
+import { StatusGuard } from '@/lib/status-guard/react'
 // Side effect: syncs <html data-theme> and starts following the OS theme before first render.
 import '@/store/themeStore'
 import '@/index.css'
@@ -28,7 +29,10 @@ const queryClient = createQueryClient()
 createRoot(rootElement).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <App />
+            {/* KODARY service status: full-screen out-of-service page when the store is suspended/inactive. Fails open. */}
+            <StatusGuard url={import.meta.env.VITE_KODARY_STATUS_URL}>
+                <App />
+            </StatusGuard>
             {import.meta.env.DEV ? <ReactQueryDevtools initialIsOpen={false} /> : null}
         </QueryClientProvider>
     </StrictMode>,

@@ -34,6 +34,13 @@ export default tseslint.config(
         },
     },
     {
+        // Vendored KODARY kit: warns once in the console when the status key returns 404.
+        files: ['src/lib/status-guard/**/*.{ts,tsx}'],
+        rules: {
+            'no-console': ['error', { allow: ['warn'] }],
+        },
+    },
+    {
         files: ['*.config.{ts,mjs}', 'vite.config.ts'],
         languageOptions: {
             globals: globals.node,
