@@ -7,7 +7,7 @@ export const THEMES = ['dark', 'light'] as const
 
 export type Theme = (typeof THEMES)[number]
 
-/** localStorage key for the visitor's explicit choice (also read by the script in index.html). */
+/** localStorage key older versions saved the choice under; index.html now clears it. */
 export const THEME_STORAGE_KEY = 'kaizen-theme'
 
 export const PALETTES = {

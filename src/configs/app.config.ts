@@ -29,7 +29,7 @@ export const appConfig = {
      * mobile drawer list them all; the home page features the first few as image cards.
      */
     categoryLinkLimits: {
-        home: 3,
+        home: 2,
         footer: 8,
     },
 } as const

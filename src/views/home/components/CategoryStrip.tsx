@@ -1,6 +1,6 @@
 import { PackageOpen } from 'lucide-react'
 
-import { CategoryCard } from '@/components/shared/CategoryCard'
+import { CategoryCard, type CategoryCardLayout } from '@/components/shared/CategoryCard'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { Button, ButtonLink, Skeleton } from '@/components/ui'
@@ -16,7 +16,8 @@ const LIMIT = appConfig.categoryLinkLimits.home
 
 /**
  * The original store's category band. Phones get a horizontal, snapping row (one card and a
- * peek of the next); from `md` the cards sit in a three-column grid.
+ * peek of the next); from `md` three cards sit in thirds and two fill the row as halves. A lone
+ * card keeps the third-width size instead of stretching.
  */
 export function CategoryStrip() {
     const { data: categories, isPending, isError, refetch } = useCategories()
@@ -27,9 +28,15 @@ export function CategoryStrip() {
         categorias: categoryCountPhrase(categories?.length),
     })
     const featured = (categories ?? []).slice(0, LIMIT)
+    // Two categories stretch into halves; one keeps the normal card size (stretching a single
+    // card across the row distorts it), so it stays a third of the row.
+    const count = isPending ? LIMIT : featured.length
+    const layout: CategoryCardLayout = count === 2 ? 'half' : 'third'
 
-    const rowClass =
-        '-mx-4 flex snap-x snap-mandatory scrollbar-none gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0'
+    const rowClass = cn(
+        '-mx-4 flex snap-x snap-mandatory scrollbar-none gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0',
+        layout === 'half' ? 'md:grid-cols-2' : 'md:grid-cols-3',
+    )
     const itemClass = 'w-[78%] shrink-0 snap-start sm:w-[45%] md:w-auto'
 
     return (
@@ -71,7 +78,11 @@ export function CategoryStrip() {
                               ))
                             : featured.map((category, index) => (
                                   <li key={category.slug} className={itemClass}>
-                                      <CategoryCard category={category} index={index} />
+                                      <CategoryCard
+                                          category={category}
+                                          index={index}
+                                          layout={layout}
+                                      />
                                   </li>
                               ))}
                     </ul>

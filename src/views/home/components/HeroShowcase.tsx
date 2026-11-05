@@ -225,10 +225,11 @@ function CornerCard({
         >
             <ProductMedia
                 image={{ url: content.images[0]?.url ?? '', alt: '' }}
-                size="sm"
+                // `md` draws the same blurred backdrop as the big card, so no white plate shows.
+                size="md"
                 sizes={slot.sizes}
                 loading="eager"
-                className="p-[12%]"
+                className="p-[10%] [&>img:last-child]:rounded-lg"
             />
         </Link>
     )

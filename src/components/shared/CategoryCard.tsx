@@ -16,8 +16,21 @@ const SHAPES: readonly BottleShape[] = ['classic', 'round', 'tall']
  * The card's width: 78% / 45% of the screen in the phone row, a third of the container (at
  * most 1440px wide) from `md`. Cloudinary covers are resized to these candidates.
  */
-const MEDIA_SIZES =
-    '(min-width: 1440px) 27rem, (min-width: 768px) 31vw, (min-width: 640px) 45vw, 78vw'
+/** How much of the row the card spans from `md`; drives its shape and the cover's sizes. */
+export type CategoryCardLayout = 'third' | 'half'
+
+const MEDIA_SIZES: Record<CategoryCardLayout, string> = {
+    third: '(min-width: 1440px) 27rem, (min-width: 768px) 31vw, (min-width: 640px) 45vw, 78vw',
+    half: '(min-width: 1440px) 42rem, (min-width: 768px) 47vw, (min-width: 640px) 45vw, 78vw',
+}
+
+/**
+ * Media frame per layout. Halves get a taller, wider rectangle so the cover keeps its shape.
+ */
+const FRAME: Record<CategoryCardLayout, string> = {
+    third: 'h-44 sm:h-52',
+    half: 'h-44 sm:h-52 md:h-64 lg:h-72',
+}
 const COVER_WIDTHS = [400, 640, 900, 1200] as const
 
 /**
@@ -43,6 +56,8 @@ export interface CategoryCardProps {
     category: Category
     /** Position in the list; picks the card's bottle when there is no image. */
     index?: number
+    /** Share of the row the card spans from `md` (see `CategoryCardLayout`). */
+    layout?: CategoryCardLayout
     className?: string
 }
 
@@ -54,7 +69,12 @@ export interface CategoryCardProps {
  * The panel shows, in order of preference: the cover uploaded in the admin (cropped to fill),
  * the photo of the category's best product on the product plate, or a drawn bottle.
  */
-export function CategoryCard({ category, index = 0, className }: CategoryCardProps) {
+export function CategoryCard({
+    category,
+    index = 0,
+    layout = 'third',
+    className,
+}: CategoryCardProps) {
     return (
         <article
             className={cn(
@@ -62,7 +82,7 @@ export function CategoryCard({ category, index = 0, className }: CategoryCardPro
                 className,
             )}
         >
-            <CategoryCardMedia category={category} index={index} />
+            <CategoryCardMedia category={category} index={index} layout={layout} />
 
             <div className="flex flex-1 flex-col gap-2.5 p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3">
@@ -100,8 +120,17 @@ export function CategoryCard({ category, index = 0, className }: CategoryCardPro
  * Fixed-height panel (no layout shift whatever the image). Decorative: the card's name is the
  * link, so the images carry an empty `alt`.
  */
-function CategoryCardMedia({ category, index }: { category: Category; index: number }) {
-    const frame = 'relative h-44 shrink-0 overflow-hidden sm:h-52'
+function CategoryCardMedia({
+    category,
+    index,
+    layout,
+}: {
+    category: Category
+    index: number
+    layout: CategoryCardLayout
+}) {
+    const frame = cn('relative shrink-0 overflow-hidden', FRAME[layout])
+    const mediaSizes = MEDIA_SIZES[layout]
 
     if (category.imageUrl) {
         const srcSet = cldSrcSet(category.imageUrl, COVER_WIDTHS)
@@ -110,7 +139,7 @@ function CategoryCardMedia({ category, index }: { category: Category; index: num
                 <img
                     src={cldUrl(category.imageUrl, COVER_WIDTHS.at(-1) ?? 1200)}
                     srcSet={srcSet}
-                    sizes={srcSet ? MEDIA_SIZES : undefined}
+                    sizes={srcSet ? mediaSizes : undefined}
                     alt=""
                     width={1200}
                     height={624}
@@ -132,7 +161,7 @@ function CategoryCardMedia({ category, index }: { category: Category; index: num
             <div aria-hidden="true" className={cn(frame, 'border-b border-line')}>
                 <ProductMedia
                     image={{ url: category.previewImageUrl, alt: '' }}
-                    sizes={MEDIA_SIZES}
+                    sizes={mediaSizes}
                     className={cn('p-5 sm:p-6', PLATE_ZOOM)}
                 />
             </div>

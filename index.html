@@ -12,28 +12,20 @@
             name="description"
             content="Perfumes originales de diseñador y árabes para mujer y hombre. Precios en dólares con referencia BCV, pago por Pago Móvil y envíos a toda Venezuela."
         />
-        <meta name="theme-color" content="#0B0B0D" />
+        <meta name="theme-color" content="#FAFAFA" />
         <meta name="color-scheme" content="dark light" />
 
         <!--
-          Applies the color theme before first paint (no flash of the wrong one): the saved
-          choice ("kaizen-theme"), else the OS preference, else dark. Mirrors src/store/themeStore.ts.
+          Every visit opens in light, before first paint. Dark lasts only until the page is
+          closed or reloaded; nothing is remembered. Mirrors src/store/themeStore.ts.
         -->
         <script>
             ;(function () {
-                var theme = null
+                var theme = 'light'
+                // Drops the choice older versions saved, so it never comes back.
                 try {
-                    theme = localStorage.getItem('kaizen-theme')
+                    localStorage.removeItem('kaizen-theme')
                 } catch (error) {}
-                if (theme !== 'light' && theme !== 'dark') {
-                    try {
-                        theme = matchMedia('(prefers-color-scheme: light)').matches
-                            ? 'light'
-                            : 'dark'
-                    } catch (error) {
-                        theme = 'dark'
-                    }
-                }
                 var root = document.documentElement
                 root.setAttribute('data-theme', theme)
                 root.style.colorScheme = theme
